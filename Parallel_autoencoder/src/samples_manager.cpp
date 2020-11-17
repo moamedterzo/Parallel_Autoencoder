@@ -22,7 +22,7 @@ using namespace cv;
 namespace parallel_autoencoder{
 
     samples_manager::samples_manager(){};
-    
+
     samples_manager::samples_manager(string _path_folder, int _max_n_samples)
     {           
         path_folder = _path_folder;
