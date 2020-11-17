@@ -11,7 +11,7 @@
 #include <iostream>
 #include <sys/stat.h>
 #include <cassert>
-#include <opencv2/opencv.hpp>
+#include "opencv2/opencv.hpp"
 
 
 using std::string;
