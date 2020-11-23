@@ -44,7 +44,7 @@ all: Parallel_autoencoder
 Parallel_autoencoder: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross G++ Linker'
-	g++ -L./opencv/libs -L../opencv_release/libs -o "Parallel_autoencoder" $(OBJS) $(USER_OBJS) $(LIBS)
+	/usr/bin/mpic++ -L./opencv/libs -L"/home/giovanni/git/repository/Parallel_autoencoder/opencv/libs" -L../opencv_release/libs -o "Parallel_autoencoder" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -29,7 +29,7 @@ namespace parallel_autoencoder{
         learning_rate = first_layer ? 0.001 : 0.01;
         momentum = 0.9;
         n_training_epocs = 20;//todo sistemare
-        size_minibatch = 20;//todo sistemare
+        size_minibatch = 1;//todo sistemare
 
         initial_weights_variance = 0.01;
         initial_weights_mean = 0;
@@ -77,9 +77,6 @@ namespace parallel_autoencoder{
     
     void rbm::learn(vector<vector<float>>& weights, vector<float>& hidden_biases,
             vector<float>& visible_biases){
-
-        //todo capire se serve
-       // weights = _weights; hidden_biases = _hidden_biases; visible_biases = _visible_biases;        
 
         //la matrice dei pesi per il layer in questione, 
         //possiede grandezza VxH (unità visibili per unità nascoste)
@@ -139,10 +136,16 @@ namespace parallel_autoencoder{
                 if(first_layer) //per il primo layer bisogna aggiungere del rumore gaussiano
                     for(int i = 0; i < rec_visible_units.size(); i++)
                         rec_visible_units.at(i) = sample_gaussian_distribution(rec_visible_units.at(i), generator);
+                else
+					for(int i = 0; i < rec_visible_units.size(); i++)
+						rec_visible_units.at(i) = sigmoid(rec_visible_units.at(i));
+
 
                 //3. si ottiene il vettore hidden partendo dalle unità visibili ricostruite
                 //non si applica il campionamento
                 matrix_transpose_vector_multiplication(weights, rec_visible_units, hidden_biases, rec_hidden_units);
+                for(int i = 0; i < rec_hidden_units.size(); i++)
+                	rec_hidden_units.at(i) = sigmoid(rec_hidden_units.at(i));
 
                 //4. si calcolano i differenziali
                 //dei pesi e bias visibili
@@ -189,6 +192,8 @@ namespace parallel_autoencoder{
         const vector<vector<float>>& weights, const vector<float>& hidden_biases){
 
         matrix_transpose_vector_multiplication(weights, input, hidden_biases, output);
+        for(int i = 0; i < output.size(); i++)
+        	output.at(i) = sigmoid(output.at(i));
     }
     
 

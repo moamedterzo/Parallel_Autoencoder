@@ -42,6 +42,9 @@ namespace parallel_autoencoder{
 
         void restart();
 
+        uint get_number_samples();
+        dirent* get_next_dir();
+
         bool get_next_sample(vector<float>& buffer, string *filename);
 
         bool get_next_sample(vector<float>& buffer);

@@ -71,7 +71,7 @@ namespace parallel_autoencoder{
         {
             const int n_visible_units = layers_size[layer_number];
             const int n_hidden_units = layers_size[layer_number + 1];
-            int index_reverse_layer = number_of_final_layers - layer_number - 2;
+            const int index_reverse_layer = number_of_final_layers - layer_number - 2;
 
             std::cout << "-- Imparando il layer numero: " << layer_number
                     << ", hidden units: " << n_hidden_units 

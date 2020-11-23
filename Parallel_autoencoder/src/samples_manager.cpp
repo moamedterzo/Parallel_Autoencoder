@@ -49,20 +49,43 @@ namespace parallel_autoencoder{
         init();
     }
 
+    uint samples_manager::get_number_samples()
+    {
+    	int number_of_samples = 0;
+
+    	struct dirent *entry;
+    	while((entry = get_next_dir()) != nullptr)
+    		number_of_samples++;
+
+    	restart();
+
+    	//il numero di esempi è dato dal limite di esempi da restituire o da quelli effettivamente presenti
+    	return min(number_of_samples, max_n_samples);
+    }
+
+    dirent* samples_manager::get_next_dir()
+    {
+    	struct dirent *entry;
+		do
+		{
+			if(!(entry = readdir(dp))) return nullptr;
+		}
+		while(strcmp(entry->d_name, ".") == 0
+			|| strcmp(entry->d_name, "..") == 0
+			|| !strstr(entry->d_name, ".jpg"));
+
+		return entry;
+    }
+
+
     bool samples_manager::get_next_sample(vector<float>& buffer, string *filename){
 
         //limite degli esempi restituiti
         if(max_n_samples != -1 && current_sample_number >= max_n_samples) return false;
 
         //vengono scartate le cartelle (si assume che i file abbiano tutti estensione .jpg)
-        struct dirent *entry;                        
-        do
-        {
-            if(!(entry = readdir(dp))) return false;
-        }
-        while(strcmp(entry->d_name, ".") == 0 
-            || strcmp(entry->d_name, "..") == 0 
-            || !strstr(entry->d_name, ".jpg"));
+        struct dirent *entry = get_next_dir();
+        if(entry == nullptr) return false;
 
        // if(strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) 
         //    return get_next_sample(buffer, filename);
