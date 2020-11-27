@@ -26,13 +26,14 @@ namespace parallel_autoencoder{
     class samples_manager{
     private:
         DIR *dp = nullptr; 
-        int height;
-        int width;
-        int current_sample_number;
+        int height = 0;
+        int width = 0;
+        int current_sample_number = 0;
+
     public:
 
-        int max_n_samples;
-        string path_folder;    
+        int max_n_samples = 0;
+        string path_folder = "";
 
         samples_manager();
         samples_manager(string _path_folder, int _max_n_samples);

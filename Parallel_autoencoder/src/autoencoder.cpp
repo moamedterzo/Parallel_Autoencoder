@@ -21,7 +21,6 @@ using namespace std;
 
 namespace parallel_autoencoder{
 
-    //todo cercare di allocare staticamente i vettori o quantomeno ottimizzare gli accessi
     Autoencoder::Autoencoder(const vector<int>& _layers_size, samples_manager& _samplesmanager, std::default_random_engine _generator)
     {
         samplesmanager = _samplesmanager;
@@ -43,7 +42,7 @@ namespace parallel_autoencoder{
         //_layers_size contiene la grandezza dei layer fino a quello centrale
         //in fase di rollup verranno creati altri layer per la ricostruzione
         layers_size = vector<int>(number_of_final_layers);
-        for(int i = 0; i < _layers_size.size(); i++)
+        for(uint i = 0; i < _layers_size.size(); i++)
         {
             layers_size[i] = _layers_size[i];
 
@@ -155,18 +154,17 @@ namespace parallel_autoencoder{
             //si riserva lo spazio necessario per l'attivazione di ogni layer 
             //e per i vettori che conterranno i valori delta per la back propagation
             vector<vector<float>> activation_layers(number_of_final_layers);
-            for(int l = 0; l < activation_layers.size(); l++)
+            for(uint l = 0; l < activation_layers.size(); l++)
                 activation_layers.at(l) = vector<float>(layers_size.at(l)); //la grandezza è memorizzata nel vettore layers_size
 
             //si esclude il primo layer dato che non possiede pesi da aggiornare
             vector<vector<float>> delta_layers(number_of_final_layers - 1);
-            for(int l = 0; l < delta_layers.size(); l++)
+            for(uint l = 0; l < delta_layers.size(); l++)
                 delta_layers.at(l) = vector<float>(layers_size.at(l + 1)); //la grandezza è memorizzata nel vettore layers_size
 
             int central_layer = number_of_final_layers / 2 - 1;
 
             //si passa alle immagini iniziali
-            //todo al primo fine tuning si potrebbero utilizzare le immagini generate nell'ultima fase delle RBM che contengono l'attivazione del layer di decoding
             samplesmanager.path_folder = image_path_folder;    
 
             //per ogni epoca...
@@ -231,7 +229,7 @@ namespace parallel_autoencoder{
 
                             //calcolo dei delta per il layer di output
                             // delta = y_i * (1 - y_i) * reconstruction_error
-                            for(int j = 0; j < output_layer.size(); j++)
+                            for(uint j = 0; j < output_layer.size(); j++)
                             {
                                current_deltas[j] = output_layer.at(j) 
                                        * (1 - output_layer.at(j)) 
@@ -250,16 +248,16 @@ namespace parallel_autoencoder{
                             auto& weights_for_deltas = layers_weights.at(l);
 
                             //il delta per il nodo j-esimo è dato dalla somma pesata dei delta dei nodi del layer successivo
-                            for(int j = 0; j < output_layer.size(); j++)
-                                for(int i = 0; i < output_deltas.size(); i++)
+                            for(uint j = 0; j < output_layer.size(); j++)
+                                for(uint i = 0; i < output_deltas.size(); i++)
                                 {
                                     current_deltas[j] +=  output_deltas.at(i) * weights_for_deltas.at(j).at(i);
                                 }
                         }
 
                         //applico gradiente per la matrice dei pesi
-                        for(int i = 0; i < input_layer.size(); i++){
-                            for(int j = 0; j < output_layer.size(); j++){
+                        for(uint i = 0; i < input_layer.size(); i++){
+                            for(uint j = 0; j < output_layer.size(); j++){
                                 //delta rule
                                 weights_to_update.at(i).at(j) += 
                                         fine_tuning_learning_rate 
@@ -269,7 +267,7 @@ namespace parallel_autoencoder{
                         }    
 
                         //seguendo la delta rule, si applica il gradiente anche i bias
-                        for(int j = 0; j < biases_to_update.size(); j++){
+                        for(uint j = 0; j < biases_to_update.size(); j++){
                             biases_to_update.at(j) +=
                                         fine_tuning_learning_rate 
                                         * current_deltas.at(j);
@@ -342,8 +340,6 @@ namespace parallel_autoencoder{
         int layer_number;
         for(layer_number = 0; layer_number < trained_rbms; layer_number++)
         {
-            const int n_visible_units = layers_size[layer_number];
-            const int n_hidden_units = layers_size[layer_number + 1];
             int index_reverse_layer = number_of_final_layers - layer_number - 2;
 
             auto& weights = layers_weights[layer_number];
@@ -414,7 +410,6 @@ namespace parallel_autoencoder{
 
         // Helper vars
         std::string line;
-        float val;
 
         //variabili che fanno riferimento al layer nel quale si salveranno i parametri
         int n_visible_units;

@@ -21,6 +21,10 @@ using namespace cv;
 
 namespace parallel_autoencoder{
 
+	//valore utilizzato per normalizzare i valori in input
+	static const float INPUT_MAX_VALUE = 255;
+
+
     samples_manager::samples_manager(){};
 
     samples_manager::samples_manager(string _path_folder, int _max_n_samples)
@@ -109,9 +113,9 @@ namespace parallel_autoencoder{
         {                
           for (int i=0;i<img.cols;i++)
           {                
-              auto index = j * img.cols + i;                  
-              auto v = int(img.at<uchar>(j,i));                  
-              buffer.at(index) = float(v);
+              const int index = j * img.cols + i;
+
+              buffer.at(index) = float(img.at<uchar>(j,i)) / INPUT_MAX_VALUE;
           }
         }    
 
@@ -162,8 +166,12 @@ namespace parallel_autoencoder{
             mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
 
+        //si normalizza l'immagine ai valori originali (altrimenti le prossime letture non funzioneranno)
+        auto buffer_for_image = buffer;
+        for(auto& v : buffer_for_image)
+        	v *= INPUT_MAX_VALUE;
 
-        Mat imageToSave = Mat(height, width, CV_32FC1, buffer.data());        
+        Mat imageToSave = Mat(height, width, CV_32FC1, buffer_for_image.data());
         imwrite(folder + "/" + filepath, imageToSave);
 
         //std::cout << "Immagine salvata in '" << folder + "/" + filepath << "'\n";
@@ -172,7 +180,7 @@ namespace parallel_autoencoder{
 
     void samples_manager::show_sample(vector<float>& buffer){
 
-        //si determina la grandezza dell'immagine 
+        /*//si determina la grandezza dell'immagine
         float lato  = sqrt(buffer.size());
         int height_s, width_s;
 
@@ -196,7 +204,7 @@ namespace parallel_autoencoder{
 
                 std::cout << "PROBLEMA IMMAGINE, NON E' UN QUADRATO E NEANCHE UN RETTANGOLO\n";
             }
-        }
+        }*/
 
         save_sample(buffer, "./temp", "image_temp.jpg");        
 

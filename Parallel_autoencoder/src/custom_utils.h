@@ -18,6 +18,7 @@
 #include <random>   
 #include <cassert>
 #include "mpi.h"
+#include <iostream>
 
 using std::vector;
 
@@ -157,6 +158,24 @@ namespace parallel_autoencoder{
 		}
 
 	}
+
+
+	inline void print_vector_norm(vector<float>& vec, std::string&& myid)
+	{
+		float result = 0;
+
+		for(auto v : vec)
+			result += v;
+
+
+		std::cout << "[" << myid << ": " << result << "]\n";
+	}
+
+
+
+
+
+
 
 	//metodo creato per non dover effettuare di volta in volta la trasposta della matrice
 	void matrix_transpose_vector_multiplication(const vector<vector<float>>& m_by_n_matrix,

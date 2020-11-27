@@ -5,6 +5,8 @@
 #include <vector>
 #include <random>
 #include <string>
+#include <string.h>
+#include <iomanip>
 #include "mpi.h"
 
 using std::vector;
@@ -13,6 +15,7 @@ using std::vector;
 namespace parallel_autoencoder{
 
 //todo
+//spostare nei file cpp
 //migliorare efficienza utilizzando matrici invece che vettori
 //fare un check sui cicli for utilizzando i tipi di interi corretti e l'operatore != invece che <
 //gestire possibilità di ricevere altro dai buffer mentre si calcolano i dati
@@ -23,12 +26,13 @@ namespace parallel_autoencoder{
     protected:
 
     	MPI_Datatype mpi_datatype_tosend = MPI_FLOAT;
+    	const int MAX_FOLDER_PARS_LENGTH = 300;
 
     	std::ostream& oslog;
 		int mpi_rank;
 
     	enum GridOrientation { row_first, col_first };
-    	enum CommandType { train, exit };
+    	enum CommandType { train, exit, load_pars, save_pars, reconstruct_image , delete_pars_file};
 
     	//MPI pars
     	int total_accumulators;
@@ -51,7 +55,6 @@ namespace parallel_autoencoder{
 
         //rbm pars
         int trained_rbms;
-        float rbm_learning_rate;
         float rbm_momentum;
         int rbm_n_training_epocs;
         int rbm_size_minibatch;
@@ -64,6 +67,11 @@ namespace parallel_autoencoder{
         bool fine_tuning_finished;
         float fine_tuning_learning_rate;
         float fine_tuning_n_training_epocs;
+
+
+        //todo capire che numero mettere
+        const int F_PREC = 9;
+        string folder_parameters_path = "./autoencoder_pars/";
 
 
     public:
@@ -106,9 +114,14 @@ namespace parallel_autoencoder{
 
 				//c'è da considerare il fatto che l'orientamento è deciso in base al costo della comunicazione
 				//di fatto significa se se i nodi di output sono maggiori di quelli di input, allora si inverte l'orientamento
-				GridOrientation orientation = 3 * input_nodes < 4 * output_nodes ? col_first : row_first;
+				GridOrientation orientation = ((3 * input_nodes) < (4 * output_nodes)) ? col_first : row_first;
 
 				orientation_grid[i] = orientation;
+
+				//std::cout << "input_nodes: "<<input_nodes<< ", output_nodes: " << output_nodes<<"\n";
+				//std::cout << "orientation_for_layer "<<i << ":" << (orientation == row_first ? "row_first" : "col_first") << "\n";
+
+
 
 				//dato che il rollup si basa sul riutilizzo dei pesi, e dato che il
 				//numero di nodi di input e di output è invertito tra il layer di ricostruzione e quello di encoding
@@ -118,10 +131,9 @@ namespace parallel_autoencoder{
 			}
 
 			trained_rbms = 0;
-			rbm_learning_rate = 0.01; //todo al primo layer è diverso
 			rbm_momentum = 0.9;
-			rbm_n_training_epocs = 20;//todo sistemare
-			rbm_size_minibatch = 20;//todo sistemare
+			rbm_n_training_epocs = 30;//todo sistemare
+			rbm_size_minibatch = 5;//todo sistemare
 
 			rbm_initial_weights_variance = 0.01;
 			rbm_initial_weights_mean = 0;
@@ -144,6 +156,8 @@ namespace parallel_autoencoder{
         		command = wait_for_command();
         		oslog << "My command is " << command << "\n";
 
+				string pf(get_path_file());
+
         		switch(command){
 
 					case train:
@@ -153,6 +167,7 @@ namespace parallel_autoencoder{
 						oslog << "Numero di RBM da apprendere: " <<  number_of_rbm_to_learn <<"\n";
 						oslog << "Numero di RBM gia apprese: " << trained_rbms << "\n";
 						oslog << "Numero di layer finali: " <<  number_of_final_layers <<"\n";
+						oslog.flush();
 
 						train_rbm();
 
@@ -161,12 +176,34 @@ namespace parallel_autoencoder{
 
 					break;
 
+					case load_pars:
+						load_parameters();
+						break;
+
+					case save_pars:
+						save_parameters();
+						break;
+
+					case delete_pars_file:
+						std::remove(pf.c_str());
+						std::cout << "File deleted: " + pf + "\n";
+						break;
+
+					case reconstruct_image:
+
+						//reconstruct each image todo mettere numero
+						for(int i = 0; i < 4; i++)
+							reconstruct();
+						break;
+
 					case exit:
 						break;
         		}
         	}
         	while(command != exit);
         }
+
+
 
         //restituisce unità (visibili o hidden) per l'accumulatore k o il nodo della riga r o della colonna c
         static int get_units_for_node(const uint n_total_units, const uint total_nodes, const uint node_number)
@@ -204,6 +241,7 @@ namespace parallel_autoencoder{
 
 			do
 			{
+
 				if(calc_for_acc)
 				{
 					//se questo calcolo lo si sta facendo per l'accumulatore...
@@ -217,8 +255,11 @@ namespace parallel_autoencoder{
 								comm.n_items_to_send = std::min(elements_for_acc, elements_for_grid_node);
 
 								//log
+								oslog << "Current orientation:" << (current_or == row_first ? "row" : "col") << "\n";
 								oslog << "I'm a k node, I will send " << comm.n_items_to_send <<
-										" elements to each node of the " << current_or << " nodes\n";
+										" elements to each node of the row/col with index:"  << index_gridnode << "\n";
+								oslog.flush();
+
 								break;
 							}
 					}
@@ -236,14 +277,17 @@ namespace parallel_autoencoder{
 								comm.n_items_to_send = std::min(elements_for_acc, elements_for_grid_node);
 
 								//log
+								oslog << "Current orientation:" << (current_or == row_first ? "row" : "col") << "\n";
 								oslog << "I'm a cell node, I will send " << comm.n_items_to_send <<
-										" elements to the k node (" << current_or  << ")\n";
+										" elements to the k node with index: " << index_acc  << "\n";
+								oslog.flush();
+
 								break;
 							}
 					}
 				}
 
-				auto diff = elements_for_acc - elements_for_grid_node;
+				int diff = elements_for_acc - elements_for_grid_node;
 
 				if(diff >= 0)
 				{
@@ -262,11 +306,23 @@ namespace parallel_autoencoder{
 					index_acc++;
 					elements_for_acc = get_units_for_node(n_tot_vishid_units, total_accumulators, index_acc);
 				}
-
 			}
 			while((calc_for_acc ? index_acc : index_gridnode) <= my_k_col_row_number);
 			//non mi fermo fintantoché non ho analizzato tutti i possibili collegamenti del nodo
 		}
+
+
+		static float GetRBMLearningRate(const int epoch_number, const int layer_number)
+		{
+			//il learning rate varia a seconda dell'epoca e del layer da apprendere
+			static const float rbm_learning_rate = 0.01;
+
+			if(layer_number == 0)
+				return rbm_learning_rate / 10 * (1 + epoch_number * 0.1);
+			else
+				return rbm_learning_rate / (1 + epoch_number * 0.1);
+		}
+
 
 
 
@@ -281,6 +337,7 @@ namespace parallel_autoencoder{
         //virtual vector<bool> encode() = 0;
         virtual vector<float> reconstruct() = 0;
 
+        virtual string get_path_file() = 0;
         virtual void save_parameters() = 0;
         virtual void load_parameters() = 0;
 

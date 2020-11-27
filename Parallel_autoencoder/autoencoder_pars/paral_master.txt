@@ -1,0 +1,2 @@
+n_rbm,5
+fine_tuning,1

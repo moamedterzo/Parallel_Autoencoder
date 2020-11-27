@@ -51,26 +51,26 @@ namespace parallel_autoencoder{
 
             //si precalcola il fattore moltiplicativo
             //dovendo fare una media bisogna dividere per il numero di esempi
-            const int mult_factor = learning_rate / number_of_samples;
+            const float mult_factor = learning_rate / number_of_samples;
 
             //diff per pesi e bias visibili
             for(int i = 0; i < visible_biases.size(); i++)
             {
                 visible_biases.at(i) += diff_visible_biases.at(i) * mult_factor;                
 
-                diff_visible_biases.at(i) = diff_visible_biases.at(i) * momentum / mult_factor; //inizializzazione per il momentum
+                diff_visible_biases.at(i) = diff_visible_biases.at(i) * momentum; //inizializzazione per il momentum
 
                 for(int j = 0; j < hidden_biases.size(); j++){
                    weights.at(i).at(j) += diff_weights.at(i).at(j) * mult_factor;
 
-                   diff_weights.at(i).at(j) = diff_weights.at(i).at(j) * momentum / mult_factor;//inizializzazione per il momentum
+                   diff_weights.at(i).at(j) = diff_weights.at(i).at(j) * momentum;//inizializzazione per il momentum
                 }
             }
 
             for(int j = 0; j < hidden_biases.size(); j++){
                 hidden_biases.at(j) += diff_hidden_biases.at(j) * mult_factor;
 
-                diff_hidden_biases.at(j) = diff_hidden_biases.at(j) * momentum / mult_factor;//inizializzazione per il momentum
+                diff_hidden_biases.at(j) = diff_hidden_biases.at(j) * momentum;//inizializzazione per il momentum
             }               
     }
 

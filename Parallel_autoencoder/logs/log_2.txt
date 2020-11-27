@@ -1,0 +1,1404 @@
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+My command is 1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+My command is 0
+Imparando le RBM...
+Numero di RBM da apprendere: 4
+Numero di RBM gia apprese: 0
+Numero di layer finali: 9
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+My command is 2
+My command is 4
+My command is 1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+My command is 2
+My command is 4
+My command is 1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 2 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 4 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 4 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+My command is 2
+My command is 4
+My command is 1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 128 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 128 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 64 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 64 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 32 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 32 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 16 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 16 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 8 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 16 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 16 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 32 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 32 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 64 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 64 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 128 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 128 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 128 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 128 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 64 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 64 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 32 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 32 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 16 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 16 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 8 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 16 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 16 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 32 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 32 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 64 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 64 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 128 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 128 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+My command is 0
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 2
+My first random number is 33614
+[World rank: 2, my master_acc rank: 2]
+
+[World rank: 2, my acc_row rank: 0]
+
+[World rank: 2, my acc_col rank: 0]
+
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 128 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 128 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 64 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 64 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 32 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 32 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 16 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 16 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 elements to each node of the row/col with index:0
+Current orientation:col
+I'm a k node, I will send 8 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 16 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 16 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 32 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 32 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 64 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 64 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 128 elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 128 elements to each node of the row/col with index:0
+Current orientation:row
+I'm a k node, I will send 1024 elements to each node of the row/col with index:1
