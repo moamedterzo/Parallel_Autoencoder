@@ -37,11 +37,11 @@ using namespace std;
 using namespace parallel_autoencoder;
 
 
-const int NUMBER_OF_SAMPLES = 8; //todo configurabile
+const int NUMBER_OF_SAMPLES = 2; //todo configurabile
 
 
 //numero di elementi per layer predeterminato
-vector<int> layers_size { 4096, 512, 256, 128, 64, 32 };
+my_vector<int> layers_size { 4096, 8, 16, 32, 64, 32 };
 
 const string PATH_DATASET = "./mnist_chinese/data";
 
@@ -82,6 +82,8 @@ void init_MPI(int& argc, char** argv,
 	MPI_Comm_rank(MPI_COMM_WORLD, &myid);
 	//MPI_Get_processor_name(processor_name, &namelen);
 
+	 MPI_Errhandler_set(MPI_COMM_WORLD,MPI_ERRORS_RETURN);
+
 }
 
 void close_MPI(timeval& wt1, const timeval& wt0,
@@ -102,7 +104,7 @@ void close_MPI(timeval& wt1, const timeval& wt0,
 
 
 void parse_args(const int argc, char** argv,
-		int& k_accumulator, int& grid_rows, int& grid_cols)
+		uint& k_accumulator, uint& grid_rows, uint& grid_cols)
 {
 	k_accumulator = 4;
 	grid_rows = 4;
@@ -140,6 +142,81 @@ void set_generator(std::default_random_engine& generator)
 
 
 
+void GetCommsForMasterAcc(MPI_Group& world_group, const uint k_accumulators, MP_Comm_MasterSlave& master_acc_comm)
+{
+	master_acc_comm.root_id = 0;
+	{
+		//insieme di rank di master e accumulatori
+		//va da 0 a K
+		int ranks_master_accs[1 + k_accumulators];
+		for(int i = 0; i != (1 + k_accumulators); i++)
+			ranks_master_accs[i] = i;
+
+		//gruppo e comunicatore master accumulatori
+		MPI_Group master_acc_group;
+		MPI_Group_incl(world_group, 1 + k_accumulators, ranks_master_accs, &master_acc_group);
+
+		MPI_Comm_create_group(MPI_COMM_WORLD, master_acc_group, 0, &master_acc_comm.comm);
+	}
+}
+
+
+void GetCommsForGrid(MPI_Group& world_group, GridOrientation orientation, const uint k_accumulators,
+		const uint grid_total_rows, const uint grid_total_cols, my_vector<MP_Comm_MasterSlave>& acc_comms)
+{
+	auto total_group_elements = orientation == row_first ? grid_total_cols : grid_total_rows;
+	auto total_groups_to_create = orientation == row_first ? grid_total_rows : grid_total_cols;
+
+
+	uint index_acc = 0, index_rowcol = 0;
+	while(index_acc < k_accumulators || index_rowcol < total_groups_to_create)
+	{
+		//creazione gruppo (un accumulatore più le celle della riga che corrispondono al numero di colonne)
+		int acc_col_ranks[1 + total_group_elements];
+		acc_col_ranks[0] = index_acc + 1; //rango accumulatore
+
+		//ranghi colonne (k_accumulators + 1 va sommato perché rappresentano i ranghi assegnati al nodo master e a quelli accumulatori)
+		for(uint i = 0; i != total_group_elements; i++)
+			if(orientation == row_first)
+				acc_col_ranks[i + 1] = (k_accumulators + 1) + (index_rowcol * grid_total_cols) + i;
+			else
+				acc_col_ranks[i + 1] = (k_accumulators + 1) + i * grid_total_cols + index_rowcol;
+
+
+		MPI_Group acc_col_group;
+		MPI_Group_incl(world_group, 1 + total_group_elements, acc_col_ranks, &acc_col_group);
+
+		MP_Comm_MasterSlave acc_col_comm;
+		acc_col_comm.root_id = index_acc;
+		acc_col_comm.row_col_id = index_rowcol;
+		MPI_Comm_create_group(MPI_COMM_WORLD, acc_col_group, 0, &acc_col_comm.comm);
+
+		//se il processo corrente non fa parte del gruppo, non si aggiunge nulla
+		if (MPI_COMM_NULL != acc_col_comm.comm) {
+			acc_comms.push_back(acc_col_comm);
+		}
+
+		//questa differenza serve per generare le associazioni tra righe e accumulatori
+		int diff = (index_acc + 1) * total_groups_to_create - (index_rowcol + 1) * k_accumulators;
+
+		if(diff == 0)
+		{
+			index_acc++;
+			index_rowcol++;
+		}
+		else if(diff > 0)
+		{
+			index_rowcol++;
+		}
+		else
+		{
+			index_acc++;
+		}
+	}
+}
+
+
+
 
 int main(int argc, char** argv) {
 
@@ -161,15 +238,16 @@ int main(int argc, char** argv) {
 
 		oslog << "---   Hello, I have ID " << myid << "\n";
 
+
 		//leggo configurazione griglia
-		int k_accumulators, grid_total_rows, grid_total_cols;
+		uint k_accumulators, grid_total_rows, grid_total_cols;
 		parse_args(argc, argv, k_accumulators, grid_total_rows, grid_total_cols);
 
 		master_cout("There are " + to_string(k_accumulators)
 				+ " accumulators and the grid size is " + to_string(grid_total_rows) + "x" + to_string(grid_total_cols));
 
 
-
+		//ottenimento generatore numeri casuali
 		std::default_random_engine generator;
 		set_generator(generator);
 
@@ -182,265 +260,16 @@ int main(int argc, char** argv) {
 		MPI_Comm_group(MPI_COMM_WORLD, &world_group);
 
 
-		//comm accumulatori e master
-		master_cout("Computing comm for master-acc");
+		//Ottenimento comunicatori
+		master_cout("Computing comms");
 
 		MP_Comm_MasterSlave master_acc_comm;
-		master_acc_comm.root_id = 0;
-		{
-			//insieme di rank di master e accumulatori
-			//va da 0 a K
-			int ranks_master_accs[1 + k_accumulators];
-			for(int i = 0; i != (1 + k_accumulators); i++)
-				ranks_master_accs[i] = i;
-
-			//gruppo e comunicatore master accumulatori
-			MPI_Group master_acc_group;
-			MPI_Group_incl(world_group, 1 + k_accumulators, ranks_master_accs, &master_acc_group);
-
-			MPI_Comm_create_group(MPI_COMM_WORLD, master_acc_group, 0, &master_acc_comm.comm);
-
-			//todo assicurarsi che il master abbia sempre rank 0
-			//questo perché i master vengono sempre prima degli slave
-
-			if (MPI_COMM_NULL != master_acc_comm.comm) {
-				int prime_rank = -1;
-				MPI_Comm_rank(master_acc_comm.comm, &prime_rank);
-				oslog << "[World rank: "<< myid << ", my master_acc rank: " << prime_rank << "]\n\n";
-			}
-		}
-		//fine ottenimento comm master acc
-
-
-/*
-		int sendCounts[5] = {4};  // everybody receives recvCount data
-		sendCounts[0] = 0;                // but the root process
-		int displs[5] = {0};
-		for ( int i = 1; i < 5; i++ ) {
-			displs[i] = (i - 1) * 4;
-			sendCounts[i] = 4;
-		}
-
-
-		int n = 3000;
-		vector<float> myvec(n), mysecvec(n);
-					for(int i = 0; i < n;i++)
-						myvec[i] = i * i;
-
-
-
-					MPI_Request myreq, myreq2;
-		if(myid == 0)
-		{
-
-			MPI_Isend(myvec.data(), myvec.size(), MPI_FLOAT, 1,
-						0, master_acc_comm.comm, &myreq);
-
-			MPI_Irecv(mysecvec.data(), mysecvec.size(), MPI_FLOAT, 1,
-						0, master_acc_comm.comm, &myreq2);
-
-			MPI_Wait(&myreq, MPI_STATUS_IGNORE);
-			MPI_Wait(&myreq2, MPI_STATUS_IGNORE);
-
-			std::cout << "im master\n";
-			print_vector(mysecvec);
-
-			for(auto c : sendCounts)
-				std::cout << c << "\n";
-
-			for(auto c : displs)
-				std::cout << c << "\n";
-
-			vector<float> myvec(16);
-			for(int i = 0; i < 16;i++)
-				myvec[i] = i * i;
-
-			print_vector(myvec);
-
-			int n_units_x_accumulator = 4;
-
-
-
-
-			vector<float> mysinglevec(4);
-			MPI_Request reqSend;
-
-			MPI_Ireduce(MPI_IN_PLACE, mysinglevec.data(),
-									4, MPI_FLOAT, MPI_SUM,
-									0, master_acc_comm.comm ,  &reqSend);
-
-			MPI_Iscatterv(myvec.data(), sendCounts, displs, MPI_FLOAT,
-					nullptr, 0, MPI_FLOAT,
-							0, master_acc_comm.comm, &reqSend);
-
-
-			MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
-			print_vector(mysinglevec);
-
-
-
-		}
-		else if(myid == 1)
-		{
-			MPI_Irecv(mysecvec.data(), mysecvec.size(), MPI_FLOAT, 0,
-								0, master_acc_comm.comm, &myreq2);
-			MPI_Isend(myvec.data(), myvec.size(), MPI_FLOAT, 0,
-								0, master_acc_comm.comm, &myreq);
-
-
-					MPI_Wait(&myreq, MPI_STATUS_IGNORE);
-					MPI_Wait(&myreq2, MPI_STATUS_IGNORE);
-
-					std::cout << "im acc\n";
-					print_vector(mysecvec);
-
-			//1/2/3/4
-			vector<float> mysinglevec(4);
-			for(int i = 0; i < 4;i++)
-							mysinglevec[i] = i * i + myid;
-
-			MPI_Request reqVis;
-
-
-
-			MPI_Iscatterv(NULL, nullptr, nullptr, MPI_FLOAT,
-					mysinglevec.data(), mysinglevec.size(), MPI_FLOAT,
-				0, master_acc_comm.comm, &reqVis);
-
-			MPI_Ireduce(mysinglevec.data(), MPI_IN_PLACE,
-									4, MPI_FLOAT, MPI_SUM,
-									0, master_acc_comm.comm ,&reqVis);
-
-
-
-			MPI_Wait(&reqVis, MPI_STATUS_IGNORE);
-
-		    std::this_thread::sleep_for(std::chrono::seconds(myid));
-		    std::cout << "I'm number "<< myid << "\n";
-			print_vector(mysinglevec);
-		}
-
-
-		  std::this_thread::sleep_for(std::chrono::seconds(100000));
-		return 0;
-*/
-
-
-
-
-
-
-
-
-
-
-		//ottenimento comm accumulatori righe
-		master_cout("Computing comm for acc-grid rows");
-		vector<MP_Comm_MasterSlave> acc_row_comms;
-		{
-			int index_acc = 0, index_row = 0;
-			while(index_acc < k_accumulators || index_row < grid_total_rows)
-			{
-				//creazione gruppo (un accumulatore più le celle della riga che corrispondono al numero di colonne)
-				int acc_row_ranks[1 + grid_total_cols];
-				acc_row_ranks[0] = index_acc + 1; //rango accumulatore
-				//ranghi righe (k_accumulators + 1 va sommato perché rappresentano i ranghi assegnati al nodo master e a quelli accumulatori)
-				for(int i = 0; i != grid_total_cols; i++)
-					acc_row_ranks[i + 1] = (k_accumulators + 1) + (index_row * grid_total_cols) + i;
-
-				MPI_Group acc_row_group;
-				MPI_Group_incl(world_group, 1 + grid_total_cols, acc_row_ranks, &acc_row_group);
-
-				MP_Comm_MasterSlave acc_row_comm;
-				acc_row_comm.root_id = index_acc;
-				acc_row_comm.row_col_id = index_row;
-				MPI_Comm_create_group(MPI_COMM_WORLD, acc_row_group, 0, &acc_row_comm.comm);
-
-				//se il processo corrente non fa parte del gruppo, non si aggiunge nulla
-				if (MPI_COMM_NULL != acc_row_comm.comm) {
-					acc_row_comms.push_back(acc_row_comm);
-
-					//todo
-					int prime_rank = -1;
-					MPI_Comm_rank(acc_row_comm.comm, &prime_rank);
-					oslog << "[World rank: "<< myid << ", my acc_row rank: " << prime_rank << "]\n\n";
-					oslog.flush();
-				}
-
-				//questa differenza serve per generare le associazioni tra righe e accumulatori
-				int diff = (index_acc + 1) * grid_total_rows - (index_row + 1) * k_accumulators;
-
-				if(diff == 0)
-				{
-					index_acc++;
-					index_row++;
-				}
-				else if(diff > 0)
-				{
-					index_row++;
-				}
-				else
-				{
-					index_acc++;
-				}
-			}
-		}
-		//fine ottenimento acc righe
-
-		//ottenimento comm accumulatori colonne
-		master_cout("Computing comm for acc-grid cols");
-
-		vector<MP_Comm_MasterSlave> acc_col_comms;
-		{
-			int index_acc = 0, index_col = 0;
-			while(index_acc < k_accumulators || index_col < grid_total_cols)
-			{
-				//creazione gruppo (un accumulatore più le celle della riga che corrispondono al numero di colonne)
-				int acc_col_ranks[1 + grid_total_rows];
-				acc_col_ranks[0] = index_acc + 1; //rango accumulatore
-				//ranghi colonne (k_accumulators + 1 va sommato perché rappresentano i ranghi assegnati al nodo master e a quelli accumulatori)
-				for(int i = 0; i != grid_total_rows; i++)
-					acc_col_ranks[i + 1] = (k_accumulators + 1) + i * grid_total_cols + index_col;
-
-				MPI_Group acc_col_group;
-				MPI_Group_incl(world_group, 1 + grid_total_rows, acc_col_ranks, &acc_col_group);
-
-				MP_Comm_MasterSlave acc_col_comm;
-				acc_col_comm.root_id = index_acc;
-				acc_col_comm.row_col_id = index_col;
-				MPI_Comm_create_group(MPI_COMM_WORLD, acc_col_group, 0, &acc_col_comm.comm);
-
-				//se il processo corrente non fa parte del gruppo, non si aggiunge nulla
-				if (MPI_COMM_NULL != acc_col_comm.comm) {
-					acc_col_comms.push_back(acc_col_comm);
-
-					//todo
-					int prime_rank = -1;
-					MPI_Comm_rank(acc_col_comm.comm, &prime_rank);
-					oslog << "[World rank: "<< myid << ", my acc_col rank: " << prime_rank << "]\n\n";
-					oslog.flush();
-				}
-
-				//questa differenza serve per generare le associazioni tra righe e accumulatori
-				int diff = (index_acc + 1) * grid_total_cols - (index_col + 1) * k_accumulators;
-
-				if(diff == 0)
-				{
-					index_acc++;
-					index_col++;
-				}
-				else if(diff > 0)
-				{
-					index_col++;
-				}
-				else
-				{
-					index_acc++;
-				}
-			}
-		}
-		//fine ottenimento acc colonne
-
+		my_vector<MP_Comm_MasterSlave> acc_row_comms;
+		my_vector<MP_Comm_MasterSlave> acc_col_comms;
+
+		GetCommsForMasterAcc(world_group, k_accumulators, master_acc_comm);
+		GetCommsForGrid(world_group, row_first, k_accumulators, grid_total_rows, grid_total_cols, acc_row_comms);
+		GetCommsForGrid(world_group, col_first, k_accumulators, grid_total_rows, grid_total_cols, acc_col_comms);
 
 
 		//determino ruolo di ogni nodo
@@ -475,13 +304,13 @@ int main(int argc, char** argv) {
 		{
 			//nodo giglia
 			//determino l'n-esimo elemento della griglia
-			int grid_offset = myid - k_accumulators - 1;
+			uint grid_offset = myid - k_accumulators - 1;
 
 			//quale riga?
-			int grid_row = grid_offset / grid_total_cols;
+			uint grid_row = grid_offset / grid_total_cols;
 
 			//quale colonna?
-			int grid_col = grid_offset % grid_total_cols;
+			uint grid_col = grid_offset % grid_total_cols;
 
 			my_autoencoder = new node_cell_autoencoder(layers_size, generator, k_accumulators,
 					grid_total_rows, grid_total_cols,
@@ -490,6 +319,7 @@ int main(int argc, char** argv) {
 					acc_row_comms, acc_col_comms);
 		}
 
+		MPI_Barrier(MPI_COMM_WORLD);
 		master_cout("Begin loop");
 		my_autoencoder->loop();
 

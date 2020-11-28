@@ -29,8 +29,8 @@ namespace parallel_autoencoder{
 		string image_path_folder;
 
 	public:
-		node_master_autoencoder(const vector<int>& _layers_size, std::default_random_engine& _generator,
-					int _total_accumulators, int _grid_row, int _grid_col,
+		node_master_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+					uint _total_accumulators, uint _grid_row, uint _grid_col,
 					std::ostream& _oslog, int _mpi_rank,
 					MP_Comm_MasterSlave& _master_accs_comm,
 					samples_manager& _smp_manager)
@@ -47,12 +47,13 @@ namespace parallel_autoencoder{
 			CommandType command;
 
 			std::cout << "\n\nHello, I'm the master, what do you want to do?\n";
+
 			std::cout << "1 to train a rbm\n";
-			std::cout << "2 to save parameters\n";
+			if(fine_tuning_finished) std::cout << "2 to save parameters\n";
 			std::cout << "3 to load parameters\n";
-			std::cout << "5 to reconstruct images\n";
+			if(fine_tuning_finished) std::cout << "5 to reconstruct images\n";
 			std::cout << "-1 to exit\n";
-			std::cout << "-2 to delete parameters file\n";
+			std::cout << "-22 to delete parameters file\n";
 
 			//lettura input
 			int res;
@@ -91,7 +92,7 @@ namespace parallel_autoencoder{
 				std::cout << "If you want to load parameters, you can specify a custom folder path (or '.' as default):\n";
 				cin >> char_path_file;
 			}
-			else if(res == -2)
+			else if(res == -22)
 			{
 				command = delete_pars_file;
 			}
@@ -129,19 +130,15 @@ namespace parallel_autoencoder{
 		}
 
 
-		void ScatterInputVector(vector<float>& vec, int send_counts[], int displs[], MPI_Request *reqSend)
+		void ScatterInputVector(const my_vector<float>& vec, const int send_counts[], const int displs[], MPI_Request *reqSend)
 		{
-			//std::cout << "111111111111 Master scattering vector\n";
-
 			MPI_Iscatterv(vec.data(), send_counts, displs, mpi_datatype_tosend,
 						nullptr, 0,  mpi_datatype_tosend,
 						0, master_accs_comm.comm, reqSend);
 		}
 
-		void ReceiveOutputVector(vector<float>& vec, int receive_counts[], int displs[], MPI_Request *reqRecv)
+		void ReceiveOutputVector(const my_vector<float>& vec, const int receive_counts[], const int displs[], MPI_Request *reqRecv)
 		{
-			//std::cout << "Master gathering vector\n";
-
 			MPI_Igatherv(MPI_IN_PLACE, 0, mpi_datatype_tosend,
 					vec.data(), receive_counts, displs, mpi_datatype_tosend,
 					0, master_accs_comm.comm,  reqRecv);
@@ -153,7 +150,7 @@ namespace parallel_autoencoder{
 			counts[0] = displacements[0] = 0;
 
 			uint n_units_for_acc = 0;
-			for(int k = 0; k < total_accumulators; k++){
+			for(uint k = 0; k != total_accumulators; k++){
 
 				//l'accumulatore k è posizionato alla posizione k + 1 (a causa dell'indice 0 che rappresenta il root)
 				//posizionamento iniziale
@@ -166,15 +163,15 @@ namespace parallel_autoencoder{
 		}
 
 
-
 		void train_rbm()
 		{
 			//Per ciascun layer...
 			//se sono stati già apprese delle rbm, si passa direttamente alla prima da imparare
-			for(int layer_number = trained_rbms; layer_number < number_of_rbm_to_learn; layer_number++)
+			for(uint layer_number = trained_rbms; layer_number != number_of_rbm_to_learn; layer_number++)
 			{
-				const int n_visible_units = layers_size[layer_number];
-				const int n_hidden_units = layers_size[layer_number + 1];
+				const uint n_visible_units = layers_size[layer_number];
+				const uint n_hidden_units = layers_size[layer_number + 1];
+				const char *sample_extension = layer_number == 0 ? ".jpg" : ".txt";
 
 				//si ottengono displacements per gli accumulatori
 				int send_counts[1 + total_accumulators], send_displacements[1 + total_accumulators];
@@ -187,20 +184,20 @@ namespace parallel_autoencoder{
 
 
 				MPI_Request reqSend;
-				vector<float> visible_units(n_visible_units);
-				vector<float> visible_units_send_buffer(n_visible_units);
+				my_vector<float> visible_units(n_visible_units);
+				my_vector<float> visible_units_send_buffer(n_visible_units);
 
 				//si avvia il processo di apprendimento per diverse epoche
-				for(int epoch = 0; epoch < rbm_n_training_epocs; epoch++){
+				for(uint epoch = 0; epoch != rbm_n_training_epocs; epoch++){
 
 					if(epoch % 5 == 0)
 						std::cout << "Training epoch: " << epoch << "\n";
 
 					//per ciascun esempio leggo da file system mentre invio l'esempio precedente
-					for(int current_sample = 0; current_sample < number_of_samples; current_sample++)
+					for(uint current_sample = 0; current_sample != number_of_samples; current_sample++)
 					{
 						//lettura file system
-						smp_manager.get_next_sample(visible_units);
+						smp_manager.get_next_sample(visible_units, sample_extension);
 
 						//attendo completamento dell'invio precedente per poter inviare il prossimo vettore
 						if(current_sample != 0)
@@ -232,7 +229,7 @@ namespace parallel_autoencoder{
 					string sample_filename, sample_filename_prec;
 
 					//risultato dell'operazione
-					vector<float> output_samples(n_hidden_units);
+					my_vector<float> output_samples(n_hidden_units, 0.0);
 
 					//si ottengono displacements per gli accumulatori (questa volta le parti invisibili)
 					int receive_counts[1 + total_accumulators], receive_displacements[1 + total_accumulators];
@@ -245,10 +242,10 @@ namespace parallel_autoencoder{
 					smp_manager.restart();
 
 
-					for(int current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
+					for(uint current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
 					{
 						//lettura esempio da file
-						smp_manager.get_next_sample(visible_units, &sample_filename);
+						smp_manager.get_next_sample(visible_units, sample_extension, &sample_filename);
 
 						if(current_index_sample > 0)
 						{
@@ -268,7 +265,8 @@ namespace parallel_autoencoder{
 							MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
 
 							//si salva su file il vettore Hidden ottenuto
-							smp_manager.save_sample(output_samples, new_image_path_folder, sample_filename_prec);
+							smp_manager.save_sample(output_samples, false, new_image_path_folder, sample_filename_prec + ".txt"); //dati in formato testuale
+							smp_manager.save_sample(output_samples, true, new_image_path_folder, sample_filename_prec+ ".jpg"); //dati in formato immagine
 						}
 
 						//dato che vengono letti prima due input e poi si inizia a salvare, è necessario memorizzare il nome del file precedente
@@ -281,57 +279,8 @@ namespace parallel_autoencoder{
 					MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
 
 					//si salva su file il vettore Hidden ottenuto
-					smp_manager.save_sample(output_samples, new_image_path_folder, sample_filename_prec);
-
-
-/*
-
-					bool continue_read = smp_manager.get_next_sample(visible_units, &sample_filename);
-					if(continue_read)
-					{
-						visible_units_send_buffer = visible_units;
-						ScatterInputVector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
-						MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
-
-						visible_units_send_buffer = visible_units;
-						ScatterInputVector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
-					}
-
-					while(continue_read)
-					{
-						MPI_Igatherv(MPI_IN_PLACE, 0, mpi_datatype_tosend,
-								output_samples.data(), receive_counts, receive_displacements, mpi_datatype_tosend,
-								0, master_accs_comm.comm,  &reqRecv);
-
-						//lettura prossimo esempio e invio non appena è completato l'invio precedente
-						continue_read = smp_manager.get_next_sample(visible_units, &sample_filename);
-						MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
-
-						if(continue_read)
-						{
-							visible_units_send_buffer = visible_units;
-							ScatterInputVector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
-						}
-
-						std::cout << "Master waiting gather\n";
-						 MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
-
-
-						 //si salva su file il vettore Hidden ottenuto
-						 std::cout << "Saving sample: " << sample_filename<< "\n";
-						 smp_manager.save_sample(output_samples, new_image_path_folder, sample_filename);
-					}
-
-
-					std::cout << "Master final waiting gather\n";
-					 MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
-
-
-					 //si salva su file il vettore Hidden ottenuto
-					 std::cout << "Saving sample: " << sample_filename<< "\n";
-					 smp_manager.save_sample(output_samples, new_image_path_folder, sample_filename);
-*/
-
+					smp_manager.save_sample(output_samples, false, new_image_path_folder, sample_filename_prec + ".txt"); //dati in formato testuale
+					smp_manager.save_sample(output_samples, true, new_image_path_folder, sample_filename_prec+ ".jpg"); //dati in formato immagine
 
 
 					//in maniera del tutto trasparente si utilizzerà questo nuovo percorso per ottenere i dati in input
@@ -354,10 +303,10 @@ namespace parallel_autoencoder{
 			smp_manager.path_folder = image_path_folder;
 
 			//vettore delle unità visibili
-			const int n_visible_units = layers_size[0];
+			const uint n_visible_units = layers_size[0];
 
-			auto visible_units = vector<float>(layers_size[0]);
-			auto visible_units_send_buffer = vector<float>(layers_size[0]);
+			auto visible_units = my_vector<float>(layers_size[0]);
+			auto visible_units_send_buffer = my_vector<float>(layers_size[0]);
 			MPI_Request reqSend;
 
 			//si ottengono displacements per gli accumulatori
@@ -366,15 +315,15 @@ namespace parallel_autoencoder{
 
 
 			//per ogni epoca...
-			for(int epoch = 0; epoch < fine_tuning_n_training_epocs; epoch++)
+			for(uint epoch = 0; epoch != fine_tuning_n_training_epocs; epoch++)
 			{
 				smp_manager.restart();
 				std::cout << "Training epoch: " << epoch << "\n";
 
-				for(int current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
+				for(uint current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
 				{
 					//lettura esempio da file
-					smp_manager.get_next_sample(visible_units);
+					smp_manager.get_next_sample(visible_units, ".jpg");
 
 					if(current_index_sample != 0)
 					{
@@ -403,21 +352,21 @@ namespace parallel_autoencoder{
 		}
 
 
-		vector<float> reconstruct()
+		my_vector<float> reconstruct()
 		{
 
 			//vettore delle unità visibili
-			const int n_visible_units = layers_size[0];
+			const uint n_visible_units = layers_size[0];
 
-			auto input_units = vector<float>(n_visible_units);
-			auto output_units = vector<float>(n_visible_units);
+			auto input_units = my_vector<float>(n_visible_units);
+			auto output_units = my_vector<float>(n_visible_units);
 
 			//si prende l'immagine dal manager
 			smp_manager.path_folder = image_path_folder;
 			smp_manager.restart();
 
 			string file_name = "";
-			smp_manager.get_next_sample(input_units, &file_name);
+			smp_manager.get_next_sample(input_units, ".jpg", &file_name);
 
 			//si ottengono displacements per gli accumulatori
 			int send_counts[1 + total_accumulators], send_displacements[1 + total_accumulators];
@@ -434,11 +383,11 @@ namespace parallel_autoencoder{
 
 			//attesa ricezione risultato
 			MPI_Request reqRecv;
-			ReceiveOutputVector(output_units, receive_counts, receive_displacements,&reqRecv);
+			ReceiveOutputVector(output_units, receive_counts, receive_displacements, &reqRecv);
 			MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
 
 			//si mostra a video il risultato
-			std::cout << "Showing original sample: '" << file_name << "'\n";
+			std::cout << "Showing original sample: '" <<  smp_manager.path_folder << "/" << file_name << "'\n";
 			smp_manager.show_sample(input_units);
 
 			std::cout << "Showing reconstructed sample:\n";

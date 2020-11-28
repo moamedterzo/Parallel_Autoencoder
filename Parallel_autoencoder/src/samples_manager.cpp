@@ -9,6 +9,10 @@
 #include <string>
 #include <dirent.h>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
+#include <fstream>
+#include <ostream>
 #include <sys/stat.h>
 #include <cassert>
 #include "opencv2/opencv.hpp"
@@ -24,6 +28,11 @@ namespace parallel_autoencoder{
 	//valore utilizzato per normalizzare i valori in input
 	static const float INPUT_MAX_VALUE = 255;
 
+	//todo capire che numero mettere
+	static const int F_PREC = 9;
+
+	//todo uniformare estensioni
+	//".jpg"
 
     samples_manager::samples_manager(){};
 
@@ -44,8 +53,6 @@ namespace parallel_autoencoder{
 
        current_sample_number = 0;
        height = -1;
-
-       //todo capire se bisogna effettuare preprocessing o meno
     }
 
     void samples_manager::restart(){
@@ -58,7 +65,7 @@ namespace parallel_autoencoder{
     	int number_of_samples = 0;
 
     	struct dirent *entry;
-    	while((entry = get_next_dir()) != nullptr)
+    	while((entry = get_next_dir(".jpg")) != nullptr)
     		number_of_samples++;
 
     	restart();
@@ -67,7 +74,7 @@ namespace parallel_autoencoder{
     	return min(number_of_samples, max_n_samples);
     }
 
-    dirent* samples_manager::get_next_dir()
+    dirent* samples_manager::get_next_dir(const char* extension)
     {
     	struct dirent *entry;
 		do
@@ -76,60 +83,82 @@ namespace parallel_autoencoder{
 		}
 		while(strcmp(entry->d_name, ".") == 0
 			|| strcmp(entry->d_name, "..") == 0
-			|| !strstr(entry->d_name, ".jpg"));
+			|| !strstr(entry->d_name, extension));
 
 		return entry;
     }
 
 
-    bool samples_manager::get_next_sample(vector<float>& buffer, string *filename){
+    bool samples_manager::get_next_sample(my_vector<float>& buffer, const char* extension, string *filename){
 
         //limite degli esempi restituiti
         if(max_n_samples != -1 && current_sample_number >= max_n_samples) return false;
 
         //vengono scartate le cartelle (si assume che i file abbiano tutti estensione .jpg)
-        struct dirent *entry = get_next_dir();
+        struct dirent *entry = get_next_dir(extension);
         if(entry == nullptr) return false;
 
-       // if(strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) 
-        //    return get_next_sample(buffer, filename);
 
-        //se richiesto si passa il filename
+        //se richiesto si passa il filename (senza estensione)
         if(filename)
-            (*filename).assign(entry->d_name);
+        {
+        	string file_name_with_extension(entry->d_name);
+
+        	size_t lastindex = file_name_with_extension.find_last_of(".");
+        	(*filename).assign(file_name_with_extension.substr(0, lastindex));
+        }
+
 
         //nome percorso completo
         string name_fullfile(path_folder + "/" + string(entry->d_name));
-        //std::cout << name_fullfile << "\n";
 
-        //si leggono i vari pixel come scala di grigi
-        Mat img = imread(name_fullfile, IMREAD_GRAYSCALE);
+        if(strcmp(extension, ".jpg") == 0)
+        {
+			//si leggono i vari pixel come scala di grigi
+			Mat img = imread(name_fullfile, IMREAD_GRAYSCALE);
+			assert(img.rows * img.cols == buffer.size());
 
-        //std::cout << img.rows << "x" << img.cols << ".--" << buffer.size() << "\n";
+			for(int j=0;j<img.rows;j++)
+			  for (int i=0;i<img.cols;i++)
+			  {
+				  const int index = j * img.cols + i;
 
-        assert(img.rows * img.cols == buffer.size());
+				  //todo capire se va bene come preprocessing
+				  buffer[index] = float(int(img.at<uchar>(j,i))) / INPUT_MAX_VALUE;
+			  }
 
-        for(int j=0;j<img.rows;j++) 
-        {                
-          for (int i=0;i<img.cols;i++)
-          {                
-              const int index = j * img.cols + i;
+			std::cout << "\n";
+        }
+        else
+        {
+        	//lettura file testuale
+        	std::ifstream myFile(name_fullfile);
+        	if(!myFile.is_open()) throw std::runtime_error("Could not open file: " + name_fullfile);
 
-              buffer.at(index) = float(img.at<uchar>(j,i)) / INPUT_MAX_VALUE;
-          }
-        }    
+        	//get line
+			std::string line;
+        	std::getline(myFile, line);
+
+        	//process line
+        	std::stringstream ss(line);
+        	ss.ignore(100, ',');
+			for(uint i = 0; i != buffer.size(); i++) {
+				if(ss.peek() == ',') ss.ignore();
+				ss >> buffer[i];
+			}
+        }
 
         current_sample_number++;
         return true;       
     };    
 
-    bool samples_manager::get_next_sample(vector<float>& buffer){        
-        return get_next_sample(buffer, nullptr);
+    bool samples_manager::get_next_sample(my_vector<float>& buffer, const char* extension){
+        return get_next_sample(buffer, extension, nullptr);
     };
 
 
 
-    void samples_manager::save_sample(vector<float>& buffer, string folder, string filepath){
+    void samples_manager::save_sample(my_vector<float>& buffer, bool save_as_image, string folder, string filepath){
 
         //si determina la grandezza dell'immagine al primo salvataggio
         if(height == -1){
@@ -166,19 +195,36 @@ namespace parallel_autoencoder{
             mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
 
-        //si normalizza l'immagine ai valori originali (altrimenti le prossime letture non funzioneranno)
-        auto buffer_for_image = buffer;
-        for(auto& v : buffer_for_image)
-        	v *= INPUT_MAX_VALUE;
+        string complete_path = folder + "/" + filepath;
 
-        Mat imageToSave = Mat(height, width, CV_32FC1, buffer_for_image.data());
-        imwrite(folder + "/" + filepath, imageToSave);
+        if(save_as_image)
+        {
+        	 //si normalizza l'immagine ai valori originali (altrimenti le prossime letture non funzioneranno)
+			auto buffer_for_image = buffer;
+			for(uint i = 0; i != buffer.size(); i++)
+				buffer_for_image[i] *= INPUT_MAX_VALUE;
 
-        //std::cout << "Immagine salvata in '" << folder + "/" + filepath << "'\n";
-        //std::cout << height << "x" << width << "\n";
+			Mat imageToSave = Mat(height, width, CV_32FC1, buffer_for_image.data());
+			imwrite(folder + "/" + filepath, imageToSave);
+        }
+        else
+        {
+        	// salva l'esempio in forma testuale
+
+			// Create an input filestream
+			std::ofstream myFile(complete_path);
+			if(!myFile.is_open()) throw std::runtime_error("Could not open file: " + complete_path);
+
+
+			myFile << "_visible_" << buffer.size() << "__,";
+			for(uint i = 0; i < buffer.size(); i++)
+				myFile << std::fixed << std::setprecision(F_PREC) << buffer[i] << ",";
+
+        }
+
     }
 
-    void samples_manager::show_sample(vector<float>& buffer){
+    void samples_manager::show_sample(my_vector<float>& buffer){
 
         /*//si determina la grandezza dell'immagine
         float lato  = sqrt(buffer.size());
@@ -206,7 +252,7 @@ namespace parallel_autoencoder{
             }
         }*/
 
-        save_sample(buffer, "./temp", "image_temp.jpg");        
+        save_sample(buffer, true, "./temp", "image_temp.jpg");
 
         string name_fullfile = string("./temp/image_temp.jpg");
         Mat imageToShow = imread(name_fullfile, IMREAD_GRAYSCALE);

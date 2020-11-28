@@ -19,112 +19,60 @@ using std::vector;
 
 
 namespace parallel_autoencoder{
-    
-    /*void matrix_multiplication(const vector<vector<float>> m_n, 
-            const vector<vector<float>> n_r, 
-            vector<vector<float>> m_r)
-    {
-       int i, j, k;
-       int m = m_n.size();
-       int r = n_r[0].size();
-       m_r.reserve(m);
-       
-       for(i = 0; i < m; ++i) //per ciascuna riga
-       {       
-          m_r[i].reserve(r);
-          for(j = 0; j < r; ++j) //per ciascuna colonna       
-             for(k = 0; k < n_r.size(); ++k)        
-                 m_r[i][j] += m_n[i][k] * n_r[k][j];        
-       }
-    }*/
-    
-    //questo metodo riserva spazio per il vettore destinazione
-    void matrix_transpose(const vector<vector<float>>& source_mat, vector<vector<float>>& dest_mat){
         
-        int rows = source_mat.size();
-        int cols = source_mat[0].size();
-        
-        for(int i = 0; i < cols; i++)
-        {
-            for(int j = 0; j < rows; j++)
-            {
-                dest_mat[i][j] = source_mat[j][i];
-            }
-        }        
-    }
-    
-    /*void map_function_vector(const vector<float> source_vec, vector<float> dest_vec, float map(float)){
-        assert(source_vec.size() == dest_vec.size());
-        
-        for(int i = 0; i < source_vec.size(); i++)
-            dest_vec[i] = map(source_vec[i]);        
-    }*/
-    
+
+	void print_vector_norm(my_vector<float>& vec, std::string&& myid)
+	{
+		float result = 0;
+
+		for(uint i = 0; i != vec.size(); i++)
+			result +=vec[i];
+
+
+		std::cout << "[" << myid << ": " << result << "]\n";
+	}
  
-    void matrix_vector_multiplication(const vector<vector<float>>& m_by_n_matrix, 
-            const vector<float>& n_by_1_vec, 
-            const vector<float>& m_by_1_vect_bias,
-            vector<float>& m_by_1_vec_dest)
+
+	 void matrix_vector_multiplication(const matrix<float>& m_by_n_matrix,
+			const my_vector<float>& n_by_1_vec,
+			const my_vector<float>& m_by_1_vect_bias,
+			my_vector<float>& m_by_1_vec_dest)
     {
-        int m = m_by_n_matrix.size();
-        int n = m_by_n_matrix[0].size();
-        
-        assert(n == n_by_1_vec.size()); //si controlla se le grandezze corrispondono
-        assert(m == m_by_1_vect_bias.size()); //si controlla se le grandezze corrispondono
-        assert(m == m_by_1_vec_dest.size()); //si controlla se le grandezze corrispondono
-        
-        //m_by_1_vec_dest.reserve(m);
-        
+		//si controlla se le grandezze corrispondono
+        assert(m_by_n_matrix.get_cols() == n_by_1_vec.size());
+        assert(m_by_n_matrix.get_rows() == m_by_1_vect_bias.size());
+        assert(m_by_n_matrix.get_rows() == m_by_1_vec_dest.size());
+
         //moltiplicazione matrice per vettore
-        for(int i = 0; i < m; i++)
+        for(uint i = 0; i != m_by_n_matrix.get_rows(); i++)
         {
             m_by_1_vec_dest[i] = m_by_1_vect_bias[i];
-            for(int j = 0; j < n; j++)
-                m_by_1_vec_dest[i] += m_by_n_matrix[i][j] * n_by_1_vec[j];
+            for(uint j = 0; j != m_by_n_matrix.get_cols(); j++)
+                m_by_1_vec_dest[i] += m_by_n_matrix.at(i, j)  * n_by_1_vec[j];
         }
     }
     
-    //metodo creato per non dover effettuare di volta in volta la trasposta della matrice
-    void matrix_transpose_vector_multiplication(const vector<vector<float>>& m_by_n_matrix, 
-            const vector<float>& m_by_1_vec, 
-            const vector<float>& n_by_1_vect_bias,
-            vector<float>& n_by_1_vec_dest)
+	 void matrix_transpose_vector_multiplication(const matrix<float>& m_by_n_matrix,
+	 			const my_vector<float>& m_by_1_vec,
+	 			const my_vector<float>& n_by_1_vect_bias,
+	 			my_vector<float>& n_by_1_vec_dest)
     {
-        int m = m_by_n_matrix.size();
-        int n = m_by_n_matrix[0].size();
-        
-        assert(m == m_by_1_vec.size()); //si controlla se le grandezze corrispondono
-        assert(n == n_by_1_vect_bias.size()); //si controlla se le grandezze corrispondono
-        assert(n == n_by_1_vec_dest.size()); //si controlla se le grandezze corrispondono
+		 //si controlla se le grandezze corrispondono
+        assert(m_by_n_matrix.get_rows() == m_by_1_vec.size());
+        assert(m_by_n_matrix.get_cols() == n_by_1_vect_bias.size());
+        assert(m_by_n_matrix.get_cols() == n_by_1_vec_dest.size());
         
         //n_by_1_vec_dest.reserve(n);
         
         //moltiplicazione matrice trasposta per vettore
-        for(int j = 0; j < n; j++)
+        for(uint j = 0; j != m_by_n_matrix.get_cols(); j++)
         {
             n_by_1_vec_dest[j] = n_by_1_vect_bias[j];
-            for(int i = 0; i < m; i++)
-                n_by_1_vec_dest[j] += m_by_n_matrix[i][j] * m_by_1_vec[i];
+            for(uint i = 0; i != m_by_n_matrix.get_rows(); i++)
+                n_by_1_vec_dest[j] += m_by_n_matrix.at(i, j) * m_by_1_vec[i];
         }
     }
-    
-  /*  void vector_vector_multiplication(
-    const vector<float> m_by_1_vect, const vector<float> n_by_1_vect,
-            vector<vector<float>> m_by_n_matrix){
-    
-        for(int i = 0; i < m_by_1_vect; i++)
-            for(int j = 0; j < n_by_1_vect; j++)
-                m_by_n_matrix[i][j] += m_by_1_vect[i] * n_by_1_vect[j]; //si effettua un'aggiunta
-    }*/
-    
-    
-    /*void accumulate_sum_into_vector(const vector<float>& source_vec, vector<float>& dest_vec){
-    
-        assert(source_vec.size() == dest_vec.size());
-        
-        for(int i = 0; i < source_vec.size(); i++)
-            dest_vec[i] += source_vec[i];
-    }*/
+
     
     float sigmoid(const float x){
         return 1.0 / (1.0 + exp(-x)); 
@@ -135,19 +83,18 @@ namespace parallel_autoencoder{
         return logf(p / (1-p));
     }
     
-    //Implementa il campionamento basato sulla funzione sigmoide
-    //utilizza un metodo più efficente per il sampling
+
     float sample_sigmoid_function(const float sigmoid_argument, std::default_random_engine& generator){
         
         //distribuzione uniforme tra 0 e 1
         static std::uniform_real_distribution<float> uniform_dis(0.0, 1.0);
                 
-        return sigmoid_argument > logit(uniform_dis(generator)) ? 1.0 : 0.0;
+        auto logit_v = logit(uniform_dis(generator));
+        return sigmoid_argument > logit_v ? 1.0 : 0.0;
     }
     
-    //Implementa la generazione di un numero da una distribuzione gaussiana con media variabile e varianza unitaria
-        float sample_gaussian_distribution(const float mean, const float variance, 
-            std::default_random_engine& generator){
+
+    float sample_gaussian_distribution(const float mean, const float variance,  std::default_random_engine& generator){
                 
         static std::normal_distribution<float> dist(0, 1.0);
         
@@ -158,40 +105,42 @@ namespace parallel_autoencoder{
         return dist(generator);
     }  
     
-    float sample_gaussian_distribution(const float mean, 
-            std::default_random_engine& generator){
+    float sample_gaussian_distribution(const float mean, std::default_random_engine& generator){
                 
         return sample_gaussian_distribution(mean, 1.0, generator);
     }        
 
     
-    float root_squared_error(vector<float> vec_1, vector<float> vec_2)
+    float root_squared_error(my_vector<float> vec_1, my_vector<float> vec_2)
     {
         assert(vec_1.size() == vec_2.size());
         
         float res = 0;
         
-        for(int i = 0; i < vec_1.size(); i++)
+        for(uint i = 0; i != vec_1.size(); i++)
             res += pow(vec_1[i] - vec_2[i], 2);
         
         return sqrt(res);
     }   
     
     
-    void print_vector(vector<float> v) {
-        for (auto elem : v) {
-            cout << "[" << elem << "] ";
-        }
-        
-        
-        cout <<  "\n";
+    void print_vector(my_vector<float> v) {
+
+        for(uint i = 0; i != v.size(); i++)
+            cout << "[" << std::to_string(v[i]) << "] ";
+
+        cout << "\n";
     }
     
-    void print_matrix(vector<vector<float>> v) {
-        for (auto elem : v) {
-            print_vector(elem);
-        }
-        
+    void print_matrix(matrix<float> v) {
+    	 for(uint i = 0; i != v.get_rows(); i++)
+    	 {
+    		 for(uint j = 0; j != v.get_cols(); j++)
+    			 cout << "[" << v.at(i, j) << "] ";
+
+    		 cout << "\n";
+    	 }
+
         cout << "\n";
     }
 

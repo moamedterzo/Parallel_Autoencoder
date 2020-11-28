@@ -27,14 +27,14 @@ namespace parallel_autoencoder{
     private:
 
         bool first_layer;
-        int n_hidden_units;
-        int n_visible_units;
+        uint n_hidden_units;
+        uint n_visible_units;
 
         float learning_rate;
         float momentum;
 
-        int n_training_epocs;
-        int size_minibatch;
+        uint n_training_epocs;
+        uint size_minibatch;
 
         samples_manager samplesmanager;
         std::default_random_engine generator;
@@ -45,26 +45,23 @@ namespace parallel_autoencoder{
 
     public:    
 
-        rbm(bool _first_layer, int _n_visible_units, int _n_hidden_units,
+        rbm(bool _first_layer, uint _n_visible_units, uint _n_hidden_units,
             samples_manager& _samples_manager, std::default_random_engine& _generator);
 
 
         inline void update_parameters(
-            vector<vector<float>> &weights, 
-            vector<float> &hidden_biases, 
-            vector<float> &visible_biases,
-            vector<vector<float>> &diff_weights,
-            vector<float> &diff_visible_biases,
-            vector<float> &diff_hidden_biases,
-            const int number_of_samples
+            matrix<float> &weights,
+            my_vector<float> &hidden_biases, my_vector<float> &visible_biases,
+			matrix<float> &diff_weights,
+			my_vector<float> &diff_visible_biases, my_vector<float> &diff_hidden_biases,
+            const uint number_of_samples
             );
 
 
-        void learn(vector<vector<float>>& weights, vector<float>& hidden_biases,
-                vector<float>& visible_biases);
+        void learn(matrix<float>& weights, my_vector<float>& hidden_biases, my_vector<float>& visible_biases);
 
-        void forward_pass(const vector<float>& input, vector<float>& output,
-            const vector<vector<float>>& weights, const vector<float>& hidden_biases);
+        void forward_pass(const my_vector<float>& input, my_vector<float>& output,
+            const matrix<float>& weights, const my_vector<float>& hidden_biases);
     };
 
 }

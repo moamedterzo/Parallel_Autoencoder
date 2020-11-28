@@ -14,6 +14,9 @@ using std::vector;
 
 namespace parallel_autoencoder{
 
+
+enum GridOrientation { row_first, col_first };//todo usare enum class
+
 //todo
 //spostare nei file cpp
 //migliorare efficienza utilizzando matrici invece che vettori
@@ -21,43 +24,41 @@ namespace parallel_autoencoder{
 //gestire possibilità di ricevere altro dai buffer mentre si calcolano i dati
     class node_autoencoder
     {
-    	//enum NodeType { master, accumulator, cell};
 
     protected:
 
     	MPI_Datatype mpi_datatype_tosend = MPI_FLOAT;
-    	const int MAX_FOLDER_PARS_LENGTH = 300;
+    	const uint MAX_FOLDER_PARS_LENGTH = 300;
 
     	std::ostream& oslog;
 		int mpi_rank;
 
-    	enum GridOrientation { row_first, col_first };
     	enum CommandType { train, exit, load_pars, save_pars, reconstruct_image , delete_pars_file};
 
     	//MPI pars
-    	int total_accumulators;
-    	int grid_rows;
-    	int grid_cols;
+    	uint total_accumulators;
+    	uint grid_rows;
+    	uint grid_cols;
 
 
     	//each element indicates the grid orientation
-    	vector<GridOrientation> orientation_grid;
+    	my_vector<GridOrientation> orientation_grid;
 
         std::default_random_engine generator;
 
     	//size of each layer
-        vector<int> layers_size;
+        my_vector<int> layers_size;
 
-        int number_of_rbm_to_learn;
-        int number_of_final_layers;
+        uint number_of_rbm_to_learn;
+        uint number_of_final_layers;
 
-        int number_of_samples = 0;
+        uint number_of_samples = 0;
 
         //rbm pars
-        int trained_rbms;
+        uint trained_rbms;
         float rbm_momentum;
-        int rbm_n_training_epocs;
-        int rbm_size_minibatch;
+        uint rbm_n_training_epocs;
+        uint rbm_size_minibatch;
 
         float rbm_initial_weights_variance;
 		float rbm_initial_weights_mean;
@@ -76,9 +77,10 @@ namespace parallel_autoencoder{
 
     public:
 
-        node_autoencoder(const vector<int>& _layers_size, std::default_random_engine& _generator,
-        		int _total_accumulators, int _grid_row, int _grid_col,
+        node_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+        		uint _total_accumulators, uint _grid_row, uint _grid_col,
 				std::ostream& _oslog, int _mpi_rank)
+
         :oslog{_oslog}
         {
         	mpi_rank = _mpi_rank;
@@ -92,22 +94,47 @@ namespace parallel_autoencoder{
 			number_of_rbm_to_learn = _layers_size.size() - 1;
 			number_of_final_layers = _layers_size.size() * 2 - 1;
 
-			//_layers_size contiene la grandezza dei layer fino a quello centrale
+			set_size_for_layers(_layers_size);
+			set_orientation_for_layers();
+
+			trained_rbms = 0;
+			rbm_momentum = 0.9;
+			rbm_n_training_epocs = 2;//todo sistemare
+			rbm_size_minibatch = 1;//todo sistemare
+
+			rbm_initial_weights_variance = 0.01;
+			rbm_initial_weights_mean = 0;
+			rbm_initial_biases_value = 0;
+
+
+			fine_tuning_n_training_epocs = 2;
+			fine_tuning_learning_rate = 10e-6;
+
+			fine_tuning_finished = false;
+	   }
+
+        //todo mettere private
+        void set_size_for_layers(const my_vector<int>& _layers_size_source)
+        {
+        	//_layers_size contiene la grandezza dei layer fino a quello centrale
 			//in fase di rollup verranno creati altri layer per la ricostruzione
-			layers_size = vector<int>(number_of_final_layers);
-			for(uint i = 0; i !=_layers_size.size(); i++)
+			layers_size = my_vector<int>(number_of_final_layers);
+			for(uint i = 0; i !=_layers_size_source.size(); i++)
 			{
-			   layers_size[i] = _layers_size[i];
+			   layers_size[i] = _layers_size_source[i];
 
 			   //si copia la grandezza del layer per il layer da ricostruire
-			   int rec_layer = number_of_final_layers - i - 1;
-			   layers_size.at(rec_layer) = layers_size[i];
+			   uint rec_layer = number_of_final_layers - i - 1;
+			   layers_size[rec_layer] = layers_size[i];
 			}
+        }
 
-			//si determina l'orientamento della griglia per ciascun layer
+        void set_orientation_for_layers()
+        {
+        	//si determina l'orientamento della griglia per ciascun layer
 			//di default le righe prendono gli input e le colonne gli output
-			orientation_grid = vector<GridOrientation>(number_of_final_layers - 1);
-			for(int i = 0; i != number_of_rbm_to_learn; i++)
+			orientation_grid = my_vector<GridOrientation>(number_of_final_layers - 1);
+			for(uint i = 0; i != number_of_rbm_to_learn; i++)
 			{
 				int input_nodes = layers_size[i];
 				int output_nodes = layers_size[i + 1];
@@ -118,11 +145,6 @@ namespace parallel_autoencoder{
 
 				orientation_grid[i] = orientation;
 
-				//std::cout << "input_nodes: "<<input_nodes<< ", output_nodes: " << output_nodes<<"\n";
-				//std::cout << "orientation_for_layer "<<i << ":" << (orientation == row_first ? "row_first" : "col_first") << "\n";
-
-
-
 				//dato che il rollup si basa sul riutilizzo dei pesi, e dato che il
 				//numero di nodi di input e di output è invertito tra il layer di ricostruzione e quello di encoding
 				//l'orientamento sarà necessariamente inverso
@@ -130,21 +152,8 @@ namespace parallel_autoencoder{
 				orientation_grid[rec_layer] = orientation == col_first ? row_first : col_first;
 			}
 
-			trained_rbms = 0;
-			rbm_momentum = 0.9;
-			rbm_n_training_epocs = 30;//todo sistemare
-			rbm_size_minibatch = 5;//todo sistemare
+        }
 
-			rbm_initial_weights_variance = 0.01;
-			rbm_initial_weights_mean = 0;
-			rbm_initial_biases_value = 0;
-
-
-			fine_tuning_n_training_epocs = 5;
-			fine_tuning_learning_rate = 10e-6;
-
-			fine_tuning_finished = false;
-	   }
 
 
         void loop()
@@ -155,8 +164,6 @@ namespace parallel_autoencoder{
         		//ottengo il comando (dipende dalla classe)
         		command = wait_for_command();
         		oslog << "My command is " << command << "\n";
-
-				string pf(get_path_file());
 
         		switch(command){
 
@@ -185,14 +192,14 @@ namespace parallel_autoencoder{
 						break;
 
 					case delete_pars_file:
-						std::remove(pf.c_str());
-						std::cout << "File deleted: " + pf + "\n";
+						std::remove(get_path_file().c_str());
+						std::cout << "File deleted: " + get_path_file() + "\n";
 						break;
 
 					case reconstruct_image:
 
 						//reconstruct each image todo mettere numero
-						for(int i = 0; i < 4; i++)
+						for(int i = 0; i < 2; i++)
 							reconstruct();
 						break;
 
@@ -204,11 +211,10 @@ namespace parallel_autoencoder{
         }
 
 
-
         //restituisce unità (visibili o hidden) per l'accumulatore k o il nodo della riga r o della colonna c
         static int get_units_for_node(const uint n_total_units, const uint total_nodes, const uint node_number)
         {
-        	const int n_units_x_node = ceil((float)n_total_units / total_nodes);
+        	const uint n_units_x_node = ceil((float)n_total_units / total_nodes);
 
         	const int overflow_units = (node_number + 1) * n_units_x_node - n_total_units;
 
@@ -226,7 +232,7 @@ namespace parallel_autoencoder{
 		//i nodi della griglia oppure (2) gli elementi che un nodo della griglia deve scambiare
 		//con ciascun accumulatore collegato.
 		void calc_comm_sizes(const GridOrientation current_or, //orientamento comm
-				vector<MP_Comm_MasterSlave>& acc_gridcolrow_comm, //comm da accumulatore a righe o colonne
+				my_vector<MP_Comm_MasterSlave>& acc_gridcolrow_comm, //comm da accumulatore a righe o colonne
 				const bool calc_for_acc, //indica se il calcolo va fatto per l'accumulatore o il nodo della griglia
 				const uint my_k_col_row_number, //indice del nodo k o della cella in riga r o colonna c
 				const int n_tot_vishid_units)
@@ -241,7 +247,6 @@ namespace parallel_autoencoder{
 
 			do
 			{
-
 				if(calc_for_acc)
 				{
 					//se questo calcolo lo si sta facendo per l'accumulatore...
@@ -249,19 +254,22 @@ namespace parallel_autoencoder{
 					{
 						//ora abbiamo ottenuto il numero di elementi che l'accumulatore deve dare verso una determinata riga/colonna
 						//si cerca il comunicatore della riga/colonna di riferimento
-						for(auto& comm : acc_gridcolrow_comm)
+						for(uint cc = 0; cc != acc_gridcolrow_comm.size(); cc++)
+						{
+							auto& comm = acc_gridcolrow_comm[cc];
 							if(comm.row_col_id == index_gridnode)
 							{
 								comm.n_items_to_send = std::min(elements_for_acc, elements_for_grid_node);
 
 								//log
 								oslog << "Current orientation:" << (current_or == row_first ? "row" : "col") << "\n";
-								oslog << "I'm a k node, I will send " << comm.n_items_to_send <<
+								oslog << "I'm a k node, I will send " << comm.n_items_to_send << " (over a total of " << n_tot_vishid_units << ")" <<
 										" elements to each node of the row/col with index:"  << index_gridnode << "\n";
 								oslog.flush();
 
 								break;
 							}
+						}
 					}
 				}
 				else
@@ -271,19 +279,22 @@ namespace parallel_autoencoder{
 					{
 						//ora abbiamo ottenuto il numero di elementi che l'accumulatore deve dare verso una determinata riga/colonna
 						//si cerca il comunicatore della riga/colonna di riferimento
-						for(auto& comm : acc_gridcolrow_comm)
+						for(uint cc = 0; cc != acc_gridcolrow_comm.size(); cc++)
+						{
+							auto& comm = acc_gridcolrow_comm[cc];
 							if(comm.root_id == index_acc)
 							{
 								comm.n_items_to_send = std::min(elements_for_acc, elements_for_grid_node);
 
 								//log
 								oslog << "Current orientation:" << (current_or == row_first ? "row" : "col") << "\n";
-								oslog << "I'm a cell node, I will send " << comm.n_items_to_send <<
+								oslog << "I'm a cell node, I will send " << comm.n_items_to_send << " (over a total of " << n_tot_vishid_units << ")"
 										" elements to the k node with index: " << index_acc  << "\n";
 								oslog.flush();
 
 								break;
 							}
+						}
 					}
 				}
 
@@ -312,7 +323,7 @@ namespace parallel_autoencoder{
 		}
 
 
-		static float GetRBMLearningRate(const int epoch_number, const int layer_number)
+		static float GetRBMLearningRate(const uint epoch_number, const uint layer_number)
 		{
 			//il learning rate varia a seconda dell'epoca e del layer da apprendere
 			static const float rbm_learning_rate = 0.01;
@@ -325,7 +336,6 @@ namespace parallel_autoencoder{
 
 
 
-
         virtual CommandType wait_for_command() = 0;
 
         virtual void train_rbm() = 0;
@@ -335,7 +345,7 @@ namespace parallel_autoencoder{
 
 
         //virtual vector<bool> encode() = 0;
-        virtual vector<float> reconstruct() = 0;
+        virtual my_vector<float> reconstruct() = 0;
 
         virtual string get_path_file() = 0;
         virtual void save_parameters() = 0;

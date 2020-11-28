@@ -17,6 +17,7 @@
 #include <string>
 #include <vector>
 #include <dirent.h>
+#include "custom_utils.h"
 
 using std::string;
 using std::vector;
@@ -44,17 +45,18 @@ namespace parallel_autoencoder{
         void restart();
 
         uint get_number_samples();
-        dirent* get_next_dir();
-
-        bool get_next_sample(vector<float>& buffer, string *filename);
-
-        bool get_next_sample(vector<float>& buffer);
+        dirent* get_next_dir(const char* extension);
 
 
+        bool get_next_sample(my_vector<float>& buffer, const char* extension, string *filename);
+        bool get_next_sample(my_vector<float>& buffer, const char* extension);
 
-        void save_sample(vector<float>& buffer, string folder, string filepath);
-        
-        void show_sample(vector<float>& buffer);
+
+        void save_sample(my_vector<float>& buffer,bool save_as_image,  string folder, string filepath);
+
+        void show_sample(my_vector<float>& buffer);
+
+
 
         void close();
 
