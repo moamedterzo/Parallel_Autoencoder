@@ -137,8 +137,12 @@ namespace parallel_autoencoder{
                 //3. si ottiene il vettore hidden partendo dalle unità visibili ricostruite
                 //non si applica il campionamento
                 matrix_transpose_vector_multiplication(weights, rec_visible_units, hidden_biases, rec_hidden_units);
-                for(uint i = 0; i != rec_hidden_units.size(); i++)
-                	rec_hidden_units[i] = sigmoid(rec_hidden_units[i]);
+                if(first_layer)
+                	 for(uint i = 0; i != rec_hidden_units.size(); i++)
+                		 rec_hidden_units[i] = sample_sigmoid_function(rec_hidden_units[i], generator);
+                else
+					for(uint i = 0; i != rec_hidden_units.size(); i++)
+						rec_hidden_units[i] = sigmoid(rec_hidden_units[i]);
 
                 //4. si calcolano i differenziali
                 //dei pesi e bias visibili

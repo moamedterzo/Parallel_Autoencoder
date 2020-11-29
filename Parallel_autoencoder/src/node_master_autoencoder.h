@@ -28,106 +28,6 @@ namespace parallel_autoencoder{
 		//percorso della cartella che contiene le immagini iniziali
 		string image_path_folder;
 
-	public:
-		node_master_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
-					uint _total_accumulators, uint _grid_row, uint _grid_col,
-					std::ostream& _oslog, int _mpi_rank,
-					MP_Comm_MasterSlave& _master_accs_comm,
-					samples_manager& _smp_manager)
-			: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col, _oslog, _mpi_rank)
-			{
-				smp_manager = _smp_manager;
-				master_accs_comm = _master_accs_comm;
-
-				image_path_folder = string(smp_manager.path_folder);
-			}
-
-		CommandType wait_for_command()
-		{
-			CommandType command;
-
-			std::cout << "\n\nHello, I'm the master, what do you want to do?\n";
-
-			std::cout << "1 to train a rbm\n";
-			if(fine_tuning_finished) std::cout << "2 to save parameters\n";
-			std::cout << "3 to load parameters\n";
-			if(fine_tuning_finished) std::cout << "5 to reconstruct images\n";
-			std::cout << "-1 to exit\n";
-			std::cout << "-22 to delete parameters file\n";
-
-			//lettura input
-			int res;
-			std::cin >> res;
-
-			//determinazione comando e dati aggiuntivi
-			char char_path_file[MAX_FOLDER_PARS_LENGTH];
-			if(res == 1)
-			{
-				command = train;
-
-				//indico il numero di elementi del dataset
-				number_of_samples = smp_manager.get_number_samples();
-
-				//Todo Al momento il numero di esempi deve essere necessariamente pari
-				if(number_of_samples % 2 != 0)
-				{
-					string message = "Number of samples must be even";
-					std::cout << message << "\n";
-
-					throw new std::runtime_error(message);
-				}
-
-			}
-			else if(res == 2)
-			{
-				command = save_pars;
-
-				std::cout << "If you want to save parameters, you can specify a custom folder path (or '.' as default):\n";
-				cin >> char_path_file;
-			}
-			else if(res == 3)
-			{
-				command = load_pars;
-
-				std::cout << "If you want to load parameters, you can specify a custom folder path (or '.' as default):\n";
-				cin >> char_path_file;
-			}
-			else if(res == -22)
-			{
-				command = delete_pars_file;
-			}
-			else if(res == 5)
-			{
-				command = reconstruct_image;
-			}
-			else if(res == -1)
-			{
-				command = exit;
-			}
-
-
-			//alert other node
-			MPI_Bcast(&command,1, MPI_INT, 0, MPI_COMM_WORLD);
-
-
-			//in base al comando si inviano dati aggiuntivi
-			if(command == train)
-			{
-				//invio numero di esempi
-				MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
-			}
-			else if(command == load_pars || command == save_pars)
-			{
-				//invio cartella che contiene i parametri
-				if(strcmp(char_path_file, ".") != 0)
-					folder_parameters_path = string(char_path_file);
-
-				MPI_Bcast(char_path_file, MAX_FOLDER_PARS_LENGTH, MPI_CHAR, 0, MPI_COMM_WORLD);
-			}
-
-
-			return command;
-		}
 
 
 		void ScatterInputVector(const my_vector<float>& vec, const int send_counts[], const int displs[], MPI_Request *reqSend)
@@ -161,6 +61,105 @@ namespace parallel_autoencoder{
 				counts[k + 1] = n_units_for_acc;
 			}
 		}
+
+	public:
+		node_master_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+					uint _total_accumulators, uint _grid_row, uint _grid_col,
+					std::ostream& _oslog, int _mpi_rank,
+					MP_Comm_MasterSlave& _master_accs_comm,
+					samples_manager& _smp_manager)
+			: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col, _oslog, _mpi_rank)
+			{
+				smp_manager = _smp_manager;
+				master_accs_comm = _master_accs_comm;
+
+				image_path_folder = string(smp_manager.path_folder);
+			}
+
+
+		CommandType wait_for_command()
+		{
+			CommandType command;
+
+			std::cout << "\n\nHello, I'm the master, what do you want to do?\n";
+
+			std::cout << "1 to train a rbm\n";
+			if(fine_tuning_finished) std::cout << "2 to save parameters\n";
+			std::cout << "3 to load parameters\n";
+			if(fine_tuning_finished) std::cout << "5 to reconstruct images\n";
+			std::cout << "-1 to exit\n";
+			std::cout << "-22 to delete parameters file\n";
+
+			//lettura input
+			int res;
+			std::cin >> res;
+
+			//determinazione comando e dati aggiuntivi
+			char char_path_file[MAX_FOLDER_PARS_LENGTH];
+			if(res == 1)
+			{
+				command = CommandType::train;
+
+				//indico il numero di elementi del dataset
+				number_of_samples = smp_manager.get_number_samples();
+
+				//Todo Al momento il numero di esempi deve essere necessariamente pari
+				if(number_of_samples % 2 != 0)
+				{
+					string message = "Number of samples must be even";
+					std::cout << message << "\n";
+
+					throw new std::runtime_error(message);
+				}
+
+			}
+			else if(res == 2)
+			{
+				command = CommandType::save_pars;
+
+				std::cout << "If you want to save parameters, you can specify a custom folder path (or '.' as default):\n";
+				cin >> char_path_file;
+			}
+			else if(res == 3)
+			{
+				command = CommandType::load_pars;
+
+				std::cout << "If you want to load parameters, you can specify a custom folder path (or '.' as default):\n";
+				cin >> char_path_file;
+			}
+			else if(res == -22)
+				command = CommandType::delete_pars_file;
+			else if(res == 5)
+				command = CommandType::reconstruct_image;
+			else if(res == -1)
+				command = CommandType::exit;
+
+
+			//alert other node
+			MPI_Bcast(&command,1, MPI_INT, 0, MPI_COMM_WORLD);
+
+
+			//in base al comando si inviano dati aggiuntivi
+			if(command == CommandType::train)
+			{
+				//invio numero di esempi
+				MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
+			}
+			else if(command == CommandType::load_pars || command == CommandType::save_pars)
+			{
+				//invio cartella che contiene i parametri
+				if(strcmp(char_path_file, ".") != 0)
+					folder_parameters_path = string(char_path_file);
+
+				MPI_Bcast(char_path_file, MAX_FOLDER_PARS_LENGTH, MPI_CHAR, 0, MPI_COMM_WORLD);
+			}
+
+
+			return command;
+		}
+
+
+
 
 
 		void train_rbm()
@@ -219,61 +218,64 @@ namespace parallel_autoencoder{
 				std::cout<< "Fine apprendimento singola RBM\n";
 
 				//SALVATAGGIO NUOVI INPUT
+				save_new_samples(layer_number, n_visible_units, n_hidden_units, sample_extension,
+						visible_units, visible_units_send_buffer);
+
+				//contatore che memorizza il numero di rbm apprese
+				trained_rbms++;
+				save_parameters();
+			}
+
+		}
+
+
+		inline void save_new_samples(const uint layer_number,const uint n_visible_units,const uint n_hidden_units,
+				const char *sample_extension,
+				my_vector<float>& visible_units, my_vector<float>& visible_units_send_buffer)
+		{
+			//si deve salvare sul disco i risultati di attivazione del layer successivo
+			//essi saranno utilizzati come input per la prossima fare di training
+			string new_image_path_folder = string(image_path_folder + "/" + std::to_string(layer_number));
+			std::cout << "Salvando i risultati intermedi per il prossimo step nella cartella '"	<< new_image_path_folder << "'\n";
+
+			//nome del file dove salvare ciascun esempio
+			string sample_filename, sample_filename_prec;
+
+			//risultato dell'operazione
+			my_vector<float> output_samples(n_hidden_units, 0.0);
+
+			//si ottengono displacements per gli accumulatori (questa volta le parti invisibili)
+			int send_counts[1 + total_accumulators], send_displacements[1 + total_accumulators];
+			GetScatterParts(send_counts, send_displacements, n_visible_units);
+
+			int receive_counts[1 + total_accumulators], receive_displacements[1 + total_accumulators];
+			GetScatterParts(receive_counts, receive_displacements, n_hidden_units);
+
+			//si fa in modo di ottimizzare il processo di scambio dei dati
+			MPI_Request reqSend, reqRecv;
+
+			//Si inizia a rileggere ciascun input e inviarlo
+			smp_manager.restart();
+
+
+			for(uint current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
+			{
+				//lettura esempio da file
+				smp_manager.get_next_sample(visible_units, sample_extension, &sample_filename);
+
+				if(current_index_sample > 0)
 				{
-					//si deve salvare sul disco i risultati di attivazione del layer successivo
-					//essi saranno utilizzati come input per la prossima fare di training
-					string new_image_path_folder = string(image_path_folder + "/" + std::to_string(layer_number));
-					std::cout << "Salvando i risultati intermedi per il prossimo step nella cartella '"	<< new_image_path_folder << "'\n";
+					//attendo invio esempio precedente
+					MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
+				}
 
-					//nome del file dove salvare ciascun esempio
-					string sample_filename, sample_filename_prec;
-
-					//risultato dell'operazione
-					my_vector<float> output_samples(n_hidden_units, 0.0);
-
-					//si ottengono displacements per gli accumulatori (questa volta le parti invisibili)
-					int receive_counts[1 + total_accumulators], receive_displacements[1 + total_accumulators];
-					GetScatterParts(receive_counts, receive_displacements, n_hidden_units);
-
-					//si fa in modo di ottimizzare il processo di scambio dei dati
-					MPI_Request reqSend, reqRecv;
-
-					//Si inizia a rileggere ciascun input e inviarlo
-					smp_manager.restart();
+				//invio esempio (copia valori nel buffer)
+				visible_units_send_buffer = visible_units;
+				ScatterInputVector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
 
 
-					for(uint current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
-					{
-						//lettura esempio da file
-						smp_manager.get_next_sample(visible_units, sample_extension, &sample_filename);
-
-						if(current_index_sample > 0)
-						{
-							//attendo invio esempio precedente
-							MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
-						}
-
-						//invio esempio (copia valori nel buffer)
-						visible_units_send_buffer = visible_units;
-						ScatterInputVector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
-
-
-						if(current_index_sample > 0)
-						{
-							//attesa gather
-							ReceiveOutputVector(output_samples, receive_counts, receive_displacements,&reqRecv);
-							MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
-
-							//si salva su file il vettore Hidden ottenuto
-							smp_manager.save_sample(output_samples, false, new_image_path_folder, sample_filename_prec + ".txt"); //dati in formato testuale
-							smp_manager.save_sample(output_samples, true, new_image_path_folder, sample_filename_prec+ ".jpg"); //dati in formato immagine
-						}
-
-						//dato che vengono letti prima due input e poi si inizia a salvare, è necessario memorizzare il nome del file precedente
-						sample_filename_prec = sample_filename;
-					}
-
-					//migliorare codice
+				if(current_index_sample > 0)
+				{
 					//attesa gather
 					ReceiveOutputVector(output_samples, receive_counts, receive_displacements,&reqRecv);
 					MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
@@ -281,19 +283,29 @@ namespace parallel_autoencoder{
 					//si salva su file il vettore Hidden ottenuto
 					smp_manager.save_sample(output_samples, false, new_image_path_folder, sample_filename_prec + ".txt"); //dati in formato testuale
 					smp_manager.save_sample(output_samples, true, new_image_path_folder, sample_filename_prec+ ".jpg"); //dati in formato immagine
-
-
-					//in maniera del tutto trasparente si utilizzerà questo nuovo percorso per ottenere i dati in input
-					smp_manager.path_folder = new_image_path_folder;
-					smp_manager.restart();
-
-					//contatore che memorizza il numero di rbm apprese
-					trained_rbms++;
-					save_parameters();
 				}
+
+				//dato che vengono letti prima due input e poi si inizia a salvare, è necessario memorizzare il nome del file precedente
+				sample_filename_prec = sample_filename;
 			}
 
+			//migliorare codice
+			//attesa gather
+			ReceiveOutputVector(output_samples, receive_counts, receive_displacements,&reqRecv);
+			MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
+
+			//si salva su file il vettore Hidden ottenuto
+			smp_manager.save_sample(output_samples, false, new_image_path_folder, sample_filename_prec + ".txt"); //dati in formato testuale
+			smp_manager.save_sample(output_samples, true, new_image_path_folder, sample_filename_prec+ ".jpg"); //dati in formato immagine
+
+
+			//in maniera del tutto trasparente si utilizzerà questo nuovo percorso per ottenere i dati in input
+			smp_manager.path_folder = new_image_path_folder;
+			smp_manager.restart();
 		}
+
+
+
 
 		void fine_tuning()
 		{

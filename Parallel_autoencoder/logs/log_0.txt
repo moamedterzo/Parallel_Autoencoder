@@ -296,3 +296,360 @@ Imparando le RBM...
 Numero di RBM da apprendere: 5
 Numero di RBM gia apprese: 0
 Numero di layer finali: 11
+My command is 1
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 5
+Numero di layer finali: 11
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 5
+Numero di layer finali: 11
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 5
+Numero di layer finali: 11
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 5
+Numero di layer finali: 11
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 5
+Numero di layer finali: 11
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 5
+Numero di layer finali: 11
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 5
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 0
+My first random number is 16807
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11

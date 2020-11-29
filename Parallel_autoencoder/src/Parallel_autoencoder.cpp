@@ -37,7 +37,7 @@ using namespace std;
 using namespace parallel_autoencoder;
 
 
-const int NUMBER_OF_SAMPLES = 2; //todo configurabile
+const int NUMBER_OF_SAMPLES = 4; //todo configurabile
 
 
 //numero di elementi per layer predeterminato
@@ -164,8 +164,8 @@ void GetCommsForMasterAcc(MPI_Group& world_group, const uint k_accumulators, MP_
 void GetCommsForGrid(MPI_Group& world_group, GridOrientation orientation, const uint k_accumulators,
 		const uint grid_total_rows, const uint grid_total_cols, my_vector<MP_Comm_MasterSlave>& acc_comms)
 {
-	auto total_group_elements = orientation == row_first ? grid_total_cols : grid_total_rows;
-	auto total_groups_to_create = orientation == row_first ? grid_total_rows : grid_total_cols;
+	auto total_group_elements = orientation == GridOrientation::row_first ? grid_total_cols : grid_total_rows;
+	auto total_groups_to_create = orientation == GridOrientation::row_first ? grid_total_rows : grid_total_cols;
 
 
 	uint index_acc = 0, index_rowcol = 0;
@@ -177,7 +177,7 @@ void GetCommsForGrid(MPI_Group& world_group, GridOrientation orientation, const 
 
 		//ranghi colonne (k_accumulators + 1 va sommato perché rappresentano i ranghi assegnati al nodo master e a quelli accumulatori)
 		for(uint i = 0; i != total_group_elements; i++)
-			if(orientation == row_first)
+			if(orientation == GridOrientation::row_first)
 				acc_col_ranks[i + 1] = (k_accumulators + 1) + (index_rowcol * grid_total_cols) + i;
 			else
 				acc_col_ranks[i + 1] = (k_accumulators + 1) + i * grid_total_cols + index_rowcol;
@@ -268,8 +268,8 @@ int main(int argc, char** argv) {
 		my_vector<MP_Comm_MasterSlave> acc_col_comms;
 
 		GetCommsForMasterAcc(world_group, k_accumulators, master_acc_comm);
-		GetCommsForGrid(world_group, row_first, k_accumulators, grid_total_rows, grid_total_cols, acc_row_comms);
-		GetCommsForGrid(world_group, col_first, k_accumulators, grid_total_rows, grid_total_cols, acc_col_comms);
+		GetCommsForGrid(world_group, GridOrientation::row_first, k_accumulators, grid_total_rows, grid_total_cols, acc_row_comms);
+		GetCommsForGrid(world_group, GridOrientation::col_first, k_accumulators, grid_total_rows, grid_total_cols, acc_col_comms);
 
 
 		//determino ruolo di ogni nodo

@@ -28,9 +28,6 @@ namespace parallel_autoencoder{
 	//valore utilizzato per normalizzare i valori in input
 	static const float INPUT_MAX_VALUE = 255;
 
-	//todo capire che numero mettere
-	static const int F_PREC = 9;
-
 	//todo uniformare estensioni
 	//".jpg"
 
@@ -126,8 +123,6 @@ namespace parallel_autoencoder{
 				  //todo capire se va bene come preprocessing
 				  buffer[index] = float(int(img.at<uchar>(j,i))) / INPUT_MAX_VALUE;
 			  }
-
-			std::cout << "\n";
         }
         else
         {

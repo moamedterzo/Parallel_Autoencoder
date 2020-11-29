@@ -38,7 +38,6 @@ namespace parallel_autoencoder{
 	};
 
 
-
 	template<typename Arg>
 	class my_vector{
 
@@ -189,6 +188,144 @@ namespace parallel_autoencoder{
 	};
 
 
+
+
+
+	struct MPReqManager
+	{
+		MPReqManager(MPI_Request *reqs,my_vector<MP_Comm_MasterSlave> *comms)
+		{
+			this->comms = comms;
+			this->reqs = reqs;
+		}
+
+
+		const MPI_Datatype mpi_datatype_tosend = MPI_FLOAT;
+
+		MPI_Request *reqs;
+		my_vector<MP_Comm_MasterSlave> *comms;
+
+		//virtual void SendVectorToReduce(my_vector<float>&) = 0;
+
+		//virtual void ReceiveVector(my_vector<float>&) = 0;
+
+
+		void wait()
+		{
+			MPI_Waitall(comms->size(), reqs, MPI_STATUSES_IGNORE);
+		}
+
+
+		virtual ~MPReqManager(){}
+	};
+
+
+	struct MPReqManagerCell : MPReqManager
+	{
+		MPReqManagerCell(MPI_Request *reqs, my_vector<MP_Comm_MasterSlave> *comms)
+		: MPReqManager{reqs, comms }
+		{}
+
+
+		void SendVectorToReduce(my_vector<float>& vec)
+		{
+			//Invio vettore agli accumululatori di riferimento
+			int displacement = 0;
+			for(uint i = 0; i < comms->size(); i++)
+			{
+				auto& comm = (*comms)[i];
+
+				MPI_Ireduce(vec.data() + displacement, MPI_IN_PLACE,
+						comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,
+						0, comm.comm , reqs + i);
+
+
+				displacement += comm.n_items_to_send;
+			}
+		}
+
+
+		void ReceiveVector(my_vector<float>& vec)
+		{
+			//Invio vettore agli accumululatori di riferimento
+			int displacement = 0;
+			for(uint i = 0; i < comms->size(); i++)
+			{
+				auto& comm = (*comms)[i];
+
+				MPI_Ibcast(vec.data() + displacement, comm.n_items_to_send, mpi_datatype_tosend,
+						0, comm.comm,  reqs + i);
+
+				displacement += comm.n_items_to_send;
+			}
+		}
+
+		void ReceiveVectorSync(my_vector<float>& vec)
+		{
+			ReceiveVector(vec);
+			wait();
+		}
+
+		~MPReqManagerCell(){}
+	};
+
+
+	struct MPReqManagerAccumulator : MPReqManager
+	{
+		MPReqManagerAccumulator(MPI_Request *reqs, my_vector<MP_Comm_MasterSlave> *comms)
+		: MPReqManager{reqs, comms }
+		{}
+
+
+		void BroadcastVector(my_vector<float>& vec)
+		{
+			//Si invia il vettore alle righe/colonne di riferimento, per ognuna si usa il broadcast
+			int displacement = 0;
+			for(uint i = 0; i < comms->size(); i++)
+			{
+				auto& comm = (*comms)[i];
+
+				MPI_Ibcast(vec.data() + displacement,
+						comm.n_items_to_send, mpi_datatype_tosend,
+						0, comm.comm, reqs + i);
+
+				displacement += comm.n_items_to_send;
+			}
+		}
+
+		void AccumulateVector(my_vector<float>& vec)
+		{
+			int displacement = 0;
+
+			for(uint i = 0; i != comms->size(); i++)
+			{
+				auto& comm = (*comms)[i];
+
+				MPI_Ireduce(MPI_IN_PLACE, vec.data() + displacement,
+						comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,
+						0, comm.comm, reqs + i);
+
+				displacement += comm.n_items_to_send;
+			}
+		}
+
+
+		void BroadcastVectorSync(my_vector<float>& vec)
+		{
+			BroadcastVector(vec);
+			wait();
+		}
+
+		void AccumulateVectorSync(my_vector<float>& vec)
+		{
+			AccumulateVector(vec);
+			wait();
+		}
+
+
+
+		~MPReqManagerAccumulator(){}
+	};
 
 
 

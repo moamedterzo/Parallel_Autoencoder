@@ -36,6 +36,58 @@ namespace parallel_autoencoder{
 
 		my_vector<my_vector<MP_Comm_MasterSlave>> acc_hid_comm_for_layer;
 		my_vector<my_vector<MP_Comm_MasterSlave>> acc_vis_comm_for_layer;
+
+
+		void calc_all_comm_sizes()
+		{
+			//si determinano quali comunicatori bisogna utilizzare ad ogni passo a seconda dell'orientamento scelto
+			acc_hid_comm_for_layer = my_vector<my_vector<MP_Comm_MasterSlave>>(orientation_grid.size());
+			acc_vis_comm_for_layer = my_vector<my_vector<MP_Comm_MasterSlave>>(orientation_grid.size());
+
+			for(uint i = 0; i < orientation_grid.size(); i++)
+			{
+				const GridOrientation orientation_for_vis = orientation_grid[i];
+				const GridOrientation orientation_for_hid = orientation_for_vis == GridOrientation::row_first ?
+						GridOrientation::col_first : GridOrientation::row_first;
+
+				const uint n_visible_units = layers_size[i];
+				const uint n_hidden_units = layers_size[i + 1];
+
+				//comunicatori per nodi visibili e nascosti
+				acc_vis_comm_for_layer[i] = orientation_for_vis == GridOrientation::row_first ? acc_rows_comm : acc_cols_comm;
+				acc_hid_comm_for_layer[i] = orientation_for_vis == GridOrientation::row_first ? acc_cols_comm : acc_rows_comm;
+
+				//calcolo delle size per comm acc verso le righe e verso le colonne
+				calc_comm_sizes(orientation_for_vis, acc_vis_comm_for_layer[i], true, k_number, n_visible_units);
+				calc_comm_sizes(orientation_for_hid, acc_hid_comm_for_layer[i], true, k_number, n_hidden_units);
+			}
+		}
+
+
+		void ReceiveFromMaster(my_vector<float>& vis_vec, MPI_Request *reqVis)
+		{
+			MPI_Iscatterv(NULL, nullptr, nullptr, mpi_datatype_tosend,
+					vis_vec.data(), vis_vec.size(), mpi_datatype_tosend,
+					0, master_accs_comm.comm, reqVis);
+		}
+
+		void SendToMaster(my_vector<float>& hid_vec, MPI_Request *reqHid)
+		{
+			MPI_Igatherv(hid_vec.data(), hid_vec.size(), mpi_datatype_tosend,
+				MPI_IN_PLACE, nullptr, nullptr , mpi_datatype_tosend,
+				0, master_accs_comm.comm, reqHid);
+		}
+
+
+		void get_my_visible_hidden_units(const uint layer_number, uint& n_my_visible_units, uint& n_my_hidden_units)
+		{
+			//calcolo del numero di nodi visibili o nascosti rappresentati per l'accumulatore corrente
+			const int n_visible_units = layers_size[layer_number];
+			const int n_hidden_units = layers_size[layer_number + 1];
+
+			n_my_visible_units = get_units_for_node(n_visible_units, total_accumulators, k_number);
+			n_my_hidden_units = get_units_for_node(n_hidden_units, total_accumulators, k_number);
+		}
 	public:
 
 		node_accumulator_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
@@ -61,145 +113,6 @@ namespace parallel_autoencoder{
 		}
 
 
-		void calc_all_comm_sizes()
-		{
-			//si determinano quali comunicatori bisogna utilizzare ad ogni passo a seconda dell'orientamento scelto
-			acc_hid_comm_for_layer = my_vector<my_vector<MP_Comm_MasterSlave>>(orientation_grid.size());
-			acc_vis_comm_for_layer = my_vector<my_vector<MP_Comm_MasterSlave>>(orientation_grid.size());
-
-			for(uint i = 0; i < orientation_grid.size(); i++)
-			{
-				const GridOrientation orientation_for_vis = orientation_grid[i];
-				const GridOrientation orientation_for_hid = orientation_for_vis == row_first ? col_first : row_first;
-
-				const uint n_visible_units = layers_size[i];
-				const uint n_hidden_units = layers_size[i + 1];
-
-				//comunicatori per nodi visibili e nascosti
-				acc_vis_comm_for_layer[i] = orientation_for_vis == row_first ? acc_rows_comm : acc_cols_comm;
-				acc_hid_comm_for_layer[i] = orientation_for_vis == row_first ? acc_cols_comm : acc_rows_comm;
-
-				//calcolo delle size per comm acc verso le righe e verso le colonne
-				calc_comm_sizes(orientation_for_vis, acc_vis_comm_for_layer[i], true, k_number, n_visible_units);
-				calc_comm_sizes(orientation_for_hid, acc_hid_comm_for_layer[i], true, k_number, n_hidden_units);
-			}
-		}
-
-
-		CommandType wait_for_command()
-		{
-			CommandType command;
-
-			//get command from master other node
-			MPI_Bcast(&command,1, MPI_INT, 0, MPI_COMM_WORLD);
-
-			if(command == train)
-			{
-				//ottengo numero di esempi
-				MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
-			}
-			else if (command == load_pars || command == save_pars)
-			{
-				//lettura cartella dei parametri
-				char char_path_file[MAX_FOLDER_PARS_LENGTH];
-				MPI_Bcast(char_path_file, MAX_FOLDER_PARS_LENGTH, MPI_CHAR, 0, MPI_COMM_WORLD);
-
-				if(strcmp(char_path_file, ".") != 0)
-					folder_parameters_path = string(char_path_file);
-			}
-
-			return command;
-		}
-
-
-		void BroadcastVector(const my_vector<MP_Comm_MasterSlave>& comms, const my_vector<float>& vec, MPI_Request *reqs)
-		{
-			//Si invia il vettore alle righe/colonne di riferimento, per ognuna si usa il broadcast
-			int displacement = 0;
-			for(uint i = 0; i < comms.size(); i++)
-			{
-				auto& comm = comms[i];
-
-				MPI_Ibcast(vec.data() + displacement,
-						comm.n_items_to_send, mpi_datatype_tosend,
-						0, comm.comm, reqs + i);
-
-				displacement += comm.n_items_to_send;
-			}
-		}
-
-
-
-		void AccumulateVector(const my_vector<MP_Comm_MasterSlave>& comms, my_vector<float>& vec, MPI_Request *reqs)
-		{
-			int displacement = 0;
-
-
-			for(uint i = 0; i != comms.size(); i++)
-			{
-				auto& comm = comms[i];
-/*
-				if(k_number ==0)
-				{
-					std::cout << "\n\nACC Comm di:" << comm.n_items_to_send<<"\n\n";
-
-				}*/
-				/*MPI_Irecv(vec.data() + displacement,
-						comm.n_items_to_send, mpi_datatype_tosend,
-						1, 0, comm.comm, reqs + i);
-
-
-				int aaaa = comms.size() == 2 ? 5 : 3;
-				//ricevo da altri 3
-				for(int j = 2; j < aaaa;j++)
-				{
-						vector<float> asd = vec;
-						MPI_Request *req = new MPI_Request;
-
-						MPI_Irecv(vec.data() + displacement,
-								comm.n_items_to_send, mpi_datatype_tosend,
-								j, 0, comm.comm, req);
-				}*/
-
-
-				MPI_Ireduce(MPI_IN_PLACE, vec.data() + displacement,
-						comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,
-						0, comm.comm, reqs + i);
-
-				displacement += comm.n_items_to_send;
-			}
-		}
-
-
-		void ReceiveFromMaster(my_vector<float>& vis_vec, MPI_Request *reqVis)
-		{
-		//  if(k_number == 0)	std::cout << "111111 Acc " << k_number << " scatter from master\n";
-
-			MPI_Iscatterv(NULL, nullptr, nullptr, mpi_datatype_tosend,
-					vis_vec.data(), vis_vec.size(), mpi_datatype_tosend,
-					0, master_accs_comm.comm, reqVis);
-		}
-
-		void SendToMaster(my_vector<float>& hid_vec, MPI_Request *reqHid)
-		{
-			//if(k_number == 0)	std::cout << "Acc " << k_number << " invio H a master\n";
-
-			MPI_Igatherv(hid_vec.data(), hid_vec.size(), mpi_datatype_tosend,
-				MPI_IN_PLACE, nullptr, nullptr , mpi_datatype_tosend,
-				0, master_accs_comm.comm, reqHid);
-		}
-
-
-		void get_my_visible_hidden_units(const uint layer_number, uint& n_my_visible_units, uint& n_my_hidden_units)
-		{
-			//calcolo del numero di nodi visibili o nascosti rappresentati per l'accumulatore corrente
-			const int n_visible_units = layers_size[layer_number];
-			const int n_hidden_units = layers_size[layer_number + 1];
-
-			n_my_visible_units = get_units_for_node(n_visible_units, total_accumulators, k_number);
-			n_my_hidden_units = get_units_for_node(n_hidden_units, total_accumulators, k_number);
-		}
-
 
 		void train_rbm()
 		{
@@ -210,13 +123,8 @@ namespace parallel_autoencoder{
 				const bool first_layer = layer_number == 0;
 				const uint index_reverse_layer = number_of_final_layers - layer_number - 2;
 
-				//comunicatori per nodi visibili e nascosti
-				auto& comms_for_vis = acc_vis_comm_for_layer[layer_number];
-				auto& comms_for_hid = acc_hid_comm_for_layer[layer_number];
-
 				uint n_my_visible_units, n_my_hidden_units;
 				get_my_visible_hidden_units(layer_number, n_my_visible_units, n_my_hidden_units);
-
 
 				//RBM
 				//inizializzazione bias
@@ -237,17 +145,22 @@ namespace parallel_autoencoder{
 				my_vector<float> rec_visible_units2(n_my_visible_units, 0.0);
 				my_vector<float> rec_hidden_units2(n_my_hidden_units, 0.0);
 
-
 				//gradienti calcolati per pesi e bias
 				my_vector<float> diff_visible_biases(n_my_visible_units, 0.0);
 				my_vector<float> diff_hidden_biases(n_my_hidden_units, 0.0);
 
-				//Puntatori delle request asincrone
-				MPI_Request reqsVis1[comms_for_vis.size()];
-				MPI_Request reqsVis2[comms_for_vis.size()];
+				//comunicatori per nodi visibili e nascosti
+				auto& comms_for_vis = acc_vis_comm_for_layer[layer_number];
+				auto& comms_for_hid = acc_hid_comm_for_layer[layer_number];
 
+				//Puntatori delle request asincrone
+				MPI_Request reqMaster;
+				MPI_Request reqsVis1[comms_for_vis.size()];
 				MPI_Request reqsHid1[comms_for_hid.size()];
-				MPI_Request reqsHid2[comms_for_hid.size()];
+
+				MPReqManagerAccumulator reqVisible1{ reqsVis1, &comms_for_vis };
+				MPReqManagerAccumulator reqHidden1{ reqsHid1, &comms_for_hid };
+
 
 
 				//si avvia il processo di apprendimento per diverse epoche
@@ -255,7 +168,7 @@ namespace parallel_autoencoder{
 				float current_learning_rate;
 
 				// A0) Sync ricevi input V 1 da nodo master
-				ReceiveFromMaster(visible_units1, reqsVis1);
+				ReceiveFromMaster(visible_units1, &reqMaster);
 
 				for(uint epoch = 0; epoch < rbm_n_training_epocs; epoch++){
 
@@ -263,10 +176,6 @@ namespace parallel_autoencoder{
 
 					while(current_index_sample < (epoch + 1) * number_of_samples)
 					{
-						if(current_index_sample % 10 == 0 && k_number == 0)
-							std::cout << "[Acc] current_index_sample: " + to_string(current_index_sample) + "\n";
-
-
 						current_index_sample+=2; //ogni ciclo while gestisce due esempi
 
 						//CONTRASTIVE DIVERGENCE
@@ -275,150 +184,115 @@ namespace parallel_autoencoder{
 
 
 						// A0) Wait ricezione input V 1 da nodo master
-						MPI_Wait(reqsVis1, MPI_STATUS_IGNORE);
+						MPI_Wait(&reqMaster, MPI_STATUS_IGNORE);
 
 						// A1) Async Invio V 1
-						BroadcastVector(comms_for_vis, visible_units1, reqsVis1);
+						reqVisible1.BroadcastVector(visible_units1);
 
 
 
 						//B0) Async Ricevo secondo V (utilizzo il request dei visibili)
-						ReceiveFromMaster(visible_units2, reqsVis2);
+						ReceiveFromMaster(visible_units2, &reqMaster);
 
 						// A1) Wait invio V1
-						MPI_Waitall(comms_for_vis.size(), reqsVis1, MPI_STATUSES_IGNORE);
+						reqVisible1.wait();
 
 						 // B0) Wait ricezione input V 2 da master
-						MPI_Wait(reqsVis2, MPI_STATUS_IGNORE);
+						MPI_Wait(&reqMaster, MPI_STATUS_IGNORE);
 
 						// B1) invio V 2
-						BroadcastVector(comms_for_vis, visible_units2, reqsVis2);
-						MPI_Waitall(comms_for_vis.size(), reqsVis2, MPI_STATUSES_IGNORE);
+						reqVisible1.BroadcastVectorSync(visible_units2);
 
 
 
 						// A2) ricevo H 1
-						AccumulateVector(comms_for_hid, hidden_units1, reqsHid1);
-						MPI_Waitall(comms_for_hid.size(), reqsHid1, MPI_STATUSES_IGNORE);
+						reqHidden1.AccumulateVectorSync(hidden_units1);
 
 						//Accumulazione e sigmoide per H1
-						for(uint i = 0; i != hidden_units1.size(); i++)
-							hidden_units1[i] =sample_sigmoid_function(hidden_units1[i] + hidden_biases[i], generator);
+						SampleHiddenUnits(hidden_units1, hidden_biases);
 
 						// A3) Invio H 1
-						BroadcastVector(comms_for_hid, hidden_units1, reqsHid1);
-						MPI_Waitall(comms_for_hid.size(), reqsHid1, MPI_STATUSES_IGNORE);
-
+						reqHidden1.BroadcastVectorSync(hidden_units1);
 
 
 						// B2) ricevo H 2
-						AccumulateVector(comms_for_hid, hidden_units2, reqsHid2);
-						MPI_Waitall(comms_for_hid.size(), reqsHid2, MPI_STATUSES_IGNORE);
+						reqHidden1.BroadcastVectorSync(hidden_units2);
 
 						//Accumulazione e sigmoide per H2
-						for(uint i = 0; i != hidden_units2.size(); i++)
-							hidden_units2[i] =sample_sigmoid_function(hidden_units2[i]+ hidden_biases[i], generator);
+						SampleHiddenUnits(hidden_units2, hidden_biases);
 
 						// B3) Invio H 2
-						BroadcastVector(comms_for_hid, hidden_units2, reqsHid2);
-						MPI_Waitall(comms_for_hid.size(), reqsHid2, MPI_STATUSES_IGNORE);
-
+						reqHidden1.BroadcastVectorSync(hidden_units2);
 
 
 						// A4) Async ricezione Vrec 1
-						AccumulateVector(comms_for_vis, rec_visible_units1, reqsVis1);
-						MPI_Waitall(comms_for_vis.size(), reqsVis1, MPI_STATUSES_IGNORE);
+						reqVisible1.AccumulateVector(rec_visible_units1);
 
 						//funzione Vrec 1
-						//non si applica il campionamento
-						if(first_layer) //per il primo layer bisogna aggiungere del rumore gaussiano
-							for(uint i = 0; i != rec_visible_units1.size(); i++)
-								rec_visible_units1[i] =	sample_gaussian_distribution(rec_visible_units1[i] + visible_biases[i], generator);
-						else
-							for(uint i = 0; i != rec_visible_units1.size(); i++)
-								rec_visible_units1[i] =	sigmoid(rec_visible_units1[i] + visible_biases[i]);
+						ReconstructVisibileUnits(rec_visible_units1, visible_biases, first_layer);
 
 						// A5) invio  Vrec 1
-						BroadcastVector(comms_for_vis, rec_visible_units1, reqsVis1);
-						MPI_Waitall(comms_for_vis.size(), reqsVis1, MPI_STATUSES_IGNORE);
+						reqVisible1.BroadcastVectorSync(rec_visible_units1);
 
 
 
 						// B4) ricezione V rec 2
-						AccumulateVector(comms_for_vis, rec_visible_units2, reqsVis2);
-						MPI_Waitall(comms_for_vis.size(), reqsVis2, MPI_STATUSES_IGNORE);
+						reqVisible1.AccumulateVectorSync(rec_visible_units2);
 
 						//funzione Vrec 2
 						//non si applica il campionamento
-						if(first_layer) //per il primo layer bisogna aggiungere del rumore gaussiano
-							for(uint i = 0; i != rec_visible_units2.size(); i++)
-								rec_visible_units2[i] =	sample_gaussian_distribution(rec_visible_units2[i] + visible_biases[i], generator);
-						else
-							for(uint i = 0; i != rec_visible_units2.size(); i++)
-								rec_visible_units2[i] = sigmoid(rec_visible_units2[i] + visible_biases[i]);
+						ReconstructVisibileUnits(rec_visible_units2, visible_biases, first_layer);
 
 						// B5) invio V rec 2
-						BroadcastVector(comms_for_vis, rec_visible_units2, reqsVis2);
-						MPI_Waitall(comms_for_vis.size(), reqsVis2, MPI_STATUSES_IGNORE);
+						reqVisible1.BroadcastVectorSync(rec_visible_units2);
 
 
 
 
 						// A6) ricezione H rec 1
-						AccumulateVector(comms_for_hid, rec_hidden_units1, reqsHid1);
-						MPI_Waitall(comms_for_hid.size(), reqsHid1, MPI_STATUSES_IGNORE);
+						reqHidden1.AccumulateVectorSync(rec_hidden_units1);
 
 						//Accumulazione e sigmoide per H1
-						for(uint i = 0; i != rec_hidden_units1.size(); i++)
-							   rec_hidden_units1[i] =  sigmoid(rec_hidden_units1[i] + hidden_biases[i]);
+						ReconstructHiddenUnits(rec_hidden_units1, hidden_biases, first_layer);
 
 						// A7) invio H rec 1
-						BroadcastVector(comms_for_hid, rec_hidden_units1, reqsHid1);
-						MPI_Waitall(comms_for_hid.size(), reqsHid1, MPI_STATUSES_IGNORE);
-
+						reqHidden1.BroadcastVectorSync(rec_hidden_units1);
 
 
 						// B6) ricezione H rec 2
-						AccumulateVector(comms_for_hid, rec_hidden_units2, reqsHid2);
-						MPI_Waitall(comms_for_hid.size(), reqsHid2, MPI_STATUSES_IGNORE);
+						reqHidden1.AccumulateVectorSync(rec_hidden_units2);
 
 						//Accumulazione e sigmoide per H2
-						for(uint i = 0; i !=rec_hidden_units2.size(); i++)
-							   rec_hidden_units2[i] =  sigmoid(rec_hidden_units2[i] + hidden_biases[i]);
+						ReconstructHiddenUnits(rec_hidden_units2, hidden_biases, first_layer);
 
 						// B7) Async invio H rec 2
-						BroadcastVector(comms_for_hid, rec_hidden_units2, reqsHid2);
+						reqHidden1.BroadcastVector(rec_hidden_units2);
 
 						//gradiente 1
 						//si calcolano i differenziali
 						//dei pesi e bias visibili
-						for(uint i = 0; i != visible_units1.size(); i++)
-							diff_visible_biases[i] += visible_units1[i] - rec_visible_units1[i];
+						set_gradient(diff_visible_biases, visible_units1, rec_visible_units1);
 
 						//dei bias nascosti
-						for(uint j = 0; j != hidden_units1.size(); j++)
-							diff_hidden_biases[j] += hidden_units1[j] - rec_hidden_units1[j];
+						set_gradient(diff_hidden_biases, hidden_units1, rec_hidden_units1);
 
 						// B7) Wait invio H rec 2
-						MPI_Waitall(comms_for_hid.size(), reqsHid2, MPI_STATUSES_IGNORE);
-
+						reqHidden1.wait();
 
 
 						// A0) Async ricezione nuovo input V1 da master (sempre se ci sono ancora esempi)
 						const bool other_samples = current_index_sample < rbm_n_training_epocs * number_of_samples;
 						if(other_samples)
-							ReceiveFromMaster(visible_units1, reqsVis1);
+							ReceiveFromMaster(visible_units1, &reqMaster);
 
 
 						//gradiente 2
 						//si calcolano i differenziali
 						//dei pesi e bias visibili
-						for(uint i = 0; i != visible_units2.size(); i++)
-							diff_visible_biases[i] += visible_units2[i] - rec_visible_units2[i];
+						set_gradient(diff_visible_biases, visible_units2, rec_visible_units2);
 
 						//dei bias nascosti
-						for(uint j = 0; j != hidden_units2.size(); j++)
-							diff_hidden_biases[j] += hidden_units2[j] - rec_hidden_units2[j];
+						set_gradient(diff_hidden_biases, hidden_units2, rec_hidden_units2);
 
 
 						//applicazione gradienti
@@ -439,50 +313,8 @@ namespace parallel_autoencoder{
 
 
 				//SALVATAGGIO NUOVI INPUT (non viene sfruttato il doppio canale come nel training della RBM)
-
-				for(current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
-				{
-					//cercare di uniformare il codice
-
-					//0) ricevi input V da nodo master
-					ReceiveFromMaster(visible_units1, reqsVis1);
-					MPI_Wait(reqsVis1, MPI_STATUS_IGNORE);
-
-					if(current_index_sample > 0)
-					{
-						// A2) Wait ricevo H passo precedente
-						MPI_Waitall(comms_for_hid.size(), reqsHid1, MPI_STATUSES_IGNORE);
-					}
-
-
-					// A1) Async Invio V 1 (non importa la wait)
-					BroadcastVector(comms_for_vis, visible_units1, reqsVis2);
-
-					// A2) ricevo H 1
-					AccumulateVector(comms_for_hid, hidden_units1, reqsHid1);
-
-					if(current_index_sample > 0)
-					{
-						//Accumulazione e sigmoide per H1
-						for(uint i = 0; i != hidden_units1.size(); i++)
-							hidden_units1[i] = sigmoid(hidden_units1[i] + hidden_biases[i]);
-
-						// A3) Invio H 1 a master
-						SendToMaster(hidden_units1, reqsHid2);
-						MPI_Wait(reqsHid2, MPI_STATUSES_IGNORE);
-					}
-				}
-
-				// A2) Wait ricevo H
-				MPI_Waitall(comms_for_hid.size(), reqsHid1, MPI_STATUSES_IGNORE);
-
-				//Accumulazione e sigmoide per H1
-				for(uint i = 0; i != hidden_units1.size(); i++)
-					hidden_units1[i] = sigmoid(hidden_units1[i] + hidden_biases[i]);
-
-				// A3) Invio H 1 a master
-				SendToMaster(hidden_units1, reqsHid2);
-				MPI_Wait(reqsHid2, MPI_STATUSES_IGNORE);
+				save_new_samples(reqVisible1, reqHidden1, &reqMaster,
+						hidden_biases, visible_units1, hidden_units1);
 
 				//contatore che memorizza il numero di rbm apprese
 				trained_rbms++;
@@ -491,6 +323,41 @@ namespace parallel_autoencoder{
 			} //fine layer
 
 		}
+
+		inline void SampleHiddenUnits(my_vector<float>& hidden_units, my_vector<float>& hidden_biases)
+		{
+			for(uint i = 0; i != hidden_units.size(); i++)
+				hidden_units[i] = sample_sigmoid_function(hidden_units[i] + hidden_biases[i], generator);
+		}
+
+		inline void ReconstructHiddenUnits(my_vector<float>& rec_hidden_units, my_vector<float> &hidden_biases, const bool first_layer)
+		{
+			if(first_layer)
+				for(uint i = 0; i != rec_hidden_units.size(); i++)
+					rec_hidden_units[i] = sample_sigmoid_function(rec_hidden_units[i] + hidden_biases[i], generator);
+			else
+				for(uint i = 0; i != rec_hidden_units.size(); i++)
+					rec_hidden_units[i] =  sigmoid(rec_hidden_units[i] + hidden_biases[i]);
+		}
+
+		inline	void ReconstructVisibileUnits(my_vector<float>& rec_visible_units, my_vector<float>& visible_biases, const bool first_layer)
+		{
+			//todo assicurarsi che siano probabilita e non binari
+			if(first_layer) //per il primo layer bisogna aggiungere del rumore gaussiano
+				for(uint i = 0; i != rec_visible_units.size(); i++)
+					rec_visible_units[i] =	sample_gaussian_distribution(rec_visible_units[i] + visible_biases[i], generator);
+			else
+				for(uint i = 0; i != rec_visible_units.size(); i++)
+					rec_visible_units[i] =	sigmoid(rec_visible_units[i] + visible_biases[i]);
+		}
+
+		inline void set_gradient(my_vector<float>& diff_biases, my_vector<float>& units,my_vector<float>& rec_units)
+		{
+			for(uint i = 0; i != diff_biases.size(); i++)
+				diff_biases[i] += units[i] - rec_units[i];
+		}
+
+
 
 		//dopo aver utilizzato i differenziali, li si inizializzano considerando il momentum
 		//la formula per l'update di un generico parametro è: Δw(t) = momentum * Δw(t-1) + learning_parameter * media_gradienti_minibatch
@@ -520,6 +387,56 @@ namespace parallel_autoencoder{
 					diff_hidden_biases[j] = diff_hidden_biases[j] * rbm_momentum;
 				}
 		}
+
+
+		 inline void save_new_samples(
+				 MPReqManagerAccumulator& reqVis, MPReqManagerAccumulator& reqHid,
+				 MPI_Request *reqMaster, my_vector<float>& hidden_biases,
+		    	 my_vector<float>& visible_units1, my_vector<float>& hidden_units1)
+		 {
+			for(uint current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
+			{
+				//cercare di uniformare il codice
+
+				//0) ricevi input V da nodo master
+				ReceiveFromMaster(visible_units1, reqMaster);
+				MPI_Wait(reqMaster, MPI_STATUS_IGNORE);
+
+				// A2) Wait ricevo H passo precedente
+				if(current_index_sample != 0)
+					reqHid.wait();
+
+
+				// A1) Async Invio V 1 (non importa la wait)
+				reqVis.BroadcastVector(visible_units1);
+
+				// A2) ricevo H 1
+				reqHid.AccumulateVector(hidden_units1);
+
+				if(current_index_sample > 0)
+				{
+					//Accumulazione e sigmoide per H1
+					for(uint i = 0; i != hidden_units1.size(); i++)
+						hidden_units1[i] = sigmoid(hidden_units1[i] + hidden_biases[i]);
+
+					// A3) Invio H 1 a master
+					SendToMaster(hidden_units1, reqMaster);
+					MPI_Wait(reqMaster, MPI_STATUSES_IGNORE);
+				}
+			}
+
+			// A2) Wait ricevo H
+			reqHid.wait();
+
+			//Accumulazione e sigmoide per H1
+			for(uint i = 0; i != hidden_units1.size(); i++)
+				hidden_units1[i] = sigmoid(hidden_units1[i] + hidden_biases[i]);
+
+			// A3) Invio H 1 a master
+			SendToMaster(hidden_units1, reqMaster);
+			MPI_Wait(reqMaster, MPI_STATUSES_IGNORE);
+		 }
+
 
 
 		my_vector<my_vector<float>> get_activation_layers()
@@ -554,14 +471,18 @@ namespace parallel_autoencoder{
 				auto& input = activation_layers[l];
 				auto& output = activation_layers[l + 1];
 
-				//invio a celle
 				MPI_Request reqs_vis[comms_for_vis.size()];
-				BroadcastVector(comms_for_vis, input, reqs_vis);
+				MPI_Request hid_requests[comms_for_hid.size()];
+
+				MPReqManagerAccumulator reqVis{ reqs_vis, &comms_for_vis };
+				MPReqManagerAccumulator reqHid{ hid_requests, &comms_for_hid };
+
+
+				//invio a celle
+				reqVis.BroadcastVector(input);
 
 				//ricezione da celle
-				MPI_Request hid_requests[comms_for_hid.size()];
-				AccumulateVector(comms_for_hid, output, hid_requests);
-				MPI_Waitall(comms_for_hid.size(), hid_requests, MPI_STATUSES_IGNORE);
+				reqHid.AccumulateVectorSync(output);
 
 				//si applica la funzione sigmoide
 				//se il layer è quello centrale (coding), bisogna effettuare un rounding dei valori
@@ -576,17 +497,81 @@ namespace parallel_autoencoder{
 			} //fine forward
 		 }
 
+		 inline void backward_pass(my_vector<my_vector<float>>& activation_layers)
+		 {
+		    //si va dall'ultimo layer al penultimo (quello di input non viene considerato)
+			for(uint l = number_of_final_layers - 1; l != 0; l--){
+
+				//comunicatori
+				auto& comms_for_hid = acc_hid_comm_for_layer[l - 1];
+
+				//si aggiornano i pesi tra l'output e l'input layer
+				auto& biases_to_update = layer_biases[l - 1];
+
+				//layer di attivazione
+				auto& output_layer = activation_layers[l];
+
+				//vettore contenente i delta
+				auto current_deltas = my_vector<float>(output_layer.size(), 0.0);
+
+				//check misure
+				assert(output_layer.size() == biases_to_update.size());
+
+				//si calcoleranno i delta per il layer corrente
+				if(l == number_of_final_layers - 1)
+				{
+					//LAYER DI OUTPUT
+					auto& first_activation_layer = activation_layers[0];
+
+					//calcolo dei delta per il layer di output
+					// delta = y_i * (1 - y_i) * reconstruction_error
+					for(uint j = 0; j != output_layer.size(); j++)
+					   current_deltas[j] = output_layer[j]  * (1 - output_layer[j]) //derivative
+							   * (first_activation_layer[j] - output_layer[j]); //rec error
+				}
+				else
+				{
+					//layer nascosto
+					//attendo ricezione degli input dalle celle
+					//i delta vengono mandati già pesati
+					auto& comms_for_vis = acc_vis_comm_for_layer[l];
+
+					MPI_Request reqs_visible[comms_for_vis.size()];
+
+					MPReqManagerAccumulator reqVis{reqs_visible, &comms_for_vis};
+
+					reqVis.AccumulateVectorSync(current_deltas);
+
+					//è necessario moltiplicare i delta per la derivata
+					for(uint j = 0; j != output_layer.size(); j++)
+						current_deltas[j] = current_deltas[j] * output_layer[j]  * (1 - output_layer[j]); //derivative
+				}
+
+				//Si inviano i delta alle celle (non importa aspettare)
+				MPI_Request req_hid[comms_for_hid.size()];
+
+
+				MPReqManagerAccumulator reqHid{req_hid, &comms_for_hid};
+
+				reqHid.BroadcastVector(current_deltas);
+
+				//seguendo la delta rule, si applica il gradiente anche i bias
+				for(uint j = 0; j != biases_to_update.size(); j++)
+					biases_to_update[j] += fine_tuning_learning_rate * current_deltas[j];
+
+			}
+		 }
+
+
 		void fine_tuning()
 		{
 			//Rollup per i bias già effettuato in fase di apprendimento delle rbm
-
 
 			//INIZIO FINE TUNING
 
 			//si riserva lo spazio necessario per l'attivazione di ogni layer
 			//e per i vettori che conterranno i valori delta per la back propagation
 			auto activation_layers = get_activation_layers();
-
 
 			//unità visibili
 			auto visible_units1 = my_vector<float>(layers_size[0]);
@@ -596,88 +581,32 @@ namespace parallel_autoencoder{
 			ReceiveFromMaster(visible_units1, &reqMaster);
 
 
-			//per ogni epoca...
-			for(uint epoch = 0; epoch != fine_tuning_n_training_epocs; epoch++)
+			//per ogni epoca e ogni suo esempio...
+			for(uint current_index_sample = 0;
+					current_index_sample != number_of_samples * fine_tuning_n_training_epocs;
+					current_index_sample++)
 			{
-				for(uint current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
+				//0) Wait ricevi input V da nodo master
+				MPI_Wait(&reqMaster, MPI_STATUS_IGNORE);
+
+				//copia nel buffer
+				activation_layers[0] = visible_units1;
+
+
+				bool other_samples = current_index_sample != number_of_samples - 1;
+				if(other_samples)
 				{
-					//0) Wait ricevi input V da nodo master
-					MPI_Wait(&reqMaster, MPI_STATUS_IGNORE);
+					//0) ricevi input V da nodo master
+					ReceiveFromMaster(visible_units1, &reqMaster);
+				}
 
-					//copia nel buffer
-					activation_layers[0] = visible_units1;
+				//1. forward pass
+				forward_pass(activation_layers);
 
+				//2. backward pass
+				backward_pass(activation_layers);
 
-					bool other_samples = current_index_sample != number_of_samples - 1;
-					if(other_samples)
-					{
-						//0) ricevi input V da nodo master
-						ReceiveFromMaster(visible_units1, &reqMaster);
-					}
-
-					//1. forward pass
-					forward_pass(activation_layers);
-
-					//2. backward pass
-					//si va dall'ultimo layer al penultimo (quello di input non viene considerato)
-					for(uint l = number_of_final_layers - 1; l != 0; l--){
-
-						//comunicatori
-						auto& comms_for_hid = acc_hid_comm_for_layer[l - 1];
-
-						//si aggiornano i pesi tra l'output e l'input layer
-						auto& biases_to_update = layer_biases[l - 1];
-
-						//layer di attivazione
-						auto& output_layer = activation_layers[l];
-
-						//vettore contenente i delta
-						auto current_deltas = my_vector<float>(output_layer.size(), 0.0);
-
-						//check misure
-						assert(output_layer.size() == biases_to_update.size());
-
-						//si calcoleranno i delta per il layer corrente
-						if(l == number_of_final_layers - 1)
-						{
-							//LAYER DI OUTPUT
-							auto& first_activation_layer = activation_layers[0];
-
-							//calcolo dei delta per il layer di output
-							// delta = y_i * (1 - y_i) * reconstruction_error
-							for(uint j = 0; j != output_layer.size(); j++)
-							   current_deltas[j] = output_layer[j]  * (1 - output_layer[j]) //derivative
-									   * (first_activation_layer[j] - output_layer[j]); //rec error
-						}
-						else
-						{
-							//layer nascosto
-							//attendo ricezione degli input dalle celle
-							//i delta vengono mandati già pesati
-							auto& comms_for_vis = acc_vis_comm_for_layer[l];
-
-							MPI_Request reqs_visible[comms_for_vis.size()];
-							AccumulateVector(comms_for_vis, current_deltas, reqs_visible);
-							MPI_Waitall(comms_for_vis.size(), reqs_visible, MPI_STATUSES_IGNORE);
-
-							//è necessario moltiplicare i delta per la derivata
-							for(uint j = 0; j != output_layer.size(); j++)
-								current_deltas[j] = current_deltas[j] * output_layer[j]  * (1 - output_layer[j]); //derivative
-						}
-
-						//Si inviano i delta alle celle (non importa aspettare)
-						MPI_Request req_hid[comms_for_hid.size()];
-						BroadcastVector(comms_for_hid, current_deltas, req_hid);
-
-
-						//seguendo la delta rule, si applica il gradiente anche i bias
-						for(uint j = 0; j != biases_to_update.size(); j++)
-							biases_to_update[j] += fine_tuning_learning_rate * current_deltas[j];
-
-					}
-
-				} //fine esempio
-			} //fine epoca
+			} //fine esempi
 
 			//allenamento concluso
 			fine_tuning_finished = true;
@@ -700,7 +629,6 @@ namespace parallel_autoencoder{
 
 			//1. forward pass
 			forward_pass(activation_layers);
-
 
 			//invio vettore a master
 			auto& last_layer = activation_layers[number_of_final_layers - 1];

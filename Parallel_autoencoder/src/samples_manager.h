@@ -24,6 +24,9 @@ using std::vector;
 
 namespace parallel_autoencoder{
 
+	//todo capire che numero mettere
+	static const int F_PREC = 9;
+
     class samples_manager{
     private:
         DIR *dp = nullptr; 
