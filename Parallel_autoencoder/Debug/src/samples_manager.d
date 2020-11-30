@@ -1,9 +1,5 @@
 src/samples_manager.o: ../src/samples_manager.cpp \
- ../src/samples_manager.h ../src/custom_utils.h \
- /usr/include/x86_64-linux-gnu/mpich/mpi.h \
- /usr/include/x86_64-linux-gnu/mpich/mpio.h \
- /usr/include/x86_64-linux-gnu/mpich/mpi.h \
- /usr/include/x86_64-linux-gnu/mpich/mpicxx.h \
+ ../src/samples_manager.h ../src/custom_vectors.h \
  /home/giovanni/git/repository/Parallel_autoencoder/opencv/include/opencv2/opencv.hpp \
  /home/giovanni/git/repository/Parallel_autoencoder/opencv/include/opencv2/opencv_modules.hpp \
  /home/giovanni/git/repository/Parallel_autoencoder/opencv/include/opencv2/core.hpp \
@@ -108,11 +104,7 @@ src/samples_manager.o: ../src/samples_manager.cpp \
  /home/giovanni/git/repository/Parallel_autoencoder/opencv/include/opencv2/video/tracking.hpp \
  /home/giovanni/git/repository/Parallel_autoencoder/opencv/include/opencv2/video/background_segm.hpp
 ../src/samples_manager.h:
-../src/custom_utils.h:
-/usr/include/x86_64-linux-gnu/mpich/mpi.h:
-/usr/include/x86_64-linux-gnu/mpich/mpio.h:
-/usr/include/x86_64-linux-gnu/mpich/mpi.h:
-/usr/include/x86_64-linux-gnu/mpich/mpicxx.h:
+../src/custom_vectors.h:
 /home/giovanni/git/repository/Parallel_autoencoder/opencv/include/opencv2/opencv.hpp:
 /home/giovanni/git/repository/Parallel_autoencoder/opencv/include/opencv2/opencv_modules.hpp:
 /home/giovanni/git/repository/Parallel_autoencoder/opencv/include/opencv2/core.hpp:

@@ -19,17 +19,15 @@
 
 
 using std::string;
-using std::vector;
 using namespace cv;
 
 
-namespace parallel_autoencoder{
+namespace parallel_autoencoder
+{
 
 	//valore utilizzato per normalizzare i valori in input
 	static const float INPUT_MAX_VALUE = 255;
 
-	//todo uniformare estensioni
-	//".jpg"
 
     samples_manager::samples_manager(){};
 
@@ -62,7 +60,7 @@ namespace parallel_autoencoder{
     	int number_of_samples = 0;
 
     	struct dirent *entry;
-    	while((entry = get_next_dir(".jpg")) != nullptr)
+    	while((entry = get_next_dir(default_extension.c_str())) != nullptr)
     		number_of_samples++;
 
     	restart();
@@ -109,7 +107,7 @@ namespace parallel_autoencoder{
         //nome percorso completo
         string name_fullfile(path_folder + "/" + string(entry->d_name));
 
-        if(strcmp(extension, ".jpg") == 0)
+        if(strcmp(extension, default_extension.c_str()) == 0)
         {
 			//si leggono i vari pixel come scala di grigi
 			Mat img = imread(name_fullfile, IMREAD_GRAYSCALE);
@@ -247,9 +245,9 @@ namespace parallel_autoencoder{
             }
         }*/
 
-        save_sample(buffer, true, "./temp", "image_temp.jpg");
+        save_sample(buffer, true, "./temp", "image_temp" + default_extension);
 
-        string name_fullfile = string("./temp/image_temp.jpg");
+        string name_fullfile = string("./temp/image_temp" + default_extension);
         Mat imageToShow = imread(name_fullfile, IMREAD_GRAYSCALE);
 
         namedWindow("image");

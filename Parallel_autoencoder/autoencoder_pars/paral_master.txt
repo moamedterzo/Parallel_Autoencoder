@@ -1,2 +1,2 @@
-n_rbm,4
+n_rbm,2
 fine_tuning,1

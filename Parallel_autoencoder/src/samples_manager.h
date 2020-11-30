@@ -17,15 +17,17 @@
 #include <string>
 #include <vector>
 #include <dirent.h>
-#include "custom_utils.h"
+#include "custom_vectors.h"
 
 using std::string;
 using std::vector;
 
 namespace parallel_autoencoder{
 
+	static const string default_extension = ".jpg";
+
 	//todo capire che numero mettere
-	static const int F_PREC = 9;
+	static const int F_PREC = 30;
 
     class samples_manager{
     private:

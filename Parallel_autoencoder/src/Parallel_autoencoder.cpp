@@ -11,23 +11,15 @@
  * Created on 14 novembre 2020, 09:33
  */
 
-#include <cstdlib>
 #include <iostream>
 #include <fstream>
-#include "mpi.h"
 #include <sys/time.h>
 #include <random>
 #include <string>
 
-#include <thread>         // std::this_thread::sleep_for eliminare
-#include <chrono>         // std::chrono::seconds eliminare
 
-
-#include "custom_utils.h"
+#include "custom_vectors.h"
 #include "samples_manager.h"
-
-
-#include "node_autoencoder.h"
 #include "node_accumulator_autoencoder.h"
 #include "node_master_autoencoder.h"
 #include "node_cell_autoencoder.h"
@@ -37,99 +29,125 @@ using namespace std;
 using namespace parallel_autoencoder;
 
 
-const int NUMBER_OF_SAMPLES = 2; //todo configurabile
-
 
 //numero di elementi per layer predeterminato
 my_vector<int> layers_size { 4096, 16, 128, 64, 32};
 
-const string PATH_DATASET = "./mnist_chinese/data";
+uint k_accumulators = 4, grid_total_rows = 4, grid_total_cols = 2;
+
+string path_dataset = "./mnist_chinese/data";
+uint number_of_samples = 2;
+uint rbm_n_epochs = 80;
+uint finetuning_n_epochs = 5;
+bool batch_mode = false;
 
 
+
+
+//rank MPI id
 int myid;
-int numproc;
 
 
-double diffmsec(const struct timeval & a,
-                                    const struct timeval & b) {
-    long sec  = (a.tv_sec  - b.tv_sec);
-    long usec = (a.tv_usec - b.tv_usec);
 
-    if(usec < 0) {
-        --sec;
-        usec += 1000000;
+
+void get_single_arg(std::string& s, const std::string& arg_name, uint& var_to_set)
+{
+    std::size_t pos = s.find(arg_name);
+
+    if (pos != std::string::npos)
+    {
+    	var_to_set = std::stoi(s.replace(pos, arg_name.length(), ""));
     }
-    return ((double)(sec*1000)+ (double)usec/1000.0);
 }
 
-
-
-void init_MPI(int& argc, char** argv,
-		timeval& wt0, double& t0,
-		int& myid, int& numprocs)
+void get_single_arg(std::string& s, const std::string& arg_name, string& var_to_set)
 {
-	gettimeofday(&wt0, NULL);
+    std::size_t pos = s.find(arg_name);
 
-	//int namelen;
-	//char processor_name[MPI_MAX_PROCESSOR_NAME];
-
-	//init MPI e suoi tempi
-	MPI_Init(&argc, &argv);
-	t0 = MPI_Wtime();
-
-
-	MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
-	MPI_Comm_rank(MPI_COMM_WORLD, &myid);
-	//MPI_Get_processor_name(processor_name, &namelen);
-
-	 MPI_Errhandler_set(MPI_COMM_WORLD,MPI_ERRORS_RETURN);
-
+    if (pos != std::string::npos)
+    {
+    	var_to_set = s.replace(pos, arg_name.length(), "");
+    }
 }
 
-void close_MPI(timeval& wt1, const timeval& wt0,
-		double& t1, const double& t0,
-		const int& myid)
+void get_single_arg(std::string& s, const std::string& arg_name, bool& var_to_set)
 {
-	//close MPI + tempi finali
-	t1 = MPI_Wtime();
-	MPI_Finalize();
-	gettimeofday(&wt1, NULL);
+    std::size_t pos = s.find(arg_name);
 
-	//statistiche tempi
-	auto diffsec = diffmsec(wt1, wt0)/1000 ;
-
-	std::cout << "total time (MPI) " << myid << " is " << t1 - t0 << "\n";
-	std::cout << "total time (gtd) " << myid << " is " << diffsec << "\n";
+    if (pos != std::string::npos)
+    {
+    	var_to_set = std::stoi(s.replace(pos, arg_name.length(), "")) == 1;
+    }
 }
 
-
-void parse_args(const int argc, char** argv,
-		uint& k_accumulator, uint& grid_rows, uint& grid_cols)
+void get_layer_sizes(std::string& s, const std::string& arg_name)
 {
-	k_accumulator = 4;
-	grid_rows = 4;
-	grid_cols = 2;
+    std::size_t pos = s.find(arg_name);
 
-	//todo leggere parametri in input
+    if (pos != std::string::npos)
+    {
+    	//valori splittati da una virgola
+    	auto values = s.replace(pos, arg_name.length(), "");
+    	static const string delimiter = ",";
 
+    	//ottenendo i valori
+    	layers_size = my_vector<int>(0);
+
+    	pos = 0;
+    	std::string token;
+    	while ((pos = s.find(delimiter)) != std::string::npos) {
+    	    token = s.substr(0, pos);
+    	    s.erase(0, pos + delimiter.length());
+
+    	    layers_size.push_back(std::stoi(token));
+    	}
+
+    	layers_size.push_back(std::stoi(s));
+    }
+}
+
+void parse_args(const int argc, char** argv)
+{
+	static const string arg_k_accumulators = "--k_acc:";
+	static const string arg_g_rows = "--g_rows:";
+	static 	const string arg_g_cols = "--g_cols:";
+	static const string arg_rbm_n_epochs = "--rbm_epochs:";
+	static const string arg_finetuning_n_epochs = "--fn_epochs:";
+	static const string arg_batch_mode = "--batch:";
+	static const string arg_n_samples = "--n_samples:";
+	static const string arg_path_dataset = "--path_dataset:";
+	static const string arg_layers_sizes = "--layer_sizes:";
+
+	for(int i = 0; i < argc; i++)
+	{
+		string val_arg = string(argv[i]);
+
+		get_single_arg(val_arg, arg_k_accumulators, k_accumulators);
+		get_single_arg(val_arg, arg_g_rows, grid_total_rows);
+		get_single_arg(val_arg, arg_g_cols, grid_total_cols);
+		get_single_arg(val_arg, arg_rbm_n_epochs, rbm_n_epochs);
+		get_single_arg(val_arg, arg_finetuning_n_epochs, finetuning_n_epochs);
+		get_single_arg(val_arg, arg_n_samples, number_of_samples);
+		get_single_arg(val_arg, arg_path_dataset, path_dataset);
+		get_single_arg(val_arg, arg_batch_mode, batch_mode);
+		get_layer_sizes(val_arg, arg_layers_sizes);
+	}
 
 	//il numero delle righe deve essere maggiore o uguale al numero di colonne
 	//serve come presupposto per l'orientamento della griglia
-	if(grid_rows < grid_cols)
+	if(grid_total_rows < grid_total_cols)
 	{
 		//swap
-		auto temp = grid_rows;
-		grid_rows = grid_cols;
-		grid_cols = temp;
+		auto temp = grid_total_rows;
+		grid_total_rows = {grid_total_cols};
+		grid_total_cols = temp;
 	}
 }
 
-void master_cout(string&& message)
-{
+
+void master_cout(string&& message){
 	if(myid == 0)
-	{
 		std::cout << message << "\n";
-	}
 }
 
 void set_generator(std::default_random_engine& generator)
@@ -142,87 +160,9 @@ void set_generator(std::default_random_engine& generator)
 
 
 
-void GetCommsForMasterAcc(MPI_Group& world_group, const uint k_accumulators, MP_Comm_MasterSlave& master_acc_comm)
+
+void parallel_computation(std::ostream& oslog)
 {
-	master_acc_comm.root_id = 0;
-	{
-		//insieme di rank di master e accumulatori
-		//va da 0 a K
-		int ranks_master_accs[1 + k_accumulators];
-		for(int i = 0; i != (1 + k_accumulators); i++)
-			ranks_master_accs[i] = i;
-
-		//gruppo e comunicatore master accumulatori
-		MPI_Group master_acc_group;
-		MPI_Group_incl(world_group, 1 + k_accumulators, ranks_master_accs, &master_acc_group);
-
-		MPI_Comm_create_group(MPI_COMM_WORLD, master_acc_group, 0, &master_acc_comm.comm);
-	}
-}
-
-
-void GetCommsForGrid(MPI_Group& world_group, GridOrientation orientation, const uint k_accumulators,
-		const uint grid_total_rows, const uint grid_total_cols, my_vector<MP_Comm_MasterSlave>& acc_comms)
-{
-	auto total_group_elements = orientation == GridOrientation::row_first ? grid_total_cols : grid_total_rows;
-	auto total_groups_to_create = orientation == GridOrientation::row_first ? grid_total_rows : grid_total_cols;
-
-
-	uint index_acc = 0, index_rowcol = 0;
-	while(index_acc < k_accumulators || index_rowcol < total_groups_to_create)
-	{
-		//creazione gruppo (un accumulatore più le celle della riga che corrispondono al numero di colonne)
-		int acc_col_ranks[1 + total_group_elements];
-		acc_col_ranks[0] = index_acc + 1; //rango accumulatore
-
-		//ranghi colonne (k_accumulators + 1 va sommato perché rappresentano i ranghi assegnati al nodo master e a quelli accumulatori)
-		for(uint i = 0; i != total_group_elements; i++)
-			if(orientation == GridOrientation::row_first)
-				acc_col_ranks[i + 1] = (k_accumulators + 1) + (index_rowcol * grid_total_cols) + i;
-			else
-				acc_col_ranks[i + 1] = (k_accumulators + 1) + i * grid_total_cols + index_rowcol;
-
-
-		MPI_Group acc_col_group;
-		MPI_Group_incl(world_group, 1 + total_group_elements, acc_col_ranks, &acc_col_group);
-
-		MP_Comm_MasterSlave acc_col_comm;
-		acc_col_comm.root_id = index_acc;
-		acc_col_comm.row_col_id = index_rowcol;
-		MPI_Comm_create_group(MPI_COMM_WORLD, acc_col_group, 0, &acc_col_comm.comm);
-
-		//se il processo corrente non fa parte del gruppo, non si aggiunge nulla
-		if (MPI_COMM_NULL != acc_col_comm.comm) {
-			acc_comms.push_back(acc_col_comm);
-		}
-
-		//questa differenza serve per generare le associazioni tra righe e accumulatori
-		int diff = (index_acc + 1) * total_groups_to_create - (index_rowcol + 1) * k_accumulators;
-
-		if(diff == 0)
-		{
-			index_acc++;
-			index_rowcol++;
-		}
-		else if(diff > 0)
-		{
-			index_rowcol++;
-		}
-		else
-		{
-			index_acc++;
-		}
-	}
-}
-
-
-
-void parallel_computation(int argc, char** argv,std::ostream& oslog)
-{
-	//leggo configurazione griglia
-	uint k_accumulators, grid_total_rows, grid_total_cols;
-	parse_args(argc, argv, k_accumulators, grid_total_rows, grid_total_cols);
-
 	master_cout("There are " + to_string(k_accumulators)
 			+ " accumulators and the grid size is " + to_string(grid_total_rows) + "x" + to_string(grid_total_cols));
 
@@ -234,7 +174,6 @@ void parallel_computation(int argc, char** argv,std::ostream& oslog)
 	oslog << "My first random number is " << generator() << "\n";
 
 
-
 	//Determino comunicatori per ciascun nodo
 	MPI_Group world_group;
 	MPI_Comm_group(MPI_COMM_WORLD, &world_group);
@@ -243,7 +182,7 @@ void parallel_computation(int argc, char** argv,std::ostream& oslog)
 	//Ottenimento comunicatori
 	master_cout("Computing comms");
 
-	MP_Comm_MasterSlave master_acc_comm;
+	MPI_Comm master_acc_comm;
 	my_vector<MP_Comm_MasterSlave> acc_row_comms;
 	my_vector<MP_Comm_MasterSlave> acc_col_comms;
 
@@ -259,16 +198,17 @@ void parallel_computation(int argc, char** argv,std::ostream& oslog)
 	if(myid == 0)
 	{
 		//MASTER
-		samples_manager smp_manager = samples_manager(PATH_DATASET, NUMBER_OF_SAMPLES);
+		samples_manager smp_manager = samples_manager(path_dataset, number_of_samples);
 
 
 		my_autoencoder = new node_master_autoencoder(layers_size, generator, k_accumulators,
 				grid_total_rows, grid_total_cols,
+				rbm_n_epochs, finetuning_n_epochs, batch_mode,
 				oslog, myid,
 				master_acc_comm,
 				smp_manager);
 	}
-	else if(myid > 0 && myid <= k_accumulators)
+	else if(myid > 0 && (uint)myid <= k_accumulators)
 	{
 		//k accumulatori
 		//indice del k-esimo accumulatore
@@ -276,6 +216,7 @@ void parallel_computation(int argc, char** argv,std::ostream& oslog)
 
 		my_autoencoder = new node_accumulator_autoencoder(layers_size, generator, k_accumulators,
 				grid_total_rows, grid_total_cols,
+				rbm_n_epochs, finetuning_n_epochs, batch_mode,
 				oslog, myid,
 				k_number,
 				master_acc_comm, acc_row_comms, acc_col_comms);
@@ -294,10 +235,12 @@ void parallel_computation(int argc, char** argv,std::ostream& oslog)
 
 		my_autoencoder = new node_cell_autoencoder(layers_size, generator, k_accumulators,
 				grid_total_rows, grid_total_cols,
+				rbm_n_epochs, finetuning_n_epochs, batch_mode,
 				oslog, myid,
 				grid_row, grid_col,
 				acc_row_comms, acc_col_comms);
 	}
+
 
 	MPI_Barrier(MPI_COMM_WORLD);
 	master_cout("Begin loop");
@@ -305,25 +248,28 @@ void parallel_computation(int argc, char** argv,std::ostream& oslog)
 }
 
 
-void single_computation(int argc, char** argv,std::ostream& oslog)
+void single_computation(std::ostream& oslog)
 {
 	//MASTER
-	samples_manager smp_manager = samples_manager(PATH_DATASET, NUMBER_OF_SAMPLES);
+	samples_manager smp_manager = samples_manager(path_dataset, number_of_samples);
 	std::default_random_engine generator;
 	set_generator(generator);
 
 	std::cout << "Running autoencoder on single node!\n";
 
-	auto my_autoencoder = new node_single_autoencoder(layers_size, generator, oslog,smp_manager);
+	auto my_autoencoder = new node_single_autoencoder(layers_size, generator,
+			rbm_n_epochs, finetuning_n_epochs, batch_mode,
+			oslog,smp_manager);
 	my_autoencoder->loop();
 }
 
 
 int main(int argc, char** argv) {
 
-
+	//variabili temporali
     struct timeval wt1, wt0;
 	double t0, t1;
+	int numproc;
 
 	//file di log
 	std::filebuf fb;
@@ -331,24 +277,49 @@ int main(int argc, char** argv) {
 
     try
     {
-		init_MPI(argc, argv, wt0, t0, myid, numproc);
+    	//get arguments
+    	parse_args(argc, argv);
 
-		//creazione file
-		string path_file = "logs/log_"+ to_string(myid) + ".txt";
-		fb.open(path_file, std::ios::out | std::ios::app);
+    	gettimeofday(&wt0, NULL);
+		init_MPI(argc, argv, t0, myid, numproc);
 
-		oslog << "---   Hello, I have ID " << myid << "\n";
+		master_cout("Number of samples: " + to_string(number_of_samples));
+		master_cout("Number of RBM training epochs: " + to_string(rbm_n_epochs));
+		master_cout("Number of Fine-tuning training epoch: " + to_string(finetuning_n_epochs));
+		master_cout("Batch mode: " + (batch_mode ? string("yes") : string("no")));
+		master_cout("Path dataset: " + path_dataset);
+
+		master_cout("Layer sizes: ");
+		for(uint i = 0; i < layers_size.size();i++)
+			master_cout(" - " + to_string(layers_size[i]) + " -");
 
 		//se c'è un singolo nodo si esegue il codice in modalità non parallela
 		bool parallel = numproc > 1;
 
+		//creazione file
+		string path_file = "logs/log_" + (parallel ? string("paral_") : string("single_")) + to_string(myid) + ".txt";
+		fb.open(path_file, std::ios::out | std::ios::app);
+
+		oslog << "---   Hello, I have ID " << myid << "\n";
+
+
 		if(parallel)
-			parallel_computation(argc, argv, oslog);
+			parallel_computation(oslog);
 		else
-			single_computation(argc, argv, oslog);
+			single_computation(oslog);
 
 
-    	close_MPI(wt1, wt0, t1, t0, myid);
+		//closing
+		close_MPI(t1);
+		gettimeofday(&wt1, NULL);
+
+		//print results time
+		//print_sec_mpi(std::cout, t0, t1, myid);
+		//print_sec_mpi(oslog, t0, t1, myid);
+
+		//print_sec_gtd(std::cout, wt0, wt1, myid);
+		//print_sec_gtd(oslog, wt0, wt1, myid);
+
     }
     catch(const std::runtime_error& re)
     {
