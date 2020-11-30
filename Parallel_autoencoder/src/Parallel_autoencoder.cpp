@@ -25,23 +25,23 @@
 
 #include "custom_utils.h"
 #include "samples_manager.h"
-#include "autoencoder.h"
 
 
 #include "node_autoencoder.h"
 #include "node_accumulator_autoencoder.h"
 #include "node_master_autoencoder.h"
 #include "node_cell_autoencoder.h"
+#include "node_single_autoencoder.h"
 
 using namespace std;
 using namespace parallel_autoencoder;
 
 
-const int NUMBER_OF_SAMPLES = 4; //todo configurabile
+const int NUMBER_OF_SAMPLES = 2; //todo configurabile
 
 
 //numero di elementi per layer predeterminato
-my_vector<int> layers_size { 4096, 8, 16, 32, 64, 32 };
+my_vector<int> layers_size { 4096, 16, 128, 64, 32};
 
 const string PATH_DATASET = "./mnist_chinese/data";
 
@@ -217,8 +217,110 @@ void GetCommsForGrid(MPI_Group& world_group, GridOrientation orientation, const 
 
 
 
+void parallel_computation(int argc, char** argv,std::ostream& oslog)
+{
+	//leggo configurazione griglia
+	uint k_accumulators, grid_total_rows, grid_total_cols;
+	parse_args(argc, argv, k_accumulators, grid_total_rows, grid_total_cols);
+
+	master_cout("There are " + to_string(k_accumulators)
+			+ " accumulators and the grid size is " + to_string(grid_total_rows) + "x" + to_string(grid_total_cols));
+
+
+	//ottenimento generatore numeri casuali
+	std::default_random_engine generator;
+	set_generator(generator);
+
+	oslog << "My first random number is " << generator() << "\n";
+
+
+
+	//Determino comunicatori per ciascun nodo
+	MPI_Group world_group;
+	MPI_Comm_group(MPI_COMM_WORLD, &world_group);
+
+
+	//Ottenimento comunicatori
+	master_cout("Computing comms");
+
+	MP_Comm_MasterSlave master_acc_comm;
+	my_vector<MP_Comm_MasterSlave> acc_row_comms;
+	my_vector<MP_Comm_MasterSlave> acc_col_comms;
+
+	GetCommsForMasterAcc(world_group, k_accumulators, master_acc_comm);
+	GetCommsForGrid(world_group, GridOrientation::row_first, k_accumulators, grid_total_rows, grid_total_cols, acc_row_comms);
+	GetCommsForGrid(world_group, GridOrientation::col_first, k_accumulators, grid_total_rows, grid_total_cols, acc_col_comms);
+
+
+	//determino ruolo di ogni nodo
+	master_cout("Instantiating classes");
+
+	node_autoencoder* my_autoencoder;
+	if(myid == 0)
+	{
+		//MASTER
+		samples_manager smp_manager = samples_manager(PATH_DATASET, NUMBER_OF_SAMPLES);
+
+
+		my_autoencoder = new node_master_autoencoder(layers_size, generator, k_accumulators,
+				grid_total_rows, grid_total_cols,
+				oslog, myid,
+				master_acc_comm,
+				smp_manager);
+	}
+	else if(myid > 0 && myid <= k_accumulators)
+	{
+		//k accumulatori
+		//indice del k-esimo accumulatore
+		int k_number = myid - 1;
+
+		my_autoencoder = new node_accumulator_autoencoder(layers_size, generator, k_accumulators,
+				grid_total_rows, grid_total_cols,
+				oslog, myid,
+				k_number,
+				master_acc_comm, acc_row_comms, acc_col_comms);
+	}
+	else
+	{
+		//nodo giglia
+		//determino l'n-esimo elemento della griglia
+		uint grid_offset = myid - k_accumulators - 1;
+
+		//quale riga?
+		uint grid_row = grid_offset / grid_total_cols;
+
+		//quale colonna?
+		uint grid_col = grid_offset % grid_total_cols;
+
+		my_autoencoder = new node_cell_autoencoder(layers_size, generator, k_accumulators,
+				grid_total_rows, grid_total_cols,
+				oslog, myid,
+				grid_row, grid_col,
+				acc_row_comms, acc_col_comms);
+	}
+
+	MPI_Barrier(MPI_COMM_WORLD);
+	master_cout("Begin loop");
+	my_autoencoder->loop();
+}
+
+
+void single_computation(int argc, char** argv,std::ostream& oslog)
+{
+	//MASTER
+	samples_manager smp_manager = samples_manager(PATH_DATASET, NUMBER_OF_SAMPLES);
+	std::default_random_engine generator;
+	set_generator(generator);
+
+	std::cout << "Running autoencoder on single node!\n";
+
+	auto my_autoencoder = new node_single_autoencoder(layers_size, generator, oslog,smp_manager);
+	my_autoencoder->loop();
+}
+
 
 int main(int argc, char** argv) {
+
 
     struct timeval wt1, wt0;
 	double t0, t1;
@@ -231,136 +333,20 @@ int main(int argc, char** argv) {
     {
 		init_MPI(argc, argv, wt0, t0, myid, numproc);
 
-
 		//creazione file
 		string path_file = "logs/log_"+ to_string(myid) + ".txt";
 		fb.open(path_file, std::ios::out | std::ios::app);
 
 		oslog << "---   Hello, I have ID " << myid << "\n";
 
+		//se c'è un singolo nodo si esegue il codice in modalità non parallela
+		bool parallel = numproc > 1;
 
-		//leggo configurazione griglia
-		uint k_accumulators, grid_total_rows, grid_total_cols;
-		parse_args(argc, argv, k_accumulators, grid_total_rows, grid_total_cols);
-
-		master_cout("There are " + to_string(k_accumulators)
-				+ " accumulators and the grid size is " + to_string(grid_total_rows) + "x" + to_string(grid_total_cols));
-
-
-		//ottenimento generatore numeri casuali
-		std::default_random_engine generator;
-		set_generator(generator);
-
-		oslog << "My first random number is " << generator() << "\n";
-
-
-
-		//Determino comunicatori per ciascun nodo
-		MPI_Group world_group;
-		MPI_Comm_group(MPI_COMM_WORLD, &world_group);
-
-
-		//Ottenimento comunicatori
-		master_cout("Computing comms");
-
-		MP_Comm_MasterSlave master_acc_comm;
-		my_vector<MP_Comm_MasterSlave> acc_row_comms;
-		my_vector<MP_Comm_MasterSlave> acc_col_comms;
-
-		GetCommsForMasterAcc(world_group, k_accumulators, master_acc_comm);
-		GetCommsForGrid(world_group, GridOrientation::row_first, k_accumulators, grid_total_rows, grid_total_cols, acc_row_comms);
-		GetCommsForGrid(world_group, GridOrientation::col_first, k_accumulators, grid_total_rows, grid_total_cols, acc_col_comms);
-
-
-		//determino ruolo di ogni nodo
-		master_cout("Instantiating classes");
-
-		node_autoencoder* my_autoencoder;
-		if(myid == 0)
-		{
-			//MASTER
-			samples_manager smp_manager = samples_manager(PATH_DATASET, NUMBER_OF_SAMPLES);
-
-
-			my_autoencoder = new node_master_autoencoder(layers_size, generator, k_accumulators,
-					grid_total_rows, grid_total_cols,
-					oslog, myid,
-					master_acc_comm,
-					smp_manager);
-		}
-		else if(myid > 0 && myid <= k_accumulators)
-		{
-			//k accumulatori
-			//indice del k-esimo accumulatore
-			int k_number = myid - 1;
-
-			my_autoencoder = new node_accumulator_autoencoder(layers_size, generator, k_accumulators,
-					grid_total_rows, grid_total_cols,
-					oslog, myid,
-					k_number,
-					master_acc_comm, acc_row_comms, acc_col_comms);
-		}
+		if(parallel)
+			parallel_computation(argc, argv, oslog);
 		else
-		{
-			//nodo giglia
-			//determino l'n-esimo elemento della griglia
-			uint grid_offset = myid - k_accumulators - 1;
+			single_computation(argc, argv, oslog);
 
-			//quale riga?
-			uint grid_row = grid_offset / grid_total_cols;
-
-			//quale colonna?
-			uint grid_col = grid_offset % grid_total_cols;
-
-			my_autoencoder = new node_cell_autoencoder(layers_size, generator, k_accumulators,
-					grid_total_rows, grid_total_cols,
-					oslog, myid,
-					grid_row, grid_col,
-					acc_row_comms, acc_col_comms);
-		}
-
-		MPI_Barrier(MPI_COMM_WORLD);
-		master_cout("Begin loop");
-		my_autoencoder->loop();
-
-
-/*
-
-        std::default_random_engine generator;
-        samples_manager sss = samples_manager("./mnist_chinese/data", 4); //todo sistemare
-
-        vector<int> layer_sizes = { 4096 , 1024,  512 , 256, 128, 64, 32};
-
-        Autoencoder autoen = Autoencoder(layer_sizes, sss, generator);
-        //autoen.load_parameters();
-
-        autoen.Train();
-
-
-        string path_to_save = "./autoencoder_pars/saved_pars.txt";
-        autoen.save_parameters(path_to_save);
-
-
-        //proviamo il reconstruct
-        sss.restart();
-        vector<float> input_buffer(layer_sizes[0]);
-        while(sss.get_next_sample(input_buffer)){
-
-            auto reconstructed = autoen.reconstruct(input_buffer);
-
-            std::cout << "Root squared error: " << root_squared_error(input_buffer, reconstructed) << "\n";
-
-            std::cout << "Input vector\n";
-            //print_vector(input_buffer);
-            sss.show_sample(input_buffer);
-
-            std::cout << "Output vector\n";
-            //print_vector(reconstructed);
-            sss.show_sample(reconstructed);
-
-            //getchar();
-        }
-*/
 
     	close_MPI(wt1, wt0, t1, t0, myid);
     }

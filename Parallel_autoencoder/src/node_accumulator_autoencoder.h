@@ -209,7 +209,7 @@ namespace parallel_autoencoder{
 						reqHidden1.AccumulateVectorSync(hidden_units1);
 
 						//Accumulazione e sigmoide per H1
-						SampleHiddenUnits(hidden_units1, hidden_biases);
+						SampleHiddenUnits(hidden_units1, hidden_biases, generator);
 
 						// A3) Invio H 1
 						reqHidden1.BroadcastVectorSync(hidden_units1);
@@ -219,7 +219,7 @@ namespace parallel_autoencoder{
 						reqHidden1.BroadcastVectorSync(hidden_units2);
 
 						//Accumulazione e sigmoide per H2
-						SampleHiddenUnits(hidden_units2, hidden_biases);
+						SampleHiddenUnits(hidden_units2, hidden_biases, generator);
 
 						// B3) Invio H 2
 						reqHidden1.BroadcastVectorSync(hidden_units2);
@@ -229,7 +229,7 @@ namespace parallel_autoencoder{
 						reqVisible1.AccumulateVector(rec_visible_units1);
 
 						//funzione Vrec 1
-						ReconstructVisibileUnits(rec_visible_units1, visible_biases, first_layer);
+						ReconstructVisibileUnits(rec_visible_units1, visible_biases, first_layer, generator);
 
 						// A5) invio  Vrec 1
 						reqVisible1.BroadcastVectorSync(rec_visible_units1);
@@ -241,7 +241,7 @@ namespace parallel_autoencoder{
 
 						//funzione Vrec 2
 						//non si applica il campionamento
-						ReconstructVisibileUnits(rec_visible_units2, visible_biases, first_layer);
+						ReconstructVisibileUnits(rec_visible_units2, visible_biases, first_layer, generator);
 
 						// B5) invio V rec 2
 						reqVisible1.BroadcastVectorSync(rec_visible_units2);
@@ -253,7 +253,7 @@ namespace parallel_autoencoder{
 						reqHidden1.AccumulateVectorSync(rec_hidden_units1);
 
 						//Accumulazione e sigmoide per H1
-						ReconstructHiddenUnits(rec_hidden_units1, hidden_biases, first_layer);
+						ReconstructHiddenUnits(rec_hidden_units1, hidden_biases, first_layer, generator);
 
 						// A7) invio H rec 1
 						reqHidden1.BroadcastVectorSync(rec_hidden_units1);
@@ -263,7 +263,7 @@ namespace parallel_autoencoder{
 						reqHidden1.AccumulateVectorSync(rec_hidden_units2);
 
 						//Accumulazione e sigmoide per H2
-						ReconstructHiddenUnits(rec_hidden_units2, hidden_biases, first_layer);
+						ReconstructHiddenUnits(rec_hidden_units2, hidden_biases, first_layer, generator);
 
 						// B7) Async invio H rec 2
 						reqHidden1.BroadcastVector(rec_hidden_units2);
@@ -298,7 +298,7 @@ namespace parallel_autoencoder{
 						//applicazione gradienti
 						//se abbiamo raggiunto la grandezza del mini batch, si modificano i pesi
 						if(current_index_sample % rbm_size_minibatch == 0)
-							update_parameters(current_learning_rate, hidden_biases, visible_biases,
+							update_parameters_biases(rbm_momentum, current_learning_rate, hidden_biases, visible_biases,
 									diff_visible_biases, diff_hidden_biases, rbm_size_minibatch);
 
 					} //fine esempio
@@ -308,7 +308,7 @@ namespace parallel_autoencoder{
 				//se si sono degli esempi non ancora considerati, si applica il relativo update dei pesi
 				int n_last_samples = current_index_sample % rbm_size_minibatch;
 				if(n_last_samples != 0)
-					update_parameters(current_learning_rate, hidden_biases, visible_biases,
+					update_parameters_biases(rbm_momentum, current_learning_rate, hidden_biases, visible_biases,
 							diff_visible_biases, diff_hidden_biases, n_last_samples);
 
 
@@ -324,69 +324,14 @@ namespace parallel_autoencoder{
 
 		}
 
-		inline void SampleHiddenUnits(my_vector<float>& hidden_units, my_vector<float>& hidden_biases)
-		{
-			for(uint i = 0; i != hidden_units.size(); i++)
-				hidden_units[i] = sample_sigmoid_function(hidden_units[i] + hidden_biases[i], generator);
-		}
+		inline void set_gradient(my_vector<float>& diff_biases,
+					my_vector<float>& units,
+					my_vector<float>& rec_units)
+			{
+				for(uint i = 0; i != diff_biases.size(); i++)
+					diff_biases[i] += units[i] - rec_units[i];
+			}
 
-		inline void ReconstructHiddenUnits(my_vector<float>& rec_hidden_units, my_vector<float> &hidden_biases, const bool first_layer)
-		{
-			if(first_layer)
-				for(uint i = 0; i != rec_hidden_units.size(); i++)
-					rec_hidden_units[i] = sample_sigmoid_function(rec_hidden_units[i] + hidden_biases[i], generator);
-			else
-				for(uint i = 0; i != rec_hidden_units.size(); i++)
-					rec_hidden_units[i] =  sigmoid(rec_hidden_units[i] + hidden_biases[i]);
-		}
-
-		inline	void ReconstructVisibileUnits(my_vector<float>& rec_visible_units, my_vector<float>& visible_biases, const bool first_layer)
-		{
-			//todo assicurarsi che siano probabilita e non binari
-			if(first_layer) //per il primo layer bisogna aggiungere del rumore gaussiano
-				for(uint i = 0; i != rec_visible_units.size(); i++)
-					rec_visible_units[i] =	sample_gaussian_distribution(rec_visible_units[i] + visible_biases[i], generator);
-			else
-				for(uint i = 0; i != rec_visible_units.size(); i++)
-					rec_visible_units[i] =	sigmoid(rec_visible_units[i] + visible_biases[i]);
-		}
-
-		inline void set_gradient(my_vector<float>& diff_biases, my_vector<float>& units,my_vector<float>& rec_units)
-		{
-			for(uint i = 0; i != diff_biases.size(); i++)
-				diff_biases[i] += units[i] - rec_units[i];
-		}
-
-
-
-		//dopo aver utilizzato i differenziali, li si inizializzano considerando il momentum
-		//la formula per l'update di un generico parametro è: Δw(t) = momentum * Δw(t-1) + learning_parameter * media_gradienti_minibatch
-		 inline void update_parameters(
-				const float current_learning_rate,
-				my_vector<float> &hidden_biases, my_vector<float> &visible_biases,
-				my_vector<float> &diff_visible_biases,	my_vector<float> &diff_hidden_biases,
-				const int number_of_samples)
-		 {
-				//si precalcola il fattore moltiplicativo
-				//dovendo fare una media bisogna dividere per il numero di esempi
-				const float mult_factor = current_learning_rate / number_of_samples;
-
-				//diff per pesi e bias visibili
-				for(uint i = 0; i != visible_biases.size(); i++)
-				{
-					visible_biases[i] += diff_visible_biases[i] * mult_factor;
-
-					//inizializzazione per il momentum
-					diff_visible_biases[i] = diff_visible_biases[i] * rbm_momentum;
-				}
-
-				for(uint j = 0; j != hidden_biases.size(); j++){
-					hidden_biases[j] += diff_hidden_biases[j]* mult_factor;
-
-					//inizializzazione per il momentum
-					diff_hidden_biases[j] = diff_hidden_biases[j] * rbm_momentum;
-				}
-		}
 
 
 		 inline void save_new_samples(
@@ -455,8 +400,8 @@ namespace parallel_autoencoder{
 		}
 
 
-		 inline void forward_pass(my_vector<my_vector<float>>& activation_layers)
-		 {
+		inline void forward_pass(my_vector<my_vector<float>>& activation_layers)
+		{
 			const uint central_layer = number_of_final_layers / 2 - 1;
 
 			 //1. forward pass
@@ -487,17 +432,12 @@ namespace parallel_autoencoder{
 				//si applica la funzione sigmoide
 				//se il layer è quello centrale (coding), bisogna effettuare un rounding dei valori
 				//per ottenere un valore binario
-				if(l == central_layer)
-					for(uint i = 0; i != output.size(); i++)
-						output[i] = round(sigmoid(output[i] + biases[i]));
-				else
-					for(uint i = 0; i != output.size(); i++)
-						output[i] = sigmoid(output[i] + biases[i]);
+				apply_sigmoid_to_layer(output, biases, l == central_layer);
 
 			} //fine forward
 		 }
 
-		 inline void backward_pass(my_vector<my_vector<float>>& activation_layers)
+		inline void backward_pass(my_vector<my_vector<float>>& activation_layers)
 		 {
 		    //si va dall'ultimo layer al penultimo (quello di input non viene considerato)
 			for(uint l = number_of_final_layers - 1; l != 0; l--){
@@ -525,9 +465,7 @@ namespace parallel_autoencoder{
 
 					//calcolo dei delta per il layer di output
 					// delta = y_i * (1 - y_i) * reconstruction_error
-					for(uint j = 0; j != output_layer.size(); j++)
-					   current_deltas[j] = output_layer[j]  * (1 - output_layer[j]) //derivative
-							   * (first_activation_layer[j] - output_layer[j]); //rec error
+					deltas_for_output_layer(output_layer, first_activation_layer, current_deltas);
 				}
 				else
 				{
@@ -556,9 +494,7 @@ namespace parallel_autoencoder{
 				reqHid.BroadcastVector(current_deltas);
 
 				//seguendo la delta rule, si applica il gradiente anche i bias
-				for(uint j = 0; j != biases_to_update.size(); j++)
-					biases_to_update[j] += fine_tuning_learning_rate * current_deltas[j];
-
+				update_biases_fine_tuning(biases_to_update, current_deltas, fine_tuning_learning_rate);
 			}
 		 }
 
@@ -612,13 +548,12 @@ namespace parallel_autoencoder{
 			fine_tuning_finished = true;
 			save_parameters();
 
-			//si aspettano eventuali nodi rimasti indietro
-			MPI_Barrier(MPI_COMM_WORLD);
 		}
 
 
 
 		my_vector<float> reconstruct(){
+
 
 			auto activation_layers = get_activation_layers();
 			MPI_Request reqMaster;
@@ -642,7 +577,7 @@ namespace parallel_autoencoder{
 
 
 
-	   string get_path_file(){
+	    string get_path_file(){
 
 			return folder_parameters_path + "paral_k_"+ std::to_string(k_number) + ".txt";
 		}
@@ -789,8 +724,6 @@ namespace parallel_autoencoder{
 			//se ci sono altre linee da analizzare vuol dire che si aggiornano i pesi dei layer di ricostruzione
 			if(other_lines)
 			{
-				current_row_file = 0;
-
 				//indice del layer contenente pesi o bias
 				uint current_layer = (number_of_final_layers - 1) / 2;
 				do
@@ -817,15 +750,12 @@ namespace parallel_autoencoder{
 						if(ss.peek() == ',') ss.ignore();
 						ss >> current_hidden_biases->operator [](j);
 					}
-
-
-					//si tiene conto della riga processata
-					current_row_file++;
 				}
 				while(std::getline(myFile, line));
 
 				//il training si considera concluso
 				fine_tuning_finished = true;
+
 			}
 
 			// Close file

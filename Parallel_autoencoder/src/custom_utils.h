@@ -23,10 +23,14 @@
 #include <iostream>
 #include <initializer_list>
 
+
 using std::vector;
 
 
 namespace parallel_autoencoder{
+
+	static  bool OOOOOOK = false;
+
 
 	//utilizzata per identificare il processo root nell'insieme
 	struct MP_Comm_MasterSlave{
@@ -431,7 +435,7 @@ namespace parallel_autoencoder{
 			assert(r < rows);
 			assert(c < cols);
 
-			return mem[r * c + c];
+			return mem[r * cols + c];
 		}
 
 		Arg& operator[](const uint s) const
@@ -458,6 +462,15 @@ namespace parallel_autoencoder{
 
 
 	};
+
+
+
+
+
+
+
+
+
 
 	template<typename Arg>
    inline void matrix_vector_multiplication(const matrix<Arg>& mn_matrix,
@@ -514,7 +527,7 @@ namespace parallel_autoencoder{
 
 	   for(uint r = 0; r != source_matrix.get_rows(); r++)
 		   for(uint c = 0; c != source_matrix.get_cols(); c++)
-			   dest_matrix.at(c, r) = source_matrix.at(r, c);
+			   dest_matrix.at(c, r) = { source_matrix.at(r, c) };
    }
 
 
@@ -523,28 +536,6 @@ namespace parallel_autoencoder{
 
 
 
-
-
-
-
-	//metodo creato per non dover effettuare di volta in volta la trasposta della matrice
-	void matrix_transpose_vector_multiplication(const matrix<float>& m_by_n_matrix,
-			const my_vector<float>& m_by_1_vec,
-			const my_vector<float>& n_by_1_vect_bias,
-			my_vector<float>& n_by_1_vec_dest);
-
-
- 
-    void matrix_vector_multiplication(const matrix<float>& m_by_n_matrix,
-            const my_vector<float>& n_by_1_vec,
-            const my_vector<float>& m_by_1_vect_bias,
-			my_vector<float>& m_by_1_vec_dest);
-    
-    //metodo creato per non dover effettuare di volta in volta la trasposta della matrice
-    void matrix_transpose_vector_multiplication(const vector<vector<float>>& m_by_n_matrix, 
-            const vector<float>& m_by_1_vec, 
-            const vector<float>& n_by_1_vect_bias,
-            vector<float>& n_by_1_vec_dest);
     
     float sigmoid(const float x);
     
@@ -566,9 +557,152 @@ namespace parallel_autoencoder{
     float root_squared_error(vector<float> vec_1, vector<float> vec_2);
     
     
-    void print_vector(my_vector<float> v);
+    void print_vector(my_vector<float>& v);
 
-    void print_matrix(matrix<float> v);
+    void print_matrix(matrix<float>& v);
+
+
+
+    inline void initialize_weight_matrix(matrix<float>& weights,
+    		const float rbm_initial_weights_mean, const float rbm_initial_weights_variance,
+			std::default_random_engine& generator)
+    {
+    	for(uint i = 0; i != weights.size(); i++)
+				weights[i] = sample_gaussian_distribution(rbm_initial_weights_mean, rbm_initial_weights_variance, generator);
+    }
+
+
+
+	inline void SampleHiddenUnits(my_vector<float>& hidden_units, my_vector<float>& hidden_biases, std::default_random_engine& generator)
+	{
+		for(uint i = 0; i != hidden_units.size(); i++)
+			hidden_units[i] = sample_sigmoid_function(hidden_units[i] + hidden_biases[i], generator);
+	}
+
+	inline void ReconstructVisibileUnits(my_vector<float>& rec_visible_units, my_vector<float>& visible_biases, const bool first_layer, std::default_random_engine& generator)
+	{
+		//todo assicurarsi che siano probabilita e non binari
+		if(first_layer) //per il primo layer bisogna aggiungere del rumore gaussiano
+			for(uint i = 0; i != rec_visible_units.size(); i++)
+				rec_visible_units[i] =	sample_gaussian_distribution(rec_visible_units[i] + visible_biases[i], generator);
+		else
+			for(uint i = 0; i != rec_visible_units.size(); i++)
+				rec_visible_units[i] =	sigmoid(rec_visible_units[i] + visible_biases[i]);
+	}
+
+	inline void ReconstructHiddenUnits(my_vector<float>& rec_hidden_units, my_vector<float> &hidden_biases, const bool first_layer, std::default_random_engine& generator)
+	{
+		if(first_layer)
+			for(uint i = 0; i != rec_hidden_units.size(); i++)
+				rec_hidden_units[i] = sample_sigmoid_function(rec_hidden_units[i] + hidden_biases[i], generator);
+		else
+			for(uint i = 0; i != rec_hidden_units.size(); i++)
+				rec_hidden_units[i] =  sigmoid(rec_hidden_units[i] + hidden_biases[i]);
+	}
+
+
+
+	inline void apply_sigmoid_to_layer(my_vector<float>& output, my_vector<float> biases, const bool round_output)
+	{
+		if(round_output)
+			for(uint i = 0; i != output.size(); i++)
+				output[i] = round(sigmoid(output[i] + biases[i]));
+		else
+			for(uint i = 0; i != output.size(); i++)
+				output[i] = sigmoid(output[i] + biases[i]);
+	}
+
+
+	inline void deltas_for_output_layer(my_vector<float>& output_layer,my_vector<float>& first_activation_layer,my_vector<float>& current_deltas)
+	{
+		for(uint j = 0; j != output_layer.size(); j++)
+			   current_deltas[j] = output_layer[j]  * (1 - output_layer[j]) //derivative
+				   * (first_activation_layer[j] - output_layer[j]); //rec error
+	}
+
+
+
+
+	//dopo aver utilizzato i differenziali, li si inizializzano considerando il momentum
+	//la formula per l'update di un generico parametro è: Δw(t) = momentum * Δw(t-1) + learning_parameter * media_gradienti_minibatch
+	 inline void update_parameters_biases(
+			 	 	const float momentum,
+					const float current_learning_rate,
+					my_vector<float> &hidden_biases, my_vector<float> &visible_biases,
+					my_vector<float> &diff_visible_biases,	my_vector<float> &diff_hidden_biases,
+					const int number_of_samples)
+			 {
+					//si precalcola il fattore moltiplicativo
+					//dovendo fare una media bisogna dividere per il numero di esempi
+					const float mult_factor = current_learning_rate / number_of_samples;
+
+					//diff per pesi e bias visibili
+					for(uint i = 0; i != visible_biases.size(); i++)
+					{
+						visible_biases[i] += diff_visible_biases[i] * mult_factor;
+
+						//inizializzazione per il momentum
+						diff_visible_biases[i] = diff_visible_biases[i] * momentum;
+					}
+
+					for(uint j = 0; j != hidden_biases.size(); j++){
+						hidden_biases[j] += diff_hidden_biases[j]* mult_factor;
+
+						//inizializzazione per il momentum
+						diff_hidden_biases[j] = diff_hidden_biases[j] * momentum;
+					}
+			}
+
+
+	 inline void update_parameters_weights(
+			 	 	const float momentum,
+	 	    		const float current_learning_rate,
+	 		        matrix<float>& weights, matrix<float>& diff_weights,
+	 		        const int number_of_samples)
+	 	    {
+	 				//si precalcola il fattore moltiplicativo
+	 				//dovendo fare una media bisogna dividere per il numero di esempi
+	 				const float mult_factor = current_learning_rate / number_of_samples;
+
+	 				//diff per pesi visibili
+	 				for(uint i = 0; i < weights.size(); i++)
+	 				{
+	 				   weights[i] += diff_weights[i] * mult_factor;
+
+					   //inizializzazione per il momentum
+					   diff_weights[i] = diff_weights[i] * momentum;
+	 				}
+	 		}
+
+
+	 inline void update_weights_fine_tuning(matrix<float>& weights_to_update,
+	 					my_vector<float>& deltas,my_vector<float>& input_layer,
+						const float fine_tuning_learning_rate)
+	{
+		assert( weights_to_update.get_rows() == input_layer.size());
+		assert( weights_to_update.get_cols() == deltas.size());
+
+		for(uint i = 0; i != weights_to_update.get_rows(); i++){
+			for(uint j = 0; j != weights_to_update.get_cols(); j++){
+				//delta rule
+				weights_to_update.at(i, j) +=
+						fine_tuning_learning_rate
+						* deltas[j]
+						* input_layer[i];
+			}
+		}
+	}
+
+
+
+		inline void update_biases_fine_tuning(my_vector<float>& biases_to_update,my_vector<float>& current_deltas,
+				const float fine_tuning_learning_rate)
+		{
+			assert(biases_to_update.size() == current_deltas.size());
+
+			for(uint j = 0; j != biases_to_update.size(); j++)
+				 biases_to_update[j] += fine_tuning_learning_rate * current_deltas[j];
+		}
 
 }
 

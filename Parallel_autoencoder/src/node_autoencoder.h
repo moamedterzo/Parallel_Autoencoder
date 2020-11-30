@@ -2,15 +2,12 @@
 #define NODE_AUTOENCODER_H
 
 
-#include <vector>
 #include <random>
 #include <string>
 #include <string.h>
 #include <iomanip>
 #include "samples_manager.h"
 #include "mpi.h"
-
-using std::vector;
 
 
 namespace parallel_autoencoder{
@@ -29,7 +26,6 @@ namespace parallel_autoencoder{
     {
 
     protected:
-
 
     	const uint MAX_FOLDER_PARS_LENGTH = 300;
 
@@ -220,7 +216,7 @@ namespace parallel_autoencoder{
 
 			trained_rbms = 0;
 			rbm_momentum = 0.9;
-			rbm_n_training_epocs = 2;//todo sistemare
+			rbm_n_training_epocs = 3;//todo sistemare
 			rbm_size_minibatch = 1;//todo sistemare
 
 			rbm_initial_weights_variance = 0.01;
@@ -228,7 +224,7 @@ namespace parallel_autoencoder{
 			rbm_initial_biases_value = 0;
 
 
-			fine_tuning_n_training_epocs = 2;
+			fine_tuning_n_training_epocs = 5;
 			fine_tuning_learning_rate = 10e-6;
 
 			fine_tuning_finished = false;
@@ -243,6 +239,10 @@ namespace parallel_autoencoder{
 
         void loop()
         {
+			//si aspettano eventuali nodi rimasti indietro
+			MPI_Barrier(MPI_COMM_WORLD);
+
+
         	CommandType command;
         	do
         	{

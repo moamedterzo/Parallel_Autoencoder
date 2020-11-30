@@ -357,9 +357,6 @@ namespace parallel_autoencoder{
 			fine_tuning_finished = true;
 			save_parameters();
 
-			//si aspettano eventuali nodi rimasti indietro
-			MPI_Barrier(MPI_COMM_WORLD);
-
 			std::cout << "Fine-tuning completed\n";
 		}
 

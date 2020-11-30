@@ -19,11 +19,10 @@ namespace parallel_autoencoder{
 
 	private:
 
-		//vector<vector<vector<float>>> layers_weights;
 		my_vector<matrix<float>> layers_weights;
 
-		int row_number;
-		int col_number;
+		uint row_number;
+		uint col_number;
 
 		my_vector<MP_Comm_MasterSlave> accs_row_comm;
 		my_vector<MP_Comm_MasterSlave> accs_col_comm;
@@ -103,6 +102,7 @@ namespace parallel_autoencoder{
 			accs_col_comm = _accs_col_comm;
 
 			calc_all_comm_sizes();
+
 		}
 
 
@@ -123,8 +123,7 @@ namespace parallel_autoencoder{
 				auto& weights = layers_weights[layer_number];
 
 				//inizializzazione pesi
-				for(uint i = 0; i != weights.size(); i++)
-					weights[i] = sample_gaussian_distribution(rbm_initial_weights_mean, rbm_initial_weights_variance, generator);
+				initialize_weight_matrix(weights, rbm_initial_weights_mean, rbm_initial_weights_variance, generator);
 
 				//gradienti calcolati per pesi
 				matrix<float> diff_weights(n_my_visible_units, n_my_hidden_units, 0.0);
@@ -316,7 +315,7 @@ namespace parallel_autoencoder{
 
 						//se abbiamo raggiunto la grandezza del mini batch, si modificano i pesi
 						if(current_index_sample % rbm_size_minibatch == 0)
-							update_parameters(current_learning_rate, weights, diff_weights,rbm_size_minibatch);
+							update_parameters_weights(rbm_momentum, current_learning_rate, weights, diff_weights, number_of_samples);
 
 					} //fine esempio
 				} //fine epoca
@@ -325,7 +324,7 @@ namespace parallel_autoencoder{
 				//se si sono degli esempi non ancora considerati, si applica il relativo update dei pesi
 				int n_last_samples = current_index_sample % rbm_size_minibatch;
 				if(n_last_samples != 0)
-					update_parameters(current_learning_rate, weights, diff_weights, n_last_samples);
+					update_parameters_weights(rbm_momentum, current_learning_rate, weights, diff_weights, n_last_samples);
 
 				//SALVATAGGIO NUOVI INPUT (non viene sfruttato il doppio canale come nel training della RBM)
 				save_new_samples(reqVisible1,reqHidden1, weights,
@@ -346,7 +345,7 @@ namespace parallel_autoencoder{
 		{
 			for(uint i = 0; i != visible_units.size(); i++)
 			{
-				for(uint j = 0; j < hidden_units.size(); j++){
+				for(uint j = 0; j != hidden_units.size(); j++){
 					diff_weights.at(i, j) +=
 							  visible_units[i] * hidden_units[j]  //fattore positivo
 							 - rec_visible_units[i] * rec_hidden_units[j]; //fattore negativo
@@ -354,28 +353,21 @@ namespace parallel_autoencoder{
 			}
 		}
 
-		//dopo aver utilizzato i differenziali, li si inizializzano considerando il momentum
-		 //la formula per l'update di un generico parametro è: Δw(t) = momentum * Δw(t-1) + learning_parameter * media_gradienti_minibatch
-	    inline void update_parameters(
-	    		const float current_learning_rate,
-		        matrix<float> &weights, matrix<float> &diff_weights,
-		        const int number_of_samples)
-	    {
-				//si precalcola il fattore moltiplicativo
-				//dovendo fare una media bisogna dividere per il numero di esempi
-				const float mult_factor = current_learning_rate / number_of_samples;
-
-				//diff per pesi visibili
-				for(uint i = 0; i != weights.get_rows(); i++)
-				{
-					for(uint j = 0; j != weights.get_cols(); j++){
-					   weights.at(i, j) += diff_weights.at(i, j) * mult_factor;
-
-					   //inizializzazione per il momentum
-					   diff_weights.at(i, j) = diff_weights.at(i, j) * rbm_momentum;
-					}
+		inline void update_weights_fine_tuning(matrix<float>& weights_to_update,
+				my_vector<float>& deltas_from_accs,my_vector<float>& input_layer)
+		{
+			for(uint i = 0; i != weights_to_update.get_rows(); i++){
+				for(uint j = 0; j != weights_to_update.get_cols(); j++){
+					//delta rule
+					weights_to_update.at(i, j) +=
+							fine_tuning_learning_rate
+							* deltas_from_accs[j]
+							* input_layer[i];
 				}
+			}
 		}
+
+
 
 
 	    inline void save_new_samples(
@@ -511,15 +503,7 @@ namespace parallel_autoencoder{
 				}
 
 				//applico gradiente per la matrice dei pesi
-				for(uint i = 0; i != weights_to_update.get_rows(); i++){
-					for(uint j = 0; j != weights_to_update.get_cols(); j++){
-						//delta rule
-						weights_to_update.at(i, j) +=
-								fine_tuning_learning_rate
-								* deltas_from_accs[j]
-								* input_layer[i];
-					}
-				}
+				update_weights_fine_tuning(weights_to_update, deltas_from_accs, input_layer);
 			}
 	    }
 
@@ -534,7 +518,7 @@ namespace parallel_autoencoder{
 	    	for(uint trained_layer = 0; trained_layer != number_of_rbm_to_learn; trained_layer++)
 			{
 				//memorizzo i pesi trasposti nel layer feed forward, attenzione agli indici
-				uint index_weights_dest = number_of_final_layers - trained_layer - 2;
+				const uint index_weights_dest = number_of_final_layers - trained_layer - 2;
 
 				//si salva la trasposta dei pesi
 				auto& layer_weights_source = layers_weights[trained_layer];
@@ -571,13 +555,13 @@ namespace parallel_autoencoder{
 				backward_pass(activation_layers, output_layers);
 			} //fine esempi
 
+
+
 			//allenamento concluso
 			fine_tuning_finished = true;
 			save_parameters();
 
 
-			//si aspettano eventuali nodi rimasti indietro
-			MPI_Barrier(MPI_COMM_WORLD);
 		}
 
 
@@ -600,7 +584,8 @@ namespace parallel_autoencoder{
 	    }
 
 
-		void save_parameters(){
+		void save_parameters()
+		{
 
 			string path_file = get_path_file();
 
@@ -619,8 +604,10 @@ namespace parallel_autoencoder{
 				myFile << "_rbm_" << weights.get_rows() << "x" << weights.get_cols() << "__,";
 				for(uint i = 0; i != weights.size(); i++)
 					myFile << fixed << setprecision(F_PREC) << weights[i] << ",";
+
 				myFile << endl;
 			}
+
 
 			if(fine_tuning_finished)
 			{
@@ -630,7 +617,7 @@ namespace parallel_autoencoder{
 
 					myFile << "_rec_" << weights.get_rows() << "x" << weights.get_cols() << "__,";
 					for(uint i = 0; i != weights.size(); i++)
-						myFile << fixed << setprecision(F_PREC) << weights[i] << ",";
+							myFile << fixed << setprecision(F_PREC) << weights[i] << ",";
 
 					myFile << endl;
 
@@ -687,6 +674,7 @@ namespace parallel_autoencoder{
 
 
 				// Create a stringstream of the current line
+
 				std::stringstream ss(line);
 
 				//riga dei pesi

@@ -6288,3 +6288,1985 @@ Imparando le RBM...
 Numero di RBM da apprendere: 5
 Numero di RBM gia apprese: 0
 Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 5
+Numero di layer finali: 11
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 5
+Numero di layer finali: 11
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 5
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 5
+Numero di RBM gia apprese: 0
+Numero di layer finali: 11
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 2
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 2
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 2
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 2
+Numero di layer finali: 5
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 2
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 2 (over a total of 8) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 1 (over a total of 4) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 2
+Numero di RBM gia apprese: 0
+Numero di layer finali: 5
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 64 (over a total of 256) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 64 (over a total of 256) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 64 (over a total of 256) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 64 (over a total of 256) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 4
+Numero di RBM gia apprese: 0
+Numero di layer finali: 9
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 64 (over a total of 256) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 64 (over a total of 256) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 64 (over a total of 256) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 64 (over a total of 256) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 4
+Numero di RBM gia apprese: 0
+Numero di layer finali: 9
+---   Hello, I have ID 4
+My first random number is 67228
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 8 (over a total of 32) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 16 (over a total of 64) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:3
+Current orientation:row
+I'm a k node, I will send 32 (over a total of 128) elements to each node of the row/col with index:3
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:col
+I'm a k node, I will send 4 (over a total of 16) elements to each node of the row/col with index:1
+Current orientation:row
+I'm a k node, I will send 1024 (over a total of 4096) elements to each node of the row/col with index:3
+Imparando le RBM...
+Numero di RBM da apprendere: 4
+Numero di RBM gia apprese: 0
+Numero di layer finali: 9

@@ -124,7 +124,7 @@ namespace parallel_autoencoder{
     }   
     
     
-    void print_vector(my_vector<float> v) {
+    void print_vector(my_vector<float>& v) {
 
         for(uint i = 0; i != v.size(); i++)
             cout << "[" << std::to_string(v[i]) << "] ";
@@ -132,7 +132,7 @@ namespace parallel_autoencoder{
         cout << "\n";
     }
     
-    void print_matrix(matrix<float> v) {
+    void print_matrix(matrix<float>& v) {
     	 for(uint i = 0; i != v.get_rows(); i++)
     	 {
     		 for(uint j = 0; j != v.get_cols(); j++)
