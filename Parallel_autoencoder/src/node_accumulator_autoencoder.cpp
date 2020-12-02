@@ -164,7 +164,8 @@ namespace parallel_autoencoder
 
 				for(uint epoch = 0; epoch < rbm_n_training_epocs; epoch++){
 
-					if(k_number == 0) std::cout << "Training epoch: " << epoch << "\n";
+					if(k_number == 0 && epoch % 1== 0)
+						std::cout << "Training epoch: " << epoch << "\n";
 
 					current_learning_rate = GetRBMLearningRate(epoch, layer_number);
 

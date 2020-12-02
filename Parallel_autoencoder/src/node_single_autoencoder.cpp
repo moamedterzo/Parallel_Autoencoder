@@ -195,7 +195,7 @@ namespace parallel_autoencoder
 
 					learning_rate = GetRBMLearningRate(epoch, layer_number);
 
-					if(epoch % 5 == 0)
+					if(epoch % 1 == 0)
 						std::cout << "Training epoch: " << epoch << "\n";
 
 					smp_manager.restart();
