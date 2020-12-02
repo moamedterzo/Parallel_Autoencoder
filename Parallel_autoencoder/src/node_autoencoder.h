@@ -6,7 +6,6 @@
 #include "MPI_adapters.h"
 
 
-#include <stdexcept>
 #include "samples_manager.h"
 
 

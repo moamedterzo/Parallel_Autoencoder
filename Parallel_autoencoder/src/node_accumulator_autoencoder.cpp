@@ -10,7 +10,6 @@
 #include <sstream>
 #include <fstream>
 #include <iomanip>
-#include <stdexcept>
 
 using namespace std;
 
@@ -587,7 +586,7 @@ namespace parallel_autoencoder
 			std::ofstream myFile(path_file);
 
 			// Make sure the file is open
-			if(!myFile.is_open()) throw std::runtime_error("Could not open file: " + path_file);
+			if(!myFile.is_open()) cout << "Could not open file: " + path_file << "\n";
 
 
 
@@ -648,7 +647,7 @@ namespace parallel_autoencoder
 			std::ifstream myFile(path_file);
 
 			// Make sure the file is open
-			if(!myFile.is_open()) throw std::runtime_error("Could not open file: " + path_file);
+			if(!myFile.is_open()) cout << "Could not open file: " + path_file << "\n";
 
 			// Helper vars
 			std::string line;

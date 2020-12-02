@@ -88,10 +88,7 @@ namespace parallel_autoencoder
 			//Al momento il numero di esempi deve essere necessariamente pari
 			if(number_of_samples % 2 != 0)
 			{
-				string message = "Number of samples must be even";
-				std::cout << message << "\n";
-
-				throw new std::runtime_error(message);
+				std::cout << "Number of samples must be even\nPOSSIBLE ERRORS\n";
 			}
 
 		}
@@ -513,7 +510,7 @@ namespace parallel_autoencoder
 		std::ofstream myFile(path_file);
 
 		// Make sure the file is open
-		if(!myFile.is_open()) throw std::runtime_error("Could not open file: " + path_file);
+		if(!myFile.is_open()) cout << "Could not open file: " + path_file << "\n";
 
 		//salvataggio di pesi, bias
 		uint layer_number;
@@ -579,7 +576,7 @@ namespace parallel_autoencoder
 		std::ifstream myFile(path_file);
 
 		// Make sure the file is open
-		if(!myFile.is_open()) throw std::runtime_error("Could not open file: " + path_file);
+		if(!myFile.is_open()) cout << "Could not open file: " + path_file << "\n";
 
 		// Helper vars
 		std::string line;

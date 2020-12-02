@@ -126,7 +126,7 @@ namespace parallel_autoencoder
         {
         	//lettura file testuale
         	std::ifstream myFile(name_fullfile);
-        	if(!myFile.is_open()) throw std::runtime_error("Could not open file: " + name_fullfile);
+        	if(!myFile.is_open()) std::cout << "Could not open file: " + name_fullfile << "\n";
 
         	//get line
 			std::string line;
@@ -206,7 +206,7 @@ namespace parallel_autoencoder
 
 			// Create an input filestream
 			std::ofstream myFile(complete_path);
-			if(!myFile.is_open()) throw std::runtime_error("Could not open file: " + complete_path);
+			if(!myFile.is_open()) std::cout << "Could not open file: " << complete_path << "\n";
 
 
 			myFile << "_visible_" << buffer.size() << "__,";
