@@ -25,7 +25,7 @@ namespace parallel_autoencoder
 	{
 		for(uint i = 0; i != visible_units.size(); i++)
 		{
-			diff_visible_biases[i] = diff_visible_biases[i]+ visible_units[i] - rec_visible_units[i];
+			diff_visible_biases[i] += visible_units[i] - rec_visible_units[i];
 
 			for(uint j = 0; j != hidden_units.size(); j++){
 				diff_weights.at(i, j) +=  visible_units[i] * hidden_units[j]  //fattore positivo
@@ -40,12 +40,12 @@ namespace parallel_autoencoder
 
 
 	node_single_autoencoder::node_single_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
-				uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode,
+				uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
 				std::ostream& _oslog,
 				samples_manager& _smp_manager)
 		: node_autoencoder(_layers_size, _generator,
 				0, 0, 0,
-				rbm_n_epochs, finetuning_n_epochs, batch_mode,
+				rbm_n_epochs, finetuning_n_epochs, batch_mode, _reduce_io,
 				_oslog, 0)
 		{
 			smp_manager = _smp_manager;
@@ -56,6 +56,13 @@ namespace parallel_autoencoder
 			layers_weights = my_vector<matrix<float>>(number_of_final_layers - 1); //ci sono (N-1)*2 pesi per N layer
 			layer_biases = my_vector<my_vector<float>>(number_of_final_layers - 1); //tutti i layer hanno il bias tranne quello di input
 
+
+			//indico il numero di elementi del dataset
+			number_of_samples = smp_manager.get_number_samples();
+
+			//Al momento il numero di esempi deve essere necessariamente pari
+			if(number_of_samples % 2 != 0)
+				std::cout << "Number of samples must be even\nPOSSIBLE ERRORS\n";
 		}
 
 
@@ -81,16 +88,6 @@ namespace parallel_autoencoder
 		if(res == 1)
 		{
 			command = CommandType::train;
-
-			//indico il numero di elementi del dataset
-			number_of_samples = smp_manager.get_number_samples();
-
-			//Al momento il numero di esempi deve essere necessariamente pari
-			if(number_of_samples % 2 != 0)
-			{
-				std::cout << "Number of samples must be even\nPOSSIBLE ERRORS\n";
-			}
-
 		}
 		else if(res == 2)
 		{
@@ -129,11 +126,8 @@ namespace parallel_autoencoder
 
 	void node_single_autoencoder::train_rbm()
 	{
-		 //1. Si apprendono le RBM per ciascun layer
-		std::cout << "Imparando le RBM...\n";
-		std::cout << "Numero di RBM da apprendere: " <<  number_of_rbm_to_learn <<"\n";
-		std::cout << "Numero di RBM gia apprese: " << trained_rbms << "\n";
-		std::cout << "Numero di layer finali: " <<  number_of_final_layers <<"\n";
+		//il numero del minibatch non può essere più grande del numero di esempi
+		rbm_size_minibatch = std::min(rbm_size_minibatch, number_of_samples);
 
 		//percorso della cartella che contiene le immagini iniziali
 		string image_path_folder = string(smp_manager.path_folder);
@@ -231,9 +225,9 @@ namespace parallel_autoencoder
 						if(current_index_sample % rbm_size_minibatch == 0){
 
 							update_parameters_biases(rbm_momentum, learning_rate, hidden_biases, visible_biases,
-									diff_visible_biases, diff_hidden_biases, number_of_samples);
+									diff_visible_biases, diff_hidden_biases, rbm_size_minibatch);
 
-							update_parameters_weights(rbm_momentum, learning_rate, weights, diff_weights, number_of_samples);
+							update_parameters_weights(rbm_momentum, learning_rate, weights, diff_weights, rbm_size_minibatch);
 						}
 					}
 				}
@@ -242,9 +236,9 @@ namespace parallel_autoencoder
 				int n_last_samples = current_index_sample % rbm_size_minibatch;
 				if(n_last_samples != 0){
 					update_parameters_biases(rbm_momentum, learning_rate, hidden_biases, visible_biases,
-							diff_visible_biases, diff_hidden_biases, number_of_samples);
+							diff_visible_biases, diff_hidden_biases, n_last_samples);
 
-					update_parameters_weights(rbm_momentum, learning_rate, weights, diff_weights, number_of_samples);
+					update_parameters_weights(rbm_momentum, learning_rate, weights, diff_weights, n_last_samples);
 				}
 			}
 
@@ -256,7 +250,9 @@ namespace parallel_autoencoder
 
 			//contatore che memorizza il numero di rbm apprese
 			trained_rbms++;
-			save_parameters();
+
+			if(!reduce_io)
+				save_parameters();
 		}
 	}
 
@@ -444,55 +440,58 @@ namespace parallel_autoencoder
 
 		//allenamento concluso
 		fine_tuning_finished = true;
-		save_parameters();
+
+		if(!reduce_io)
+			save_parameters();
 	}
 
 
 
 
-	my_vector<float> node_single_autoencoder::reconstruct()
+	void node_single_autoencoder::reconstruct()
 	{
 		auto activation_layers = get_activation_layers();
 
 		//si prende l'immagine dal manager
-		if(smp_manager.path_folder != image_path_folder)
-		{
-			smp_manager.path_folder = image_path_folder;
-			smp_manager.restart();
-		}
+		smp_manager.path_folder = image_path_folder;
+		smp_manager.restart();
 
 		string file_name;
-
-		while(true)
-			if(smp_manager.get_next_sample(activation_layers[0],  default_extension.c_str(), &file_name))
-				break;
-			else
-				smp_manager.restart();
-
-		//1. forward pass
-		forward_pass(activation_layers);
-
 		my_vector<float>& output = activation_layers[activation_layers.size() - 1];
+		my_vector<float>& input = activation_layers[0];
 
+		//errore medio quadratico
+		float mean_root_squared_error = 0;
 
-		if(batch_mode)
+		for(uint i = 0; i != number_of_samples; i++)
 		{
-			//si salvano i risultati su file
-			string new_image_path_folder = string(image_path_folder + "/output_rec" );
-			smp_manager.save_sample(output, true, new_image_path_folder, file_name + default_extension);
+			smp_manager.get_next_sample(input,  default_extension.c_str(), &file_name);
+
+			//1. forward pass
+			forward_pass(activation_layers);
+
+
+			if(batch_mode)
+			{
+				//si salvano i risultati su file
+				string new_image_path_folder = string(image_path_folder + "/output_rec" );
+				smp_manager.save_sample(output, true, new_image_path_folder, file_name + default_extension);
+			}
+			else
+			{
+				//si mostra a video il risultato
+				std::cout << "Showing original sample: '" <<  smp_manager.path_folder << "/" << file_name << "'\n";
+				smp_manager.show_sample(activation_layers[0]);
+
+				std::cout << "Showing reconstructed sample:\n";
+				smp_manager.show_sample(output);
+
+			}
+
+			mean_root_squared_error += root_squared_error(input, output);
 		}
-		else
-		{
-			//si mostra a video il risultato
-			std::cout << "Showing original sample: '" <<  smp_manager.path_folder << "/" << file_name << "'\n";
-			smp_manager.show_sample(activation_layers[0]);
 
-			std::cout << "Showing reconstructed sample:\n";
-			smp_manager.show_sample(output);
-
-		}
-
-		return output;
+		std::cout << "Mean root squared error: " << mean_root_squared_error/number_of_samples << "\n";
 	}
 
 	string node_single_autoencoder::get_path_file(){

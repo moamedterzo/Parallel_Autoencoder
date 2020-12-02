@@ -61,16 +61,28 @@ namespace parallel_autoencoder
 
 			my_vector& operator=(const my_vector& rhs)
 			{
-				if( this != &rhs )
+				if(this != &rhs)
 				{
 					if(mem)
-					  delete [] mem;
+					{
+						if(mem_size != rhs.mem_size)
+						{
+							delete [] mem;
+							mem = new Arg[rhs.mem_size];
 
-					mem = new Arg[ rhs.mem_size ];
-					for(uint i = 0; i < rhs.mem_size; ++i )
-					  mem[i] = rhs.mem[ i ];
+							mem_size = rhs.mem_size;
+						}
+					}
+					else
+					{
+						mem = new Arg[rhs.mem_size];
 
-					mem_size = rhs.mem_size;
+						mem_size = rhs.mem_size;
+					}
+
+					//copia valori
+					for(uint i = 0; i != rhs.mem_size; ++i )
+					  mem[i] = rhs.mem[i];
 				}
 
 				return *this;
@@ -80,7 +92,7 @@ namespace parallel_autoencoder
 			my_vector(const my_vector& rhs)
 			{
 				mem = new Arg[ rhs.mem_size ];
-				for(uint i = 0; i < rhs.mem_size; ++i )
+				for(uint i = 0; i != rhs.mem_size; ++i )
 				  mem[i] = rhs.mem[ i ];
 
 				mem_size = rhs.mem_size;
@@ -472,7 +484,7 @@ namespace parallel_autoencoder
 			//todo assicurarsi che siano probabilita e non binari
 			if(first_layer) //per il primo layer bisogna aggiungere del rumore gaussiano
 				for(uint i = 0; i != rec_visible_units.size(); i++)
-					rec_visible_units[i] =	sample_gaussian_distribution(rec_visible_units[i] + visible_biases[i], generator);
+					rec_visible_units[i] =	sample_gaussian_distribution(sigmoid(rec_visible_units[i] + visible_biases[i]), generator);
 			else
 				for(uint i = 0; i != rec_visible_units.size(); i++)
 					rec_visible_units[i] =	sigmoid(rec_visible_units[i] + visible_biases[i]);

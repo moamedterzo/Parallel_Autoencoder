@@ -42,6 +42,7 @@ namespace parallel_autoencoder
 
 		for(uint i = 0; i != orientation_grid.size(); i++)
 		{
+
 			const GridOrientation orientation_for_vis = orientation_grid[i];
 			const GridOrientation orientation_for_hid = orientation_for_vis == GridOrientation::row_first ?
 					GridOrientation::col_first : GridOrientation::row_first;
@@ -90,12 +91,12 @@ namespace parallel_autoencoder
 
 	node_cell_autoencoder::node_cell_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
 			uint _total_accumulators, uint _grid_row, uint _grid_col,
-			uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode,
+			uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
 			std::ostream& _oslog, int _mpi_rank,
 			uint _row_number, uint _col_number,
 			my_vector<MP_Comm_MasterSlave>& _accs_row_comm, my_vector<MP_Comm_MasterSlave>& _accs_col_comm)
 
-	: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, batch_mode, _oslog, _mpi_rank)
+	: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, batch_mode, _reduce_io, _oslog, _mpi_rank)
 	{
 		row_number = _row_number;
 		col_number = _col_number;
@@ -112,6 +113,12 @@ namespace parallel_autoencoder
 
 	void node_cell_autoencoder::train_rbm()
 	{
+		//ottengo numero di esempi
+		MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
+
+		//il numero del minibatch non può essere più grande del numero di esempi
+		rbm_size_minibatch = std::min(rbm_size_minibatch, number_of_samples);
+
 		//1. Si apprendono le RBM per ciascun layer
 		//se sono stati già apprese delle rbm, si passa direttamente alla prima da imparare
 		for(uint layer_number = trained_rbms; layer_number < number_of_rbm_to_learn; layer_number++)
@@ -144,6 +151,7 @@ namespace parallel_autoencoder
 			my_vector<float> rec_visible_units2(n_my_visible_units);
 			my_vector<float> rec_hidden_units2(n_my_hidden_units);
 
+			my_vector<float> temp_buffer_units = my_vector<float>(n_my_hidden_units);
 
 			//Puntatori delle request asincrone
 			//comunicatori per nodi visibili e nascosti
@@ -198,10 +206,8 @@ namespace parallel_autoencoder
 
 
 
-
 					// A2) Async invio H 1
 					reqHidden1.SendVectorToReduce(hidden_units1);
-
 
 					// A3) Async ricezione H
 					reqHiddenRicezione1.ReceiveVector(hidden_units1);
@@ -220,8 +226,6 @@ namespace parallel_autoencoder
 					// B2) Async invio H
 					reqHidden1.SendVectorToReduce(hidden_units2);
 
-
-
 					// B3) Async ricezione H
 					reqHiddenRicezione1.ReceiveVector(hidden_units2);
 
@@ -230,7 +234,6 @@ namespace parallel_autoencoder
 
 					// B2) Wait invio H
 					reqHidden1.wait();
-
 
 					// B3) Wait ricezione H
 					reqHiddenRicezione1.wait();
@@ -319,7 +322,7 @@ namespace parallel_autoencoder
 
 					//se abbiamo raggiunto la grandezza del mini batch, si modificano i pesi
 					if(current_index_sample % rbm_size_minibatch == 0)
-						update_parameters_weights(rbm_momentum, current_learning_rate, weights, diff_weights, number_of_samples);
+						update_parameters_weights(rbm_momentum, current_learning_rate, weights, diff_weights, rbm_size_minibatch);
 
 				} //fine esempio
 			} //fine epoca
@@ -337,7 +340,9 @@ namespace parallel_autoencoder
 
 			//contatore che memorizza il numero di rbm apprese
 			trained_rbms++;
-			save_parameters();
+
+			if(!reduce_io)
+				save_parameters();
 
 		}//fine layer
 
@@ -378,7 +383,7 @@ namespace parallel_autoencoder
 			// 3) Async Invio H
 			hidden_units2 = hidden_units1; //utilizzo un altro buffer
 
-			reqHid.SendVectorToReduce(hidden_units1);
+			reqHid.SendVectorToReduce(hidden_units2);
 		}
 
 		// 3) Wait Invio H
@@ -535,22 +540,27 @@ namespace parallel_autoencoder
 
 		//allenamento concluso
 		fine_tuning_finished = true;
-		save_parameters();
 
-
+		if(!reduce_io)
+			save_parameters();
 	}
 
 
-	my_vector<float> node_cell_autoencoder::reconstruct(){
+	void node_cell_autoencoder::reconstruct(){
+
+		//ottengo numero di esempi
+		MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
 
 		my_vector<my_vector<float>> activation_layers(orientation_grid.size());
 		my_vector<my_vector<float>> output_layers(orientation_grid.size());
 		get_activation_output_layers(activation_layers, output_layers);
 
-		//1. forward pass
-		forward_pass(activation_layers, output_layers);
 
-		return output_layers[output_layers.size() - 1]; //dummy
+		for(uint i = 0; i != number_of_samples; i++)
+		{
+			//1. forward pass
+			forward_pass(activation_layers, output_layers);
+		}
 	}
 
 

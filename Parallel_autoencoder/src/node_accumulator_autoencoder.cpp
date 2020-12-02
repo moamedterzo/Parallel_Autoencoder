@@ -69,6 +69,22 @@ namespace parallel_autoencoder
 				0, master_accs_comm, reqHid);
 		}
 
+		void node_accumulator_autoencoder::ReceiveFromMasterSync(my_vector<float>& vis_vec)
+		{
+			MPI_Scatterv(NULL, nullptr, nullptr, mpi_datatype_tosend,
+					vis_vec.data(), vis_vec.size(), mpi_datatype_tosend,
+					0, master_accs_comm);
+		}
+
+		void node_accumulator_autoencoder::SendToMasterSync(my_vector<float>& hid_vec)
+		{
+			MPI_Gatherv(hid_vec.data(), hid_vec.size(), mpi_datatype_tosend,
+				MPI_IN_PLACE, nullptr, nullptr , mpi_datatype_tosend,
+				0, master_accs_comm);
+		}
+
+
+
 
 		void node_accumulator_autoencoder::get_my_visible_hidden_units(const uint layer_number, uint& n_my_visible_units, uint& n_my_hidden_units)
 		{
@@ -83,13 +99,13 @@ namespace parallel_autoencoder
 
 		node_accumulator_autoencoder::node_accumulator_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
 						uint _total_accumulators, uint _grid_row, uint _grid_col,
-						uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode,
+						uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
 						std::ostream& _oslog, uint _mpi_rank,
 						uint _k_number,
 						MPI_Comm& _master_accs_comm,
 						my_vector<MP_Comm_MasterSlave>& _acc_rows_comm, my_vector<MP_Comm_MasterSlave>& _acc_cols_comm)
 
-				: node_autoencoder(_layers_size, _generator, _total_accumulators,  _grid_row, _grid_col, rbm_n_epochs, finetuning_n_epochs, batch_mode, _oslog, _mpi_rank)
+				: node_autoencoder(_layers_size, _generator, _total_accumulators,  _grid_row, _grid_col, rbm_n_epochs, finetuning_n_epochs, batch_mode, _reduce_io, _oslog, _mpi_rank)
 
 				{
 					k_number = _k_number;
@@ -108,6 +124,12 @@ namespace parallel_autoencoder
 
 		void node_accumulator_autoencoder::train_rbm()
 		{
+			//ottengo numero di esempi
+			MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
+
+			//il numero del minibatch non può essere più grande del numero di esempi
+			rbm_size_minibatch = std::min(rbm_size_minibatch, number_of_samples);
+
 			//1. Si apprendono le RBM per ciascun layer
 			//se sono state già apprese delle rbm, si passa direttamente alla prima da imparare
 			for(uint layer_number = trained_rbms; layer_number != number_of_rbm_to_learn; layer_number++)
@@ -220,8 +242,8 @@ namespace parallel_autoencoder
 						reqHidden1.BroadcastVectorSync(hidden_units2);
 
 
-						// A4) Async ricezione Vrec 1
-						reqVisible1.AccumulateVector(rec_visible_units1);
+						// A4) ricezione Vrec 1
+						reqVisible1.AccumulateVectorSync(rec_visible_units1);
 
 						//funzione Vrec 1
 						ReconstructVisibileUnits(rec_visible_units1, visible_biases, first_layer, generator);
@@ -263,9 +285,8 @@ namespace parallel_autoencoder
 						// B7) Async invio H rec 2
 						reqHidden1.BroadcastVector(rec_hidden_units2);
 
-						//gradiente 1
-						//si calcolano i differenziali
-						//dei pesi e bias visibili
+
+
 						set_gradient(diff_visible_biases, visible_units1, rec_visible_units1);
 
 						//dei bias nascosti
@@ -309,11 +330,14 @@ namespace parallel_autoencoder
 
 				//SALVATAGGIO NUOVI INPUT (non viene sfruttato il doppio canale come nel training della RBM)
 				save_new_samples(reqVisible1, reqHidden1, &reqMaster,
-						hidden_biases, visible_units1, hidden_units1);
+						hidden_biases, visible_units1, visible_units2,
+						hidden_units1, hidden_units2);
 
 				//contatore che memorizza il numero di rbm apprese
 				trained_rbms++;
-				save_parameters();
+
+				if(!reduce_io)
+					save_parameters();
 
 			} //fine layer
 
@@ -325,7 +349,8 @@ namespace parallel_autoencoder
 		 void node_accumulator_autoencoder::save_new_samples(
 				 MPReqManagerAccumulator& reqVis, MPReqManagerAccumulator& reqHid,
 				 MPI_Request *reqMaster, my_vector<float>& hidden_biases,
-				 my_vector<float>& visible_units1, my_vector<float>& hidden_units1)
+				 my_vector<float>& visible_units1, my_vector<float>& visible_units2,
+				 my_vector<float>& hidden_units1, my_vector<float>& hidden_units2)
 		 {
 			for(uint current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
 			{
@@ -337,29 +362,34 @@ namespace parallel_autoencoder
 
 				// A2) Wait ricevo H passo precedente
 				if(current_index_sample != 0)
+				{
 					reqHid.wait();
+					reqVis.wait();
+				}
 
-
-				// A1) Async Invio V 1 (non importa la wait)
-				reqVis.BroadcastVector(visible_units1);
+				// A1) Async Invio V 1
+				visible_units2 = visible_units1;
+				reqVis.BroadcastVector(visible_units2);
 
 				// A2) ricevo H 1
+				hidden_units2 = hidden_units1; //salvo valori del passo precedente
 				reqHid.AccumulateVector(hidden_units1);
 
 				if(current_index_sample > 0)
 				{
 					//Accumulazione e sigmoide per H1
-					for(uint i = 0; i != hidden_units1.size(); i++)
-						hidden_units1[i] = sigmoid(hidden_units1[i] + hidden_biases[i]);
+					for(uint i = 0; i != hidden_units2.size(); i++)
+						hidden_units2[i] = sigmoid(hidden_units2[i] + hidden_biases[i]);
 
 					// A3) Invio H 1 a master
-					SendToMaster(hidden_units1, reqMaster);
+					SendToMaster(hidden_units2, reqMaster);
 					MPI_Wait(reqMaster, MPI_STATUSES_IGNORE);
 				}
 			}
 
-			// A2) Wait ricevo H
+			// A2) Wait ricevo H e invio V
 			reqHid.wait();
+			reqVis.wait();
 
 			//Accumulazione e sigmoide per H1
 			for(uint i = 0; i != hidden_units1.size(); i++)
@@ -542,32 +572,31 @@ namespace parallel_autoencoder
 
 			//allenamento concluso
 			fine_tuning_finished = true;
-			save_parameters();
 
+			if(!reduce_io)
+				save_parameters();
 		}
 
 
 
-		my_vector<float> node_accumulator_autoencoder::reconstruct(){
+		void node_accumulator_autoencoder::reconstruct(){
 
+			//ottengo numero di esempi
+			MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
 
 			auto activation_layers = get_activation_layers();
-			MPI_Request reqMaster;
 
-			//0) Wait ricevi input V da nodo master
-			ReceiveFromMaster(activation_layers[0], &reqMaster);
-			MPI_Wait(&reqMaster, MPI_STATUS_IGNORE);
+			for(uint i = 0; i != number_of_samples; i++)
+			{
+				ReceiveFromMasterSync(activation_layers[0]);
 
-			//1. forward pass
-			forward_pass(activation_layers);
+				//1. forward pass
+				forward_pass(activation_layers);
 
-			//invio vettore a master
-			auto& last_layer = activation_layers[number_of_final_layers - 1];
-			SendToMaster(last_layer, &reqMaster);
-			MPI_Wait(&reqMaster, MPI_STATUS_IGNORE);
-
-
-			return last_layer;//dummy
+				//invio vettore a master
+				auto& last_layer = activation_layers[number_of_final_layers - 1];
+				SendToMasterSync(last_layer);
+			}
 		}
 
 

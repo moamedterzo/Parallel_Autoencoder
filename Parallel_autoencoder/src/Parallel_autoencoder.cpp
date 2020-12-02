@@ -40,8 +40,9 @@ uint number_of_samples = 2;
 uint rbm_n_epochs = 80;
 uint finetuning_n_epochs = 5;
 bool batch_mode = false;
-
-
+bool reduce_io = false;
+bool execute_command = false;
+CommandType commandToExecute;
 
 
 //rank MPI id
@@ -106,6 +107,18 @@ void get_layer_sizes(std::string& s, const std::string& arg_name)
     }
 }
 
+void get_command(std::string& s, const std::string& arg_name)
+{
+	std::size_t pos = s.find(arg_name);
+
+	if (pos != std::string::npos)
+	{
+		execute_command = true;
+		commandToExecute = static_cast<CommandType>(std::stoi(s.replace(pos, arg_name.length(), "")));
+	}
+}
+
+
 void parse_args(const int argc, char** argv)
 {
 	static const string arg_k_accumulators = "--k_acc:";
@@ -114,9 +127,11 @@ void parse_args(const int argc, char** argv)
 	static const string arg_rbm_n_epochs = "--rbm_epochs:";
 	static const string arg_finetuning_n_epochs = "--fn_epochs:";
 	static const string arg_batch_mode = "--batch:";
+	static const string arg_reduce_io = "--reduce_io:";
 	static const string arg_n_samples = "--n_samples:";
 	static const string arg_path_dataset = "--path_dataset:";
 	static const string arg_layers_sizes = "--layer_sizes:";
+	static const string arg_command = "--command:";
 
 	for(int i = 0; i < argc; i++)
 	{
@@ -130,7 +145,9 @@ void parse_args(const int argc, char** argv)
 		get_single_arg(val_arg, arg_n_samples, number_of_samples);
 		get_single_arg(val_arg, arg_path_dataset, path_dataset);
 		get_single_arg(val_arg, arg_batch_mode, batch_mode);
+		get_single_arg(val_arg, arg_reduce_io, reduce_io);
 		get_layer_sizes(val_arg, arg_layers_sizes);
+		get_command(val_arg, arg_command);
 	}
 
 	//il numero delle righe deve essere maggiore o uguale al numero di colonne
@@ -203,7 +220,7 @@ void parallel_computation(std::ostream& oslog)
 
 		my_autoencoder = new node_master_autoencoder(layers_size, generator, k_accumulators,
 				grid_total_rows, grid_total_cols,
-				rbm_n_epochs, finetuning_n_epochs, batch_mode,
+				rbm_n_epochs, finetuning_n_epochs, batch_mode,reduce_io,
 				oslog, myid,
 				master_acc_comm,
 				smp_manager);
@@ -216,7 +233,7 @@ void parallel_computation(std::ostream& oslog)
 
 		my_autoencoder = new node_accumulator_autoencoder(layers_size, generator, k_accumulators,
 				grid_total_rows, grid_total_cols,
-				rbm_n_epochs, finetuning_n_epochs, batch_mode,
+				rbm_n_epochs, finetuning_n_epochs, batch_mode,reduce_io,
 				oslog, myid,
 				k_number,
 				master_acc_comm, acc_row_comms, acc_col_comms);
@@ -235,7 +252,7 @@ void parallel_computation(std::ostream& oslog)
 
 		my_autoencoder = new node_cell_autoencoder(layers_size, generator, k_accumulators,
 				grid_total_rows, grid_total_cols,
-				rbm_n_epochs, finetuning_n_epochs, batch_mode,
+				rbm_n_epochs, finetuning_n_epochs, batch_mode,reduce_io,
 				oslog, myid,
 				grid_row, grid_col,
 				acc_row_comms, acc_col_comms);
@@ -243,8 +260,16 @@ void parallel_computation(std::ostream& oslog)
 
 
 	MPI_Barrier(MPI_COMM_WORLD);
-	master_cout("Begin loop");
-	my_autoencoder->loop();
+
+	if(execute_command)
+	{
+		my_autoencoder->execute_command(commandToExecute);
+	}
+	else
+	{
+		master_cout("Begin loop");
+		my_autoencoder->loop();
+	}
 }
 
 
@@ -255,12 +280,21 @@ void single_computation(std::ostream& oslog)
 	std::default_random_engine generator;
 	set_generator(generator);
 
-	std::cout << "Running autoencoder on single node!\n";
+	std::cout << "\nRunning autoencoder on single node!\n";
 
 	auto my_autoencoder = new node_single_autoencoder(layers_size, generator,
-			rbm_n_epochs, finetuning_n_epochs, batch_mode,
+			rbm_n_epochs, finetuning_n_epochs, batch_mode, reduce_io,
 			oslog,smp_manager);
-	my_autoencoder->loop();
+
+	if(execute_command)
+	{
+		my_autoencoder->execute_command(commandToExecute);
+	}
+	else
+	{
+		master_cout("Begin loop");
+		my_autoencoder->loop();
+	}
 }
 
 
@@ -286,6 +320,7 @@ int main(int argc, char** argv) {
 	master_cout("Number of RBM training epochs: " + to_string(rbm_n_epochs));
 	master_cout("Number of Fine-tuning training epoch: " + to_string(finetuning_n_epochs));
 	master_cout("Batch mode: " + (batch_mode ? string("yes") : string("no")));
+	master_cout("Reduce IO: " + (reduce_io ? string("yes") : string("no")));
 	master_cout("Path dataset: " + path_dataset);
 
 	master_cout("Layer sizes: ");

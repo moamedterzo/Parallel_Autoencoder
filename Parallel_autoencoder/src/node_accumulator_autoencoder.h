@@ -43,13 +43,17 @@ namespace parallel_autoencoder
 
 		void SendToMaster(my_vector<float>& hid_vec, MPI_Request *reqHid);
 
+		void ReceiveFromMasterSync(my_vector<float>& vis_vec);
+
+		void SendToMasterSync(my_vector<float>& hid_vec);
+
 
 		void get_my_visible_hidden_units(const uint layer_number, uint& n_my_visible_units, uint& n_my_hidden_units);
 	public:
 
 		node_accumulator_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
 				uint _total_accumulators, uint _grid_row, uint _grid_col,
-				uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode,
+				uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
 				std::ostream& _oslog, uint _mpi_rank,
 				uint _k_number,
 				MPI_Comm& _master_accs_comm,
@@ -63,7 +67,8 @@ namespace parallel_autoencoder
 		 void save_new_samples(
 				 MPReqManagerAccumulator& reqVis, MPReqManagerAccumulator& reqHid,
 				 MPI_Request *reqMaster, my_vector<float>& hidden_biases,
-		    	 my_vector<float>& visible_units1, my_vector<float>& hidden_units1);
+				 my_vector<float>& visible_units1, my_vector<float>& visible_units2,
+				 my_vector<float>& hidden_units1, my_vector<float>& hidden_units2);
 
 
 
@@ -79,7 +84,7 @@ namespace parallel_autoencoder
 
 
 
-		my_vector<float> reconstruct();
+		void reconstruct();
 
 
 

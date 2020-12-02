@@ -23,6 +23,7 @@ namespace parallel_autoencoder
     	const uint MAX_FOLDER_PARS_LENGTH = 300;
 
     	bool batch_mode;
+    	bool reduce_io;
     	std::ostream& oslog;
 		int mpi_rank;
 
@@ -83,13 +84,14 @@ namespace parallel_autoencoder
 
         node_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
         		uint _total_accumulators, uint _grid_row, uint _grid_col,
-				uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode,
+				uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
 				std::ostream& _oslog, int _mpi_rank);
 
         virtual ~node_autoencoder();
 
 
         void loop();
+        void execute_command(CommandType command);
 
         //metodo base rimpiazzabile dal master
         virtual CommandType wait_for_command();
@@ -97,7 +99,7 @@ namespace parallel_autoencoder
         virtual void train_rbm() = 0;
         virtual void fine_tuning() = 0;
 
-        virtual my_vector<float> reconstruct() = 0;
+        virtual void reconstruct() = 0;
 
         virtual string get_path_file() = 0;
         virtual void save_parameters() = 0;

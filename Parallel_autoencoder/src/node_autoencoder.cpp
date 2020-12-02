@@ -143,7 +143,7 @@ namespace parallel_autoencoder
 
 		node_autoencoder::node_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
 		        		uint _total_accumulators, uint _grid_row, uint _grid_col,
-						uint rbm_n_epochs, uint finetuning_n_epochs, bool _batch_mode,
+						uint rbm_n_epochs, uint finetuning_n_epochs, bool _batch_mode, bool _reduce_io,
 						std::ostream& _oslog, int _mpi_rank)
 		:oslog(_oslog)
 		{
@@ -155,6 +155,7 @@ namespace parallel_autoencoder
 			grid_cols = _grid_col;
 
 			batch_mode = _batch_mode;
+			reduce_io = _reduce_io;
 			generator = _generator;
 
 			number_of_rbm_to_learn = _layers_size.size() - 1;
@@ -189,68 +190,69 @@ namespace parallel_autoencoder
 			do
 			{
 				//si aspettano eventuali nodi rimasti indietro
+				std::cout.flush();
 				MPI_Barrier(MPI_COMM_WORLD);
 
 				//ottengo il comando (dipende dalla classe)
 				command = wait_for_command();
 
-				//getting times
-				timeval wt0, wt1;
-				oslog << "----  Executing command: " << std::to_string(static_cast<int>(command)) << " -------\n\n";
-				gettimeofday(&wt0, NULL);
-
-				switch(command){
-
-					case CommandType::train:
-
-						//1. Si apprendono le RBM per ciascun layer
-						oslog << "Imparando le RBM...\n";
-						oslog << "Numero di RBM da apprendere: " <<  number_of_rbm_to_learn <<"\n";
-						oslog << "Numero di RBM gia apprese: " << trained_rbms << "\n";
-						oslog << "Numero di layer finali: " <<  number_of_final_layers <<"\n";
-						oslog.flush();
-
-						//il numero del minibatch non può essere più grande del numero di esempi
-						rbm_size_minibatch = std::min(rbm_size_minibatch, number_of_samples);
-
-						train_rbm();
-
-						if(!fine_tuning_finished)
-							fine_tuning();
-
-					break;
-
-					case CommandType::load_pars:
-						load_parameters();
-						break;
-
-					case CommandType::save_pars:
-						save_parameters();
-						break;
-
-					case CommandType::delete_pars_file:
-						std::remove(get_path_file().c_str());
-						std::cout << "File deleted: " + get_path_file() + "\n";
-						break;
-
-					case CommandType::reconstruct_image:
-
-						//reconstruct each sample
-						for(uint i = 0; i != number_of_samples; i++)
-							reconstruct();
-						break;
-
-					case CommandType::exit:
-					case CommandType::retry:
-						break;
-				}
-
-				//printing executing times
-				gettimeofday(&wt1, NULL);
-				print_sec_gtd(oslog, wt0, wt1, mpi_rank);
-				print_sec_gtd(std::cout, wt0, wt1, mpi_rank);
+				execute_command(command);
 			}
 			while(command != CommandType::exit);
+		}
+
+		void node_autoencoder::execute_command(CommandType command)
+		{
+			//getting times
+			timeval wt0, wt1;
+			oslog << "----  Executing command: " << std::to_string(static_cast<int>(command)) << " -------\n\n";
+			gettimeofday(&wt0, NULL);
+
+			switch(command){
+
+				case CommandType::train:
+
+					//1. Si apprendono le RBM per ciascun layer
+					oslog << "Imparando le RBM...\n";
+					oslog << "Numero di RBM da apprendere: " <<  number_of_rbm_to_learn <<"\n";
+					oslog << "Numero di RBM gia apprese: " << trained_rbms << "\n";
+					oslog << "Numero di layer finali: " <<  number_of_final_layers <<"\n";
+					oslog.flush();
+
+					train_rbm();
+
+					if(!fine_tuning_finished)
+						fine_tuning();
+
+				break;
+
+				case CommandType::load_pars:
+					load_parameters();
+					break;
+
+				case CommandType::save_pars:
+					save_parameters();
+					break;
+
+				case CommandType::delete_pars_file:
+					std::remove(get_path_file().c_str());
+					std::cout << "File deleted: " + get_path_file() + "\n";
+					break;
+
+				case CommandType::reconstruct_image:
+
+					reconstruct();
+					break;
+
+				case CommandType::exit:
+				case CommandType::retry:
+					break;
+			}
+
+			//printing executing times
+			gettimeofday(&wt1, NULL);
+			print_sec_gtd(oslog, wt0, wt1, mpi_rank);
+			print_sec_gtd(std::cout, wt0, wt1, mpi_rank);
 		}
 
 
@@ -262,12 +264,7 @@ namespace parallel_autoencoder
 			//get command from master other node
 			MPI_Bcast(&command,1, MPI_INT, 0, MPI_COMM_WORLD);
 
-			if(command == CommandType::train || command == CommandType::reconstruct_image)
-			{
-				//ottengo numero di esempi
-				MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
-			}
-			else if (command == CommandType::load_pars || command == CommandType::save_pars)
+			if (command == CommandType::load_pars || command == CommandType::save_pars)
 			{
 				//lettura cartella dei parametri
 				char char_path_file[MAX_FOLDER_PARS_LENGTH];

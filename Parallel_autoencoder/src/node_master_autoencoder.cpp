@@ -32,6 +32,23 @@ namespace parallel_autoencoder
 				0, master_accs_comm,  reqRecv);
 	}
 
+	void node_master_autoencoder::ScatterInputVectorSync(const my_vector<float>& vec, const int send_counts[], const int displs[])
+	{
+		MPI_Scatterv(vec.data(), send_counts, displs, mpi_datatype_tosend,
+					nullptr, 0,  mpi_datatype_tosend,
+					0, master_accs_comm);
+	}
+
+	void node_master_autoencoder::ReceiveOutputVectorSync(const my_vector<float>& vec, const int receive_counts[], const int displs[])
+	{
+		MPI_Gatherv(MPI_IN_PLACE, 0, mpi_datatype_tosend,
+				vec.data(), receive_counts, displs, mpi_datatype_tosend,
+				0, master_accs_comm);
+	}
+
+
+
+
 	void node_master_autoencoder::GetScatterParts(int counts[], int displacements[], const int n_total_units)
 	{
 		//root non riceve nulla
@@ -53,11 +70,11 @@ namespace parallel_autoencoder
 
 	node_master_autoencoder::node_master_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
 				uint _total_accumulators, uint _grid_row, uint _grid_col,
-				uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode,
+				uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
 				std::ostream& _oslog, int _mpi_rank,
 				MPI_Comm& _master_accs_comm,
 				samples_manager& _smp_manager)
-		: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, batch_mode, _oslog, _mpi_rank)
+		: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, batch_mode,_reduce_io, _oslog, _mpi_rank)
 		{
 			smp_manager = _smp_manager;
 			master_accs_comm = _master_accs_comm;
@@ -69,9 +86,7 @@ namespace parallel_autoencoder
 
 			//Al momento il numero di esempi deve essere necessariamente pari
 			if(number_of_samples % 2 != 0)
-			{
 				std::cout << "Number of samples must be even\nPOSSIBLE ERRORS\n";
-			}
 		}
 
 
@@ -125,12 +140,7 @@ namespace parallel_autoencoder
 
 
 		//in base al comando si inviano dati aggiuntivi
-		if(command == CommandType::train || command == CommandType::reconstruct_image)
-		{
-			//invio numero di esempi
-			MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
-		}
-		else if(command == CommandType::load_pars || command == CommandType::save_pars)
+		if(command == CommandType::load_pars || command == CommandType::save_pars)
 		{
 			//invio cartella che contiene i parametri
 			if(strcmp(char_path_file, ".") != 0)
@@ -149,6 +159,12 @@ namespace parallel_autoencoder
 
 	void node_master_autoencoder::train_rbm()
 	{
+		//invio numero di esempi
+		MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
+
+		//il numero del minibatch non può essere più grande del numero di esempi
+		rbm_size_minibatch = std::min(rbm_size_minibatch, number_of_samples);
+
 		//Per ciascun layer...
 		//se sono stati già apprese delle rbm, si passa direttamente alla prima da imparare
 		for(uint layer_number = trained_rbms; layer_number != number_of_rbm_to_learn; layer_number++)
@@ -206,7 +222,9 @@ namespace parallel_autoencoder
 
 			//contatore che memorizza il numero di rbm apprese
 			trained_rbms++;
-			save_parameters();
+
+			if(!reduce_io)
+				save_parameters();
 		}
 
 	}
@@ -337,14 +355,18 @@ namespace parallel_autoencoder
 
 		//allenamento concluso
 		fine_tuning_finished = true;
-		save_parameters();
+
+		if(!reduce_io)
+			save_parameters();
 
 		std::cout << "Fine-tuning completed\n";
 	}
 
 
-	my_vector<float> node_master_autoencoder::reconstruct()
+	void node_master_autoencoder::reconstruct()
 	{
+		//invio numero di esempi
+		MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
 
 		//vettore delle unità visibili
 		const uint n_visible_units = layers_size[0];
@@ -353,57 +375,52 @@ namespace parallel_autoencoder
 		auto output_units = my_vector<float>(n_visible_units);
 
 		//si prende l'immagine dal manager
-		if(smp_manager.path_folder != image_path_folder)
-		{
-			smp_manager.path_folder = image_path_folder;
-			smp_manager.restart();
-		}
+		smp_manager.path_folder = image_path_folder;
+		smp_manager.restart();
 
 		string file_name = "";
-
-		while(true)
-			if(smp_manager.get_next_sample(input_units,  default_extension.c_str() , &file_name))
-				break;
-			else
-				smp_manager.restart();
 
 		//si ottengono displacements per gli accumulatori
 		int send_counts[1 + total_accumulators], send_displacements[1 + total_accumulators];
 		GetScatterParts(send_counts, send_displacements, n_visible_units);
 
-		//invio esempio
-		MPI_Request reqSend;
-		ScatterInputVector(input_units, send_counts, send_displacements, &reqSend);
-
-
 		//si ottengono displacements per gli accumulatori (questa volta le parti invisibili)
 		int receive_counts[1 + total_accumulators], receive_displacements[1 + total_accumulators];
 		GetScatterParts(receive_counts, receive_displacements, n_visible_units);
 
-		//attesa ricezione risultato
-		MPI_Request reqRecv;
-		ReceiveOutputVector(output_units, receive_counts, receive_displacements, &reqRecv);
-		MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
+		//errore medio quadratico
+		float mean_root_squared_error = 0;
 
-		if(batch_mode)
+		for(uint i = 0; i != number_of_samples; i++)
 		{
-			//si salvano i risultati su file
-			string new_image_path_folder = string(image_path_folder + "/output_rec" );
-			smp_manager.save_sample(output_units, true, new_image_path_folder, file_name + default_extension);
+			smp_manager.get_next_sample(input_units,  default_extension.c_str() , &file_name);
+
+			//invio esempio
+			ScatterInputVectorSync(input_units, send_counts, send_displacements);
+
+			//attesa ricezione risultato
+			ReceiveOutputVectorSync(output_units, receive_counts, receive_displacements);
+
+			if(batch_mode)
+			{
+				//si salvano i risultati su file
+				string new_image_path_folder = string(image_path_folder + "/output_rec" );
+				smp_manager.save_sample(output_units, true, new_image_path_folder, file_name + default_extension);
+			}
+			else
+			{
+				//si mostra a video il risultato
+				std::cout << "Showing original sample: '" <<  smp_manager.path_folder << "/" << file_name << "'\n";
+				smp_manager.show_sample(input_units);
+
+				std::cout << "Showing reconstructed sample:\n";
+				smp_manager.show_sample(output_units);
+			}
+
+			mean_root_squared_error += root_squared_error(input_units, output_units);
 		}
-		else
-		{
-			//si mostra a video il risultato
-			std::cout << "Showing original sample: '" <<  smp_manager.path_folder << "/" << file_name << "'\n";
-			smp_manager.show_sample(input_units);
 
-			std::cout << "Showing reconstructed sample:\n";
-			smp_manager.show_sample(output_units);
-		}
-
-
-
-		return output_units;
+		std::cout << "Mean root squared error: " << mean_root_squared_error/number_of_samples << "\n";
 	}
 
 

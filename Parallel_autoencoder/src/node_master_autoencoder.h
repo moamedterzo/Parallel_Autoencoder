@@ -36,10 +36,15 @@ namespace parallel_autoencoder{
 
 		void GetScatterParts(int counts[], int displacements[], const int n_total_units);
 
+		void ScatterInputVectorSync(const my_vector<float>& vec, const int send_counts[], const int displs[]);
+
+		void ReceiveOutputVectorSync(const my_vector<float>& vec, const int receive_counts[], const int displs[]);
+
+
 	public:
 		node_master_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
 					uint _total_accumulators, uint _grid_row, uint _grid_col,
-					uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode,
+					uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
 					std::ostream& _oslog, int _mpi_rank,
 					MPI_Comm& _master_accs_comm,
 					samples_manager& _smp_manager);
@@ -62,7 +67,7 @@ namespace parallel_autoencoder{
 		void fine_tuning();
 
 
-		my_vector<float> reconstruct();
+		void reconstruct();
 
 
 		string get_path_file();
