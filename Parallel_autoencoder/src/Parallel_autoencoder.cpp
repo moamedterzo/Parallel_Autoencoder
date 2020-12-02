@@ -275,68 +275,52 @@ int main(int argc, char** argv) {
 	std::filebuf fb;
 	std::ostream oslog(&fb);
 
-    try
-    {
-    	//get arguments
-    	parse_args(argc, argv);
+	//get arguments
+	parse_args(argc, argv);
 
-    	gettimeofday(&wt0, NULL);
-		init_MPI(argc, argv, t0, myid, numproc);
+	gettimeofday(&wt0, NULL);
+	init_MPI(argc, argv, t0, myid, numproc);
 
-		master_cout("Number of samples: " + to_string(number_of_samples));
-		master_cout("Number of RBM training epochs: " + to_string(rbm_n_epochs));
-		master_cout("Number of Fine-tuning training epoch: " + to_string(finetuning_n_epochs));
-		master_cout("Batch mode: " + (batch_mode ? string("yes") : string("no")));
-		master_cout("Path dataset: " + path_dataset);
+	//print variabiles
+	master_cout("Number of samples: " + to_string(number_of_samples));
+	master_cout("Number of RBM training epochs: " + to_string(rbm_n_epochs));
+	master_cout("Number of Fine-tuning training epoch: " + to_string(finetuning_n_epochs));
+	master_cout("Batch mode: " + (batch_mode ? string("yes") : string("no")));
+	master_cout("Path dataset: " + path_dataset);
 
-		master_cout("Layer sizes: ");
-		for(uint i = 0; i < layers_size.size();i++)
-			master_cout(" - " + to_string(layers_size[i]) + " -");
-
-		//se c'è un singolo nodo si esegue il codice in modalità non parallela
-		bool parallel = numproc > 1;
-
-		//creazione file
-		string path_file = "logs/log_" + (parallel ? string("paral_") : string("single_")) + to_string(myid) + ".txt";
-		fb.open(path_file, std::ios::out | std::ios::app);
-
-		oslog << "---   Hello, I have ID " << myid << "\n";
+	master_cout("Layer sizes: ");
+	for(uint i = 0; i < layers_size.size();i++)
+		master_cout(" - " + to_string(layers_size[i]) + " -");
 
 
-		if(parallel)
-			parallel_computation(oslog);
-		else
-			single_computation(oslog);
+	//se c'è un singolo nodo si esegue il codice in modalità non parallela
+	bool parallel = numproc > 1;
+
+	//creazione file
+	string path_file = "logs/log_" + (parallel ? string("paral_") : string("single_")) + to_string(myid) + ".txt";
+	fb.open(path_file, std::ios::out | std::ios::app);
+
+	oslog << "---   Hello, I have ID " << myid << "\n";
 
 
-		//closing
-		close_MPI(t1);
-		gettimeofday(&wt1, NULL);
+	if(parallel)
+		parallel_computation(oslog);
+	else
+		single_computation(oslog);
 
-		//print results time
-		//print_sec_mpi(std::cout, t0, t1, myid);
-		//print_sec_mpi(oslog, t0, t1, myid);
 
-		//print_sec_gtd(std::cout, wt0, wt1, myid);
-		//print_sec_gtd(oslog, wt0, wt1, myid);
+	//closing
+	close_MPI(t1);
+	gettimeofday(&wt1, NULL);
 
-    }
-    catch(const std::runtime_error& re)
-    {
-        // speciffic handling for runtime_error
-        std::cerr << "Runtime error: " << re.what() << std::endl;
-    }
-    catch(const std::exception& ex)
-    {
-        // speciffic handling for all exceptions extending std::exception, except
-        // std::runtime_error which is handled explicitly
-        std::cerr << "Error occurred: " << ex.what() << std::endl;
-    }
-    catch(...)
-    {
-        // catch any other errors (that we have no information about)
-        std::cerr << "Unknown failure occurred. Possible memory corruption" << std::endl;
-    }
+	//print results time
+	//print_sec_mpi(std::cout, t0, t1, myid);
+	//print_sec_mpi(oslog, t0, t1, myid);
+
+	//print_sec_gtd(std::cout, wt0, wt1, myid);
+	//print_sec_gtd(oslog, wt0, wt1, myid);
+
+
 
 
     //chiusura file di log
