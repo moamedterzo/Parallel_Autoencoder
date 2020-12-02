@@ -240,6 +240,7 @@ namespace parallel_autoencoder
 						break;
 
 					case CommandType::exit:
+					case CommandType::retry:
 						break;
 				}
 

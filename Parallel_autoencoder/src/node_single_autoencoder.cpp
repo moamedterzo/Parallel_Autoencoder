@@ -10,6 +10,7 @@
 #include <sstream>
 #include <fstream>
 #include <cstring>
+#include <iomanip>
 
 using namespace std;
 
@@ -114,6 +115,8 @@ namespace parallel_autoencoder
 			command = CommandType::reconstruct_image;
 		else if(res == -1)
 			command = CommandType::exit;
+		else
+			command = CommandType::retry;
 
 
 		if(command == CommandType::load_pars || command == CommandType::save_pars)

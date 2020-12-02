@@ -5,14 +5,15 @@
 #include "custom_vectors.h"
 #include "MPI_adapters.h"
 
-#include <iomanip>//da togliere
+
+#include <stdexcept>
 #include "samples_manager.h"
 
 
 namespace parallel_autoencoder
 {
 
-	enum class CommandType { train = 0, exit = 1, load_pars = 2, save_pars = 3, reconstruct_image = 4 , delete_pars_file = 5};
+	enum class CommandType { train = 0, exit = 1, load_pars = 2, save_pars = 3, reconstruct_image = 4 , delete_pars_file = 5, retry = 6};
 
 
     class node_autoencoder
