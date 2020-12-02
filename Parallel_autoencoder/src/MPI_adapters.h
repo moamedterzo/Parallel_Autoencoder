@@ -9,7 +9,7 @@
 #define MPI_ADAPTERS_H_
 
 
-#include <mpi/mpi.h>
+#include "mpi.h"
 #include "custom_vectors.h"
 
 namespace parallel_autoencoder
