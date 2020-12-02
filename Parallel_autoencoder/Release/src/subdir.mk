@@ -35,7 +35,7 @@ CPP_DEPS += \
 src/%.o: ../src/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: Cross G++ Compiler'
-	mpic++ -I/home/racanati/Parallel_autoencoder/opencv_release/include -I"/home/giovanni/git/repository/Parallel_autoencoder/opencv/include" -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
+	mpic++ -std=c++11 -I/home/racanati/Parallel_autoencoder/opencv_release/include -I"/home/giovanni/git/repository/Parallel_autoencoder/opencv/include" -O3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
