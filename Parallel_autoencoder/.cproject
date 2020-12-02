@@ -106,7 +106,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cross.c.linker.303424460" name="Cross GCC Linker" superClass="cdt.managedbuild.tool.gnu.cross.c.linker"/>
 							<tool command="mpic++" id="cdt.managedbuild.tool.gnu.cross.cpp.linker.1720024964" name="Cross G++ Linker" superClass="cdt.managedbuild.tool.gnu.cross.cpp.linker">
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.paths.1502612360" name="Library search path (-L)" superClass="gnu.cpp.link.option.paths" useByScannerDiscovery="false" valueType="libPaths">
-									<listOptionValue builtIn="false" value="/home/racanati/Parallel_autoencoder/opencv_release/libs"/>
+									<listOptionValue builtIn="false" value="/home/racanati/git/Parallel_autoencoder/opencv_release/libs"/>
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/${ProjName}/opencv/libs}&quot;"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="gnu.cpp.link.option.libs.864176167" name="Libraries (-l)" superClass="gnu.cpp.link.option.libs" useByScannerDiscovery="false" valueType="libs">

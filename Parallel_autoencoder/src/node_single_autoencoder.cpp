@@ -582,8 +582,8 @@ namespace parallel_autoencoder
 		std::string line;
 
 		//variabili che fanno riferimento al layer nel quale si salveranno i parametri
-		uint n_visible_units;
-		uint n_hidden_units;
+		uint n_visible_units {};
+		uint n_hidden_units {};
 
 		matrix<float> *current_weights;
 		my_vector<float> *current_hidden_biases;

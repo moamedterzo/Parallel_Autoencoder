@@ -111,7 +111,7 @@ namespace parallel_autoencoder
         {
 			//si leggono i vari pixel come scala di grigi
 			Mat img = imread(name_fullfile, IMREAD_GRAYSCALE);
-			assert(img.rows * img.cols == buffer.size());
+			assert((uint)img.rows * img.cols == buffer.size());
 
 			for(int j=0;j<img.rows;j++)
 			  for (int i=0;i<img.cols;i++)
