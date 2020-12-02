@@ -8,6 +8,7 @@
 #include "node_autoencoder.h"
 
 #include <string.h>
+#include <ostream>
 #include <sys/time.h>
 
 
@@ -144,9 +145,9 @@ namespace parallel_autoencoder
 		        		uint _total_accumulators, uint _grid_row, uint _grid_col,
 						uint rbm_n_epochs, uint finetuning_n_epochs, bool _batch_mode,
 						std::ostream& _oslog, int _mpi_rank)
-
-		:oslog{_oslog}
+		:oslog(_oslog)
 		{
+
 			mpi_rank = _mpi_rank;
 
 			total_accumulators =_total_accumulators;
