@@ -9,17 +9,6 @@ namespace parallel_autoencoder{
 
 	class node_single_autoencoder : public node_autoencoder{
 
-	private:
-
-		//gestore degli esempi input/output su disco
-		samples_manager smp_manager;
-
-		//percorso della cartella che contiene le immagini iniziali
-		string image_path_folder;
-
-		my_vector<matrix<float>> layers_weights;
-		my_vector<my_vector<float>> layer_biases;
-
 
 	public:
 
@@ -40,30 +29,33 @@ namespace parallel_autoencoder{
 				my_vector<float>& hidden_biases, matrix<float>& weights);
 
 
-
-		void rollup_for_weights();
-
-		void forward_pass(my_vector<my_vector<float>>& activation_layers);
-
-
-		void backward_pass(my_vector<my_vector<float>>& activation_layers);
-
-		my_vector<my_vector<float>> get_activation_layers();
-
-
-
 		void fine_tuning();
-
-
-
-
 		void reconstruct();
 
 		string get_path_file();
 
 		void save_parameters();
-
 		void load_parameters();
+
+	private:
+
+			//gestore degli esempi input/output su disco
+			samples_manager smp_manager;
+
+			//percorso della cartella che contiene le immagini iniziali
+			string image_path_folder;
+
+			my_vector<matrix<float>> layers_weights;
+			my_vector<my_vector<float>> layer_biases;
+
+
+			void rollup_for_weights();
+
+			void forward_pass(my_vector<my_vector<float>>& activation_layers);
+			void backward_pass(my_vector<my_vector<float>>& activation_layers);
+
+			my_vector<my_vector<float>> get_activation_layers();
+
 	};
 }
 

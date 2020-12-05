@@ -18,9 +18,10 @@ namespace parallel_autoencoder
 {
 
 
+	//imposta gradiente pèr i pesi
 	inline void set_gradient(matrix<float>& diff_weights,
-			my_vector<float>& visible_units,my_vector<float>& hidden_units,
-			my_vector<float>& rec_visible_units,my_vector<float>& rec_hidden_units)
+			const my_vector<float>& visible_units, const my_vector<float>& hidden_units,
+			const my_vector<float>& rec_visible_units, const my_vector<float>& rec_hidden_units)
 	{
 		for(uint i = 0; i != visible_units.size(); i++)
 		{
@@ -37,8 +38,8 @@ namespace parallel_autoencoder
 	void node_cell_autoencoder::calc_all_comm_sizes()
 	{
 		//si determinano quali comunicatori bisogna utilizzare ad ogni passo a seconda dell'orientamento scelto
-		acc_hid_comm_for_layer = my_vector<my_vector<MP_Comm_MasterSlave>>(orientation_grid.size());
-		acc_vis_comm_for_layer = my_vector<my_vector<MP_Comm_MasterSlave>>(orientation_grid.size());
+		acc_hid_comm_for_layer = my_vector<my_vector<MPI_Comm_MasterSlave>>(orientation_grid.size());
+		acc_vis_comm_for_layer = my_vector<my_vector<MPI_Comm_MasterSlave>>(orientation_grid.size());
 
 		for(uint i = 0; i != orientation_grid.size(); i++)
 		{
@@ -51,7 +52,7 @@ namespace parallel_autoencoder
 			const uint n_visible_units = layers_size[i];
 			const uint n_hidden_units = layers_size[i + 1];
 
-			//b) che posizione rappresenta la cella per il vettore visibile/nascosto
+			//che posizione rappresenta la cella per il vettore visibile/nascosto?
 			const auto my_vis_number = orientation_for_vis == GridOrientation::row_first ? row_number : col_number;
 			const auto my_hid_number = orientation_for_vis == GridOrientation::row_first ? col_number : row_number;
 
@@ -59,7 +60,7 @@ namespace parallel_autoencoder
 			acc_vis_comm_for_layer[i] = orientation_for_vis == GridOrientation::row_first ? accs_row_comm : accs_col_comm;
 			acc_hid_comm_for_layer[i] = orientation_for_vis == GridOrientation::row_first ? accs_col_comm : accs_row_comm;
 
-			//calcolo delle size per comm acc verso le righe e verso le colonne
+			//calcolo delle grandezze dei vettori da trasmettere per le unità visibili e nascoste
 			calc_comm_sizes(orientation_for_vis, acc_vis_comm_for_layer[i], false, my_vis_number, n_visible_units);
 			calc_comm_sizes(orientation_for_hid, acc_hid_comm_for_layer[i], false, my_hid_number, n_hidden_units);
 		}
@@ -75,14 +76,15 @@ namespace parallel_autoencoder
 		const int n_visible_units = layers_size[layer_number];
 		const int n_hidden_units = layers_size[layer_number + 1];
 
-		//a) in quante parti deve essere diviso il vettore dei visibili/nascosti
+		//a) in quante parti deve essere diviso il vettore dei visibili/nascosti?
 		const auto total_for_vis = orientation_for_vis == GridOrientation::row_first ? grid_rows : grid_cols;
 		const auto total_for_hid = orientation_for_vis == GridOrientation::row_first ? grid_cols : grid_rows;
 
-		//b) che posizione rappresenta la cella per il vettore visibile/nascosto
+		//b) che posizione rappresenta la cella per il vettore visibile/nascosto?
 		const auto my_vis_number = orientation_for_vis == GridOrientation::row_first ? row_number : col_number;
 		const auto my_hid_number = orientation_for_vis == GridOrientation::row_first ? col_number : row_number;
 
+		//calcolo unità gestite da questo nodo
 		n_my_visible_units = get_units_for_node(n_visible_units, total_for_vis, my_vis_number);
 		n_my_hidden_units = get_units_for_node(n_hidden_units, total_for_hid, my_hid_number);
 	}
@@ -94,7 +96,7 @@ namespace parallel_autoencoder
 			uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
 			std::ostream& _oslog, int _mpi_rank,
 			uint _row_number, uint _col_number,
-			my_vector<MP_Comm_MasterSlave>& _accs_row_comm, my_vector<MP_Comm_MasterSlave>& _accs_col_comm)
+			my_vector<MPI_Comm_MasterSlave>& _accs_row_comm, my_vector<MPI_Comm_MasterSlave>& _accs_col_comm)
 
 	: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, batch_mode, _reduce_io, _oslog, _mpi_rank)
 	{
@@ -107,7 +109,6 @@ namespace parallel_autoencoder
 		accs_col_comm = _accs_col_comm;
 
 		calc_all_comm_sizes();
-
 	}
 
 
@@ -120,16 +121,15 @@ namespace parallel_autoencoder
 		rbm_size_minibatch = std::min(rbm_size_minibatch, number_of_samples);
 
 		//1. Si apprendono le RBM per ciascun layer
-		//se sono stati già apprese delle rbm, si passa direttamente alla prima da imparare
+		//se sono stati già apprese delle rbm, si passa direttamente alla prossima da imparare
 		for(uint layer_number = trained_rbms; layer_number < number_of_rbm_to_learn; layer_number++)
 		{
+			//calcolo unità gestite da questo nodo
 			uint n_my_visible_units, n_my_hidden_units;
 			get_my_visible_hidden_units(layer_number,n_my_visible_units, n_my_hidden_units);
 
-			//RBM
 			//la matrice dei pesi per il layer in questione,
 			//possiede grandezza VxH (unità visibili per unità nascoste)
-			//si riserva lo spazio necessario
 			layers_weights[layer_number] = matrix<float>(n_my_visible_units, n_my_hidden_units);
 			auto& weights = layers_weights[layer_number];
 
@@ -151,25 +151,23 @@ namespace parallel_autoencoder
 			my_vector<float> rec_visible_units2(n_my_visible_units);
 			my_vector<float> rec_hidden_units2(n_my_hidden_units);
 
-			my_vector<float> temp_buffer_units = my_vector<float>(n_my_hidden_units);
-
 			//Puntatori delle request asincrone
 			//comunicatori per nodi visibili e nascosti
 			auto& comms_for_vis = acc_vis_comm_for_layer[layer_number];
 			auto& comms_for_hid = acc_hid_comm_for_layer[layer_number];
 
-			MPI_Request reqsVis1[comms_for_vis.size()];
-			MPI_Request reqsVis1Ricezione[comms_for_vis.size()];
+			MPI_Request reqsVisInvio[comms_for_vis.size()];
+			MPI_Request reqsVisRicezione[comms_for_vis.size()];
+			MPI_Request reqsHidInvio[comms_for_hid.size()];
+			MPI_Request reqsHidRicezione[comms_for_hid.size()];
 
-			MPI_Request reqsHid1[comms_for_hid.size()];
-			MPI_Request reqsHid1Ricezione[comms_for_hid.size()];
 
+			//gestori delle request
+			MPI_Req_Manager_Cell reqVisibleInvio{ reqsVisInvio, &comms_for_vis};
+			MPI_Req_Manager_Cell reqVisibleRicezione{ reqsVisRicezione, &comms_for_vis};
 
-			MPReqManagerCell reqVisible1{ reqsVis1, &comms_for_vis};
-			MPReqManagerCell reqVisibleRicezione2{ reqsVis1Ricezione, &comms_for_vis};
-
-			MPReqManagerCell reqHidden1{reqsHid1, &comms_for_hid };
-			MPReqManagerCell reqHiddenRicezione1{reqsHid1Ricezione, &comms_for_hid };
+			MPI_Req_Manager_Cell reqHiddenInvio{reqsHidInvio, &comms_for_hid };
+			MPI_Req_Manager_Cell reqHiddenRicezione{reqsHidRicezione, &comms_for_hid };
 
 
 			//si avvia il processo di apprendimento per diverse epoche
@@ -177,166 +175,103 @@ namespace parallel_autoencoder
 			float current_learning_rate;
 
 			// A1) Async Ricezione V 1
-			reqVisible1.ReceiveVector(visible_units1);
+			reqVisibleInvio.receive_vector(visible_units1);
 
 			for(uint epoch = 0; epoch < rbm_n_training_epocs; epoch++){
 
-				current_learning_rate = GetRBMLearningRate(epoch, layer_number);
+				current_learning_rate = get_learning_rate_rbm(epoch, layer_number);
 
 				while(current_index_sample < (epoch + 1) * number_of_samples)
 				{
-					current_index_sample+=2; //ogni ciclo while gestisce due esempi
+					//ogni ciclo while gestisce due esempi
+					current_index_sample+=2;
 
 					//CONTRASTIVE DIVERGENCE
 					//Si utilizza un protocollo di comunicazione che permette di effettuare computazioni mentre si inviano dati
-					//E' necessario però analizzare due esempi per volta
+
 
 					// A1) Wait ricezione V 1
-					reqVisible1.wait();
+					reqVisibleInvio.wait();
 
 
-					// B1) Async ricezione V
-					reqVisible1.ReceiveVector(visible_units2);
-
-					//Prodotto matriciale V * W
+					// B1) Async ricezione V 2, calcolo H 1
+					reqVisibleInvio.receive_vector(visible_units2);
 					matrix_transpose_vector_multiplication(weights, visible_units1, hidden_units1);
-
-					// B1) Wait ricezione V
-					reqVisible1.wait();
+					reqVisibleInvio.wait();
 
 
-
-					// A2) Async invio H 1
-					reqHidden1.SendVectorToReduce(hidden_units1);
-
-					// A3) Async ricezione H
-					reqHiddenRicezione1.ReceiveVector(hidden_units1);
-
-					//Prodotto matriciale V * W
+					// A2, A3) Async invio e ricezione H 1, calcolo H 2
+					reqHiddenInvio.send_vector_to_reduce(hidden_units1);
+					reqHiddenRicezione.receive_vector(hidden_units1);
 					matrix_transpose_vector_multiplication(weights, visible_units2, hidden_units2);
-
-					// A2) Wait invio H
-					reqHidden1.wait();
-
-					// A3) Wait ricezione H
-					reqHiddenRicezione1.wait();
+					reqHiddenInvio.wait();
+					reqHiddenRicezione.wait();
 
 
-
-					// B2) Async invio H
-					reqHidden1.SendVectorToReduce(hidden_units2);
-
-					// B3) Async ricezione H
-					reqHiddenRicezione1.ReceiveVector(hidden_units2);
-
-					//Prodotto matriciale H * W
+					// B2, B3) Async invio e ricezione H 2, calcolo Vrec 1
+					reqHiddenInvio.send_vector_to_reduce(hidden_units2);
+					reqHiddenRicezione.receive_vector(hidden_units2);
 					matrix_vector_multiplication(weights, hidden_units1, rec_visible_units1);
-
-					// B2) Wait invio H
-					reqHidden1.wait();
-
-					// B3) Wait ricezione H
-					reqHiddenRicezione1.wait();
+					reqHiddenInvio.wait();
+					reqHiddenRicezione.wait();
 
 
-
-					// A4) Async invio Vrec
-					reqVisible1.SendVectorToReduce(rec_visible_units1);
-
-					// A5) Async ricezione Vrec
-					reqVisibleRicezione2.ReceiveVector(rec_visible_units1);
-
-					//Prodotto matriciale H * W
+					// A4, A5) Async invio e ricezione Vrec1, calcolo Vrec2
+					reqVisibleInvio.send_vector_to_reduce(rec_visible_units1);
+					reqVisibleRicezione.receive_vector(rec_visible_units1);
 					matrix_vector_multiplication(weights, hidden_units2, rec_visible_units2);
-
-					// A4) Wait invio V rec
-					reqVisible1.wait();
-
-					// A5) Wait ricezione V rec
-					reqVisibleRicezione2.wait();
+					reqVisibleInvio.wait();
+					reqVisibleRicezione.wait();
 
 
-
-					// B4) Async invio V rec
-					reqVisible1.SendVectorToReduce(rec_visible_units2);
-
-					// B5) Async ricezione Vrec
-					reqVisibleRicezione2.ReceiveVector(rec_visible_units2);
-
-					//Prodotto matriciale V' * W
+					// B4, B5) Async invio e ricezione V rec 2, calcolo Hrec 1
+					reqVisibleInvio.send_vector_to_reduce(rec_visible_units2);
+					reqVisibleRicezione.receive_vector(rec_visible_units2);
 					matrix_transpose_vector_multiplication(weights, rec_visible_units1, rec_hidden_units1);
-
-					// B4) Wait invio Vrec
-					reqVisible1.wait();
-
-					// B5) Wait ricezione Vrec
-					reqVisibleRicezione2.wait();
+					reqVisibleInvio.wait();
+					reqVisibleRicezione.wait();
 
 
-
-					// A6) Async invio H rec
-					reqHidden1.SendVectorToReduce(rec_hidden_units1);
-
-					// A7) Async ricezione H rec
-					reqHiddenRicezione1.ReceiveVector(rec_hidden_units1);
-
-					//Prodotto matriciale V' * W
+					// A6, A7) Async invio e ricezione H rec 1, calcolo H rec 2
+					reqHiddenInvio.send_vector_to_reduce(rec_hidden_units1);
+					reqHiddenRicezione.receive_vector(rec_hidden_units1);
 					matrix_transpose_vector_multiplication(weights, rec_visible_units2, rec_hidden_units2);
-
-					// A6) Wait invio H rec
-					reqHidden1.wait();
-
-					// A7) Wait ricezione H rec
-					reqHiddenRicezione1.wait();
+					reqHiddenInvio.wait();
+					reqHiddenRicezione.wait();
 
 
-
-
-
-					// B6) Async invio H rec
-					reqHidden1.SendVectorToReduce(rec_hidden_units2);
-
-					// B7) Async ricezione H rec
-					reqHiddenRicezione1.ReceiveVector(rec_hidden_units2);
-
-					//gradiente
-					//si calcolano i differenziali dei pesi
+					// B6, B7) Async invio e ricezione H rec 2, calcolo gradiente 1
+					reqHiddenInvio.send_vector_to_reduce(rec_hidden_units2);
+					reqHiddenRicezione.receive_vector(rec_hidden_units2);
 					set_gradient(diff_weights, visible_units1, hidden_units1, rec_visible_units1, rec_hidden_units1);
-
-					// B6) Wait invio H rec
-					reqHidden1.wait();
-
-					// B7) Wait ricezione H rec
-					reqHiddenRicezione1.wait();
-
+					reqHiddenInvio.wait();
+					reqHiddenRicezione.wait();
 
 
 					// A1) Async ricezione V
 					const bool other_samples = current_index_sample != rbm_n_training_epocs * number_of_samples;
 					if(other_samples)
-						reqVisible1.ReceiveVector(visible_units1);
+						reqVisibleInvio.receive_vector(visible_units1);
 
-					//gradiente
-					//si calcolano i differenziali dei pesi
+					//calcolo gradiente 2
 					set_gradient(diff_weights, visible_units2, hidden_units2, rec_visible_units2, rec_hidden_units2);
 
-					//se abbiamo raggiunto la grandezza del mini batch, si modificano i pesi
+					//modifica pesi mini batch
 					if(current_index_sample % rbm_size_minibatch == 0)
-						update_parameters_weights(rbm_momentum, current_learning_rate, weights, diff_weights, rbm_size_minibatch);
+						update_weights_rbm(rbm_momentum, current_learning_rate, weights, diff_weights, rbm_size_minibatch);
 
 				} //fine esempio
 			} //fine epoca
 
 
-			//se si sono degli esempi non ancora considerati, si applica il relativo update dei pesi
+			//modifica pesi per esempi rimanenti
 			int n_last_samples = current_index_sample % rbm_size_minibatch;
 			if(n_last_samples != 0)
-				update_parameters_weights(rbm_momentum, current_learning_rate, weights, diff_weights, n_last_samples);
+				update_weights_rbm(rbm_momentum, current_learning_rate, weights, diff_weights, n_last_samples);
 
-			//SALVATAGGIO NUOVI INPUT (non viene sfruttato il doppio canale come nel training della RBM)
-			save_new_samples(reqVisible1,reqHidden1, weights,
+			//SALVATAGGIO NUOVI INPUT
+			save_new_samples(reqVisibleInvio,reqHiddenInvio, weights,
 					visible_units1, visible_units2, hidden_units1, hidden_units2);
-
 
 			//contatore che memorizza il numero di rbm apprese
 			trained_rbms++;
@@ -352,26 +287,26 @@ namespace parallel_autoencoder
 
 
 	void node_cell_autoencoder::save_new_samples(
-			MPReqManagerCell& reqVis, MPReqManagerCell& reqHid,
+			MPI_Req_Manager_Cell& reqVis, MPI_Req_Manager_Cell& reqHid,
 			matrix<float>& weights,
 			my_vector<float>& visible_units1, my_vector<float>& visible_units2,
 			my_vector<float>& hidden_units1, my_vector<float>& hidden_units2)
 	{
 		// 1) Async ricezione V
-		//ReceiveVector(comms_for_vis, visible_units1, reqsVis1);
-		reqVis.ReceiveVector(visible_units1);
+		reqVis.receive_vector(visible_units1);
 
-
+		//Mentre si calcola il valore per un esempio, si ricevono e si inviano i dati in maniera asincrona
 		for(uint current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
 		{
 			// 1) Wait ricezione V
 			reqVis.wait();
 
-			visible_units2 = visible_units1; //copia valori in un altro buffer
+			//copia valori in un altro buffer
+			visible_units2 = visible_units1;
 
 			// 1) Async ricezione V
 			if(current_index_sample != number_of_samples - 1)
-				reqVis.ReceiveVector(visible_units1);
+				reqVis.receive_vector(visible_units1);
 
 			//Calcolo
 			matrix_transpose_vector_multiplication(weights, visible_units2, hidden_units1);
@@ -381,9 +316,9 @@ namespace parallel_autoencoder
 				reqHid.wait();
 
 			// 3) Async Invio H
-			hidden_units2 = hidden_units1; //utilizzo un altro buffer
-
-			reqHid.SendVectorToReduce(hidden_units2);
+			 //utilizzo un altro buffer
+			hidden_units2 = hidden_units1;
+			reqHid.send_vector_to_reduce(hidden_units2);
 		}
 
 		// 3) Wait Invio H
@@ -408,34 +343,32 @@ namespace parallel_autoencoder
 
 	void node_cell_autoencoder::forward_pass(my_vector<my_vector<float>>& activation_layers, my_vector<my_vector<float>>& output_layers)
 	{
-		//1. forward pass
 		for(uint l = 0; l != number_of_final_layers - 1; l++){
 
 			//comunicatori
 			auto& comms_for_vis = acc_vis_comm_for_layer[l];
 			auto& comms_for_hid = acc_hid_comm_for_layer[l];
 
+			//Gestore delle richieste per il layer corrente
+			MPI_Request vis_requests[comms_for_vis.size()];
+			MPI_Request reqs_hid[comms_for_hid.size()];
+
+			MPI_Req_Manager_Cell reqVis{ vis_requests, &comms_for_vis};
+			MPI_Req_Manager_Cell reqHid{ reqs_hid, &comms_for_hid};
+
 			//bias, input e output vectors
 			auto& weights = layers_weights[l];
 			auto& input = activation_layers[l];
 			auto& output = output_layers[l];
 
-
-			//Ricezione da accumulatori
-			MPI_Request vis_requests[comms_for_vis.size()];
-			MPI_Request reqs_hid[comms_for_hid.size()];
-
-			MPReqManagerCell reqVis{ vis_requests, &comms_for_vis};
-			MPReqManagerCell reqHid{ reqs_hid, &comms_for_hid};
-
-
-			reqVis.ReceiveVectorSync(input);
+			//Ricezione
+			reqVis.receive_vector_sync(input);
 
 			//Calcolo matriciale H = V * W
 			matrix_transpose_vector_multiplication(weights, input, output);
 
 			//Invio ad accumulatori
-			reqHid.SendVectorToReduce(output);
+			reqHid.send_vector_to_reduce(output);
 
 		} //fine forward
 	}
@@ -467,20 +400,20 @@ namespace parallel_autoencoder
 
 			//ricevi delta da accumulatori
 			MPI_Request req_from_acc[comms_for_hid.size()];
-			MPReqManagerCell reqFromAcc{req_from_acc,&comms_for_hid };
+			MPI_Req_Manager_Cell reqFromAcc{req_from_acc,&comms_for_hid };
+			reqFromAcc.receive_vector_sync(deltas_from_accs);
 
-			reqFromAcc.ReceiveVectorSync(deltas_from_accs);
 
 			//calcola delta pesati (li si moltiplicano per la matrice dei pesi)
 			matrix_vector_multiplication(weights_to_update, deltas_from_accs, deltas_to_accs);
 
-			//Invia delta pesati agli accumulatori (all'ultimo passo non è necessario)
+			//Invia delta pesati agli accumulatori (per il primo layer non è necessario)
 			if(l > 1)
 			{
 				MPI_Request reqs_to_acc[comms_for_vis.size()];
-				MPReqManagerCell reqToAcc{ reqs_to_acc, &comms_for_vis  };
+				MPI_Req_Manager_Cell reqToAcc{ reqs_to_acc, &comms_for_vis };
 
-				reqToAcc.SendVectorToReduce(deltas_to_accs);
+				reqToAcc.send_vector_to_reduce(deltas_to_accs);
 			}
 
 			//applico gradiente per la matrice dei pesi
@@ -492,13 +425,9 @@ namespace parallel_autoencoder
 	void node_cell_autoencoder::rollup_for_weights()
 	{
 		//Roll-up
-		//una volta appresi i pesi, bisogna creare una rete di tipo feed forward
-		//la rete feed forward dell'autoencoder possiede il doppio dei layer hidden,
-		//ad eccezione del layer più piccolo che di fatto serve a memorizzare l'informazione in maniera più corta
-
 		for(uint trained_layer = 0; trained_layer != number_of_rbm_to_learn; trained_layer++)
 		{
-			//memorizzo i pesi trasposti nel layer feed forward, attenzione agli indici
+			//memorizzo i pesi trasposti nel layer feed forward
 			const uint index_weights_dest = number_of_final_layers - trained_layer - 2;
 
 			//si salva la trasposta dei pesi
@@ -507,19 +436,19 @@ namespace parallel_autoencoder
 
 			layer_weights_dest = matrix<float>(layer_weights_source.get_cols(), layer_weights_source.get_rows());
 
-			//todo assicurarsi che a livello globale la matrice dei pesi sia stata trasposta
-			//grazie all'orientamento inverso dovrebbe essere così
+			//La trasposizione della matrice per ogni cella, più l'inversione dell'orientamento della griglia,
+			//assicurano che la matrice generale W sia trasposta correttamente
 			transpose_matrix(layer_weights_source, layer_weights_dest);
 		}
 	}
 
 	void node_cell_autoencoder::fine_tuning()
 	{
+		//Rollup prima di tutto
 		rollup_for_weights();
 
 		//INIZIO FINE TUNING
-		//si riserva lo spazio necessario per l'attivazione di ogni layer
-		// e per l'output restituito ad ogni layer
+		//si riserva lo spazio necessario per i vari vettori
 		my_vector<my_vector<float>> activation_layers(orientation_grid.size());
 		my_vector<my_vector<float>> output_layers(orientation_grid.size());
 		get_activation_output_layers(activation_layers, output_layers);
@@ -534,8 +463,8 @@ namespace parallel_autoencoder
 
 			//2. backward pass
 			backward_pass(activation_layers, output_layers);
-		} //fine esempi
 
+		} //fine esempi
 
 
 		//allenamento concluso
@@ -551,11 +480,12 @@ namespace parallel_autoencoder
 		//ottengo numero di esempi
 		MPI_Bcast(&number_of_samples,1, MPI_INT, 0, MPI_COMM_WORLD);
 
+		//si riserva lo spazio necessario per i vari vettori
 		my_vector<my_vector<float>> activation_layers(orientation_grid.size());
 		my_vector<my_vector<float>> output_layers(orientation_grid.size());
 		get_activation_output_layers(activation_layers, output_layers);
 
-
+		//Ogni esempio viene ricostruito
 		for(uint i = 0; i != number_of_samples; i++)
 		{
 			//1. forward pass

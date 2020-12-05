@@ -18,28 +18,28 @@ namespace parallel_autoencoder
 {
 
 
-	void node_master_autoencoder::ScatterInputVector(const my_vector<float>& vec, const int send_counts[], const int displs[], MPI_Request *reqSend)
+	void node_master_autoencoder::scatter_vector(const my_vector<float>& vec, const int send_counts[], const int displs[], MPI_Request *reqSend)
 	{
 		MPI_Iscatterv(vec.data(), send_counts, displs, mpi_datatype_tosend,
 					nullptr, 0,  mpi_datatype_tosend,
 					0, master_accs_comm, reqSend);
 	}
 
-	void node_master_autoencoder::ReceiveOutputVector(const my_vector<float>& vec, const int receive_counts[], const int displs[], MPI_Request *reqRecv)
+	void node_master_autoencoder::gather_vector(const my_vector<float>& vec, const int receive_counts[], const int displs[], MPI_Request *reqRecv)
 	{
 		MPI_Igatherv(MPI_IN_PLACE, 0, mpi_datatype_tosend,
 				vec.data(), receive_counts, displs, mpi_datatype_tosend,
 				0, master_accs_comm,  reqRecv);
 	}
 
-	void node_master_autoencoder::ScatterInputVectorSync(const my_vector<float>& vec, const int send_counts[], const int displs[])
+	void node_master_autoencoder::scatter_vector_sync(const my_vector<float>& vec, const int send_counts[], const int displs[])
 	{
 		MPI_Scatterv(vec.data(), send_counts, displs, mpi_datatype_tosend,
 					nullptr, 0,  mpi_datatype_tosend,
 					0, master_accs_comm);
 	}
 
-	void node_master_autoencoder::ReceiveOutputVectorSync(const my_vector<float>& vec, const int receive_counts[], const int displs[])
+	void node_master_autoencoder::gather_vector_sync(const my_vector<float>& vec, const int receive_counts[], const int displs[])
 	{
 		MPI_Gatherv(MPI_IN_PLACE, 0, mpi_datatype_tosend,
 				vec.data(), receive_counts, displs, mpi_datatype_tosend,
@@ -49,16 +49,15 @@ namespace parallel_autoencoder
 
 
 
-	void node_master_autoencoder::GetScatterParts(int counts[], int displacements[], const int n_total_units)
+	void node_master_autoencoder::get_scatter_parts(int counts[], int displacements[], const int n_total_units)
 	{
-		//root non riceve nulla
+		//root (master) non riceve nulla
 		counts[0] = displacements[0] = 0;
 
 		uint n_units_for_acc = 0;
 		for(uint k = 0; k != total_accumulators; k++){
 
 			//l'accumulatore k è posizionato alla posizione k + 1 (a causa dell'indice 0 che rappresenta il root)
-			//posizionamento iniziale
 			displacements[k + 1] = displacements[k] + n_units_for_acc;
 
 			//calcolo elementi da inviare/ricevere per l'accumulatore
@@ -75,19 +74,19 @@ namespace parallel_autoencoder
 				MPI_Comm& _master_accs_comm,
 				samples_manager& _smp_manager)
 		: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, batch_mode,_reduce_io, _oslog, _mpi_rank)
-		{
-			smp_manager = _smp_manager;
-			master_accs_comm = _master_accs_comm;
+	{
+		smp_manager = _smp_manager;
+		master_accs_comm = _master_accs_comm;
 
-			image_path_folder = string(smp_manager.path_folder);
+		image_path_folder = string(smp_manager.path_folder);
 
-			//indico il numero di elementi del dataset
-			number_of_samples = smp_manager.get_number_samples();
+		//indico il numero di elementi del dataset
+		number_of_samples = smp_manager.get_number_samples();
 
-			//Al momento il numero di esempi deve essere necessariamente pari
-			if(number_of_samples % 2 != 0)
-				std::cout << "Number of samples must be even\nPOSSIBLE ERRORS\n";
-		}
+		//Al momento il numero di esempi deve essere necessariamente pari
+		if(number_of_samples % 2 != 0)
+			std::cout << "Number of samples must be even\nPOSSIBLE ERRORS\n";
+	}
 
 
 	CommandType node_master_autoencoder::wait_for_command()
@@ -166,7 +165,7 @@ namespace parallel_autoencoder
 		rbm_size_minibatch = std::min(rbm_size_minibatch, number_of_samples);
 
 		//Per ciascun layer...
-		//se sono stati già apprese delle rbm, si passa direttamente alla prima da imparare
+		//se sono stati già apprese delle rbm, si passa direttamente alla successiva da imparare
 		for(uint layer_number = trained_rbms; layer_number != number_of_rbm_to_learn; layer_number++)
 		{
 			const uint n_visible_units = layers_size[layer_number];
@@ -175,14 +174,14 @@ namespace parallel_autoencoder
 
 			//si ottengono displacements per gli accumulatori
 			int send_counts[1 + total_accumulators], send_displacements[1 + total_accumulators];
-			GetScatterParts(send_counts, send_displacements, n_visible_units);
+			get_scatter_parts(send_counts, send_displacements, n_visible_units);
 
 
-			std::cout << "-- Imparando il layer numero: " << layer_number
-					<< ", hidden units: " << n_hidden_units
-					<< ", visible units: " << n_visible_units << " --\n";
+			std::cout << "-- Learning layer number: " << layer_number
+					<< ", visible units: " << n_visible_units
+					<< ", hidden units: " << n_hidden_units << " --\n";
 
-
+			//gestori richieste
 			MPI_Request reqSend;
 			my_vector<float> visible_units(n_visible_units);
 			my_vector<float> visible_units_send_buffer(n_visible_units);
@@ -192,9 +191,8 @@ namespace parallel_autoencoder
 
 				//si riavvia l'ottenimento dei samples
 				smp_manager.restart();
-				//std::cout << "Training epoch: " << epoch << "\n";
 
-				//per ciascun esempio leggo da file system mentre invio l'esempio precedente
+				//leggo da file system il prossimo esempio mentre invio l'esempio precedente
 				for(uint current_sample = 0; current_sample != number_of_samples; current_sample++)
 				{
 					//lettura file system
@@ -205,8 +203,7 @@ namespace parallel_autoencoder
 						MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
 
 					visible_units_send_buffer = visible_units;
-
-					ScatterInputVector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
+					scatter_vector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
 				}
 
 				//si conclude l'ultimo invio effettuato
@@ -214,7 +211,7 @@ namespace parallel_autoencoder
 			}
 
 
-			std::cout<< "Fine apprendimento singola RBM\n";
+			std::cout<< "RBM trained (master)\n";
 
 			//SALVATAGGIO NUOVI INPUT
 			save_new_samples(layer_number, n_visible_units, n_hidden_units, sample_extension,
@@ -234,10 +231,10 @@ namespace parallel_autoencoder
 			const char *sample_extension,
 			my_vector<float>& visible_units, my_vector<float>& visible_units_send_buffer)
 	{
-		//si deve salvare sul disco i risultati di attivazione del layer successivo
+		//si devono salvare sul disco i risultati di attivazione del layer successivo
 		//essi saranno utilizzati come input per la prossima fare di training
 		string new_image_path_folder = string(image_path_folder + "/" + std::to_string(layer_number));
-		std::cout << "Salvando i risultati intermedi per il prossimo step nella cartella '"	<< new_image_path_folder << "'\n";
+		std::cout << "Saving result for the next RBM in folder '"	<< new_image_path_folder << "'\n";
 
 		//nome del file dove salvare ciascun esempio
 		string sample_filename, sample_filename_prec;
@@ -245,26 +242,24 @@ namespace parallel_autoencoder
 		//risultato dell'operazione
 		my_vector<float> output_samples(n_hidden_units, 0.0);
 
-		//si ottengono displacements per gli accumulatori (questa volta le parti invisibili)
+		//si ottengono displacements per gli accumulatori
 		int send_counts[1 + total_accumulators], send_displacements[1 + total_accumulators];
-		GetScatterParts(send_counts, send_displacements, n_visible_units);
+		get_scatter_parts(send_counts, send_displacements, n_visible_units);
 
 		int receive_counts[1 + total_accumulators], receive_displacements[1 + total_accumulators];
-		GetScatterParts(receive_counts, receive_displacements, n_hidden_units);
+		get_scatter_parts(receive_counts, receive_displacements, n_hidden_units);
 
-		//si fa in modo di ottimizzare il processo di scambio dei dati
+		//si fa in modo di ottimizzare il processo di scambio dei dati inviando e ricevendo contemporaneamente alle operazioni di I/O
 		MPI_Request reqSend, reqRecv;
 
 		//Si inizia a rileggere ciascun input e inviarlo
 		smp_manager.restart();
-
-
 		for(uint current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
 		{
 			//lettura esempio da file
 			smp_manager.get_next_sample(visible_units, sample_extension, &sample_filename);
 
-			if(current_index_sample > 0)
+			if(current_index_sample != 0)
 			{
 				//attendo invio esempio precedente
 				MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
@@ -272,35 +267,39 @@ namespace parallel_autoencoder
 
 			//invio esempio (copia valori nel buffer)
 			visible_units_send_buffer = visible_units;
-			ScatterInputVector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
+			scatter_vector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
 
 
-			if(current_index_sample > 0)
+			if(current_index_sample != 0)
 			{
 				//attesa gather
-				ReceiveOutputVector(output_samples, receive_counts, receive_displacements,&reqRecv);
+				gather_vector(output_samples, receive_counts, receive_displacements,&reqRecv);
 				MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
 
-				//si salva su file il vettore Hidden ottenuto
-				smp_manager.save_sample(output_samples, false, new_image_path_folder, sample_filename_prec + ".txt"); //dati in formato testuale
-				smp_manager.save_sample(output_samples, true, new_image_path_folder, sample_filename_prec+  default_extension ); //dati in formato immagine
+				//si salva su file il vettore ottenuto
+				 //dati in formato testuale utilizzati dalla RBM
+				smp_manager.save_sample(output_samples, false, new_image_path_folder, sample_filename_prec + ".txt");
+
+				//dati in formato immagine (non utilizzati dalla RBM)
+				if(!reduce_io)
+					smp_manager.save_sample(output_samples, true, new_image_path_folder, sample_filename_prec+  default_extension );
 			}
 
 			//dato che vengono letti prima due input e poi si inizia a salvare, è necessario memorizzare il nome del file precedente
 			sample_filename_prec = sample_filename;
 		}
 
-		//migliorare codice
 		//attesa gather
-		ReceiveOutputVector(output_samples, receive_counts, receive_displacements,&reqRecv);
+		gather_vector(output_samples, receive_counts, receive_displacements,&reqRecv);
 		MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
 
 		//si salva su file il vettore Hidden ottenuto
-		smp_manager.save_sample(output_samples, false, new_image_path_folder, sample_filename_prec + ".txt"); //dati in formato testuale
-		smp_manager.save_sample(output_samples, true, new_image_path_folder, sample_filename_prec+  default_extension); //dati in formato immagine
+		smp_manager.save_sample(output_samples, false, new_image_path_folder, sample_filename_prec + ".txt");
+		if(!reduce_io)
+			smp_manager.save_sample(output_samples, true, new_image_path_folder, sample_filename_prec+  default_extension);
 
 
-		//in maniera del tutto trasparente si utilizzerà questo nuovo percorso per ottenere i dati in input
+		//si utilizzerà questo nuovo percorso per ottenere i dati in input
 		smp_manager.path_folder = new_image_path_folder;
 	}
 
@@ -309,29 +308,27 @@ namespace parallel_autoencoder
 
 	void node_master_autoencoder::fine_tuning()
 	{
-		std::cout << "Inizio fine-tuning\n" ;
+		std::cout << "Beginning Fine-tuning...\n" ;
 
 		 //si passa nuovamente alle immagini iniziali
 		smp_manager.path_folder = image_path_folder;
 
 		//vettore delle unità visibili
 		const uint n_visible_units = layers_size[0];
-
-		auto visible_units = my_vector<float>(layers_size[0]);
-		auto visible_units_send_buffer = my_vector<float>(layers_size[0]);
-		MPI_Request reqSend;
+		auto visible_units = my_vector<float>(n_visible_units);
+		auto visible_units_send_buffer = my_vector<float>(n_visible_units);
 
 		//si ottengono displacements per gli accumulatori
+		MPI_Request reqSend;
 		int send_counts[1 + total_accumulators], send_displacements[1 + total_accumulators];
-		GetScatterParts(send_counts, send_displacements, n_visible_units);
-
+		get_scatter_parts(send_counts, send_displacements, n_visible_units);
 
 		//per ogni epoca...
 		for(uint epoch = 0; epoch != fine_tuning_n_training_epocs; epoch++)
 		{
 			smp_manager.restart();
-			//std::cout << "Training epoch: " << epoch << "\n";
 
+			//mentre si invia un esempio si preleva il prossimo da file system
 			for(uint current_index_sample = 0; current_index_sample != number_of_samples; current_index_sample++)
 			{
 				//lettura esempio da file
@@ -345,11 +342,12 @@ namespace parallel_autoencoder
 
 				//invio esempio (copia valori nel buffer)
 				visible_units_send_buffer = visible_units;
-				ScatterInputVector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
+				scatter_vector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
 			}
 
 			//attendo invio esempio precedente
 			MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
+
 		} //fine epoca
 
 
@@ -374,7 +372,7 @@ namespace parallel_autoencoder
 		auto input_units = my_vector<float>(n_visible_units);
 		auto output_units = my_vector<float>(n_visible_units);
 
-		//si prende l'immagine dal manager
+		//si prendono le immagini da IO
 		smp_manager.path_folder = image_path_folder;
 		smp_manager.restart();
 
@@ -382,11 +380,11 @@ namespace parallel_autoencoder
 
 		//si ottengono displacements per gli accumulatori
 		int send_counts[1 + total_accumulators], send_displacements[1 + total_accumulators];
-		GetScatterParts(send_counts, send_displacements, n_visible_units);
+		get_scatter_parts(send_counts, send_displacements, n_visible_units);
 
 		//si ottengono displacements per gli accumulatori (questa volta le parti invisibili)
 		int receive_counts[1 + total_accumulators], receive_displacements[1 + total_accumulators];
-		GetScatterParts(receive_counts, receive_displacements, n_visible_units);
+		get_scatter_parts(receive_counts, receive_displacements, n_visible_units);
 
 		//errore medio quadratico
 		float mean_root_squared_error = 0;
@@ -396,10 +394,10 @@ namespace parallel_autoencoder
 			smp_manager.get_next_sample(input_units,  default_extension.c_str() , &file_name);
 
 			//invio esempio
-			ScatterInputVectorSync(input_units, send_counts, send_displacements);
+			scatter_vector_sync(input_units, send_counts, send_displacements);
 
 			//attesa ricezione risultato
-			ReceiveOutputVectorSync(output_units, receive_counts, receive_displacements);
+			gather_vector_sync(output_units, receive_counts, receive_displacements);
 
 			if(batch_mode)
 			{

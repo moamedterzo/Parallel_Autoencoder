@@ -24,10 +24,14 @@ using std::vector;
 
 namespace parallel_autoencoder{
 
+	//Estensione dei file di input
 	static const string default_extension = ".jpg";
 
-	//todo capire che numero mettere
+	//Precisione dei dati salvati su file
 	static const int F_PREC = 30;
+
+	//valore utilizzato per normalizzare i valori in input
+	static const float INPUT_MAX_VALUE = 255;
 
     class samples_manager{
     private:

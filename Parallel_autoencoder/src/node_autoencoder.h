@@ -11,8 +11,11 @@
 
 namespace parallel_autoencoder
 {
-
-	enum class CommandType { train = 0, exit = 1, load_pars = 2, save_pars = 3, reconstruct_image = 4 , delete_pars_file = 5, retry = 6};
+	//Comandi implementati per l'autoencoder
+	enum class CommandType {
+		train = 0, exit = 1, load_pars = 2, save_pars = 3,
+		reconstruct_image = 4 , delete_pars_file = 5, retry = 6
+	};
 
 
     class node_autoencoder
@@ -68,7 +71,7 @@ namespace parallel_autoencoder
 		//i nodi della griglia oppure (2) gli elementi che un nodo della griglia deve scambiare
 		//con ciascun accumulatore collegato.
 		void calc_comm_sizes(const GridOrientation current_or, //orientamento comm
-				my_vector<MP_Comm_MasterSlave>& acc_gridcolrow_comm, //comm da accumulatore a righe o colonne
+				my_vector<MPI_Comm_MasterSlave>& acc_gridcolrow_comm, //comm da accumulatore a righe o colonne
 				const bool calc_for_acc, //indica se il calcolo va fatto per l'accumulatore o il nodo della griglia
 				const uint my_k_col_row_number, //indice del nodo k o della cella in riga r o colonna c
 				const int n_tot_vishid_units);
@@ -77,8 +80,7 @@ namespace parallel_autoencoder
 		//restituisce unità (visibili o hidden) per l'accumulatore k o il nodo della riga r o della colonna c
 		static int get_units_for_node(const uint n_total_units, const uint total_nodes, const uint node_number);
 
-
-		static float GetRBMLearningRate(const uint epoch_number, const uint layer_number);
+		static float get_learning_rate_rbm(const uint epoch_number, const uint layer_number);
 
     public:
 
@@ -92,9 +94,8 @@ namespace parallel_autoencoder
 
         void loop();
         void execute_command(CommandType command);
-
-        //metodo base rimpiazzabile dal master
         virtual CommandType wait_for_command();
+
 
         virtual void train_rbm() = 0;
         virtual void fine_tuning() = 0;
@@ -110,9 +111,7 @@ namespace parallel_autoencoder
     private:
 
         void set_size_for_layers(const my_vector<int>& _layers_size_source);
-
 		void set_orientation_for_layers();
-
     };
 }
 

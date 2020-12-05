@@ -24,11 +24,6 @@ using namespace cv;
 
 namespace parallel_autoencoder
 {
-
-	//valore utilizzato per normalizzare i valori in input
-	static const float INPUT_MAX_VALUE = 255;
-
-
     samples_manager::samples_manager(){};
 
     samples_manager::samples_manager(string _path_folder, int _max_n_samples)
@@ -118,7 +113,7 @@ namespace parallel_autoencoder
 			  {
 				  const int index = j * img.cols + i;
 
-				  //todo capire se va bene come preprocessing
+				  //preprocessing effettuato normalizzando i risultati tra 0 e 1
 				  buffer[index] = float(int(img.at<uchar>(j,i))) / INPUT_MAX_VALUE;
 			  }
         }
@@ -153,38 +148,11 @@ namespace parallel_autoencoder
 
     void samples_manager::save_sample(my_vector<float>& buffer, bool save_as_image, string folder, string filepath){
 
-        //si determina la grandezza dell'immagine al primo salvataggio
-        if(height == -1){
-
-            float lato  = sqrt(buffer.size());
-            if(lato == floor(lato)) //se è un quadrato perfetto
-            {
-                height = width = lato;
-            }
-            else{
-                //solitamente si avranno hidden layer formati da rettangoli dove un lato è il doppio dell'altro
-                lato  = sqrt(buffer.size() / 2);
-                if(lato == floor(lato)) //se la metà del rettangolo è un quadrato perfetto
-                {
-                    height = lato;
-                    width = lato * 2;
-                }
-                else
-                {
-                    //in caso estremo si inseriscono tutti i pixel su una sola linea
-                    height = 1;
-                    width = buffer.size();
-
-                    std::cout << "PROBLEMA SALVATAGGIO IMMAGINE, NON E' UN QUADRATO E NEANCHE UN RETTANGOLO\n";
-                }
-            }
-        }
-
         //creazione cartella se non esiste
         struct stat _buffer_stat;
         if(stat (folder.c_str(), &_buffer_stat) != 0)
         {
-            std::cout << "Creando la cartella '" << folder << "'\n";
+            std::cout << "Creating folder '" << folder << "'\n";
             mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
         }
 
@@ -192,7 +160,35 @@ namespace parallel_autoencoder
 
         if(save_as_image)
         {
-        	 //si normalizza l'immagine ai valori originali (altrimenti le prossime letture non funzioneranno)
+            //si determina la grandezza dell'immagine al primo salvataggio
+            if(height == -1)
+            {
+                float lato  = sqrt(buffer.size());
+                if(lato == floor(lato)) //se è un quadrato perfetto
+                {
+                    height = width = lato;
+                }
+                else{
+                    //solitamente si avranno hidden layer formati da rettangoli dove un lato è il doppio dell'altro
+                    lato  = sqrt(buffer.size() / 2);
+                    if(lato == floor(lato)) //se la metà del rettangolo è un quadrato perfetto
+                    {
+                        height = lato;
+                        width = lato * 2;
+                    }
+                    else
+                    {
+                        //in caso estremo si inseriscono tutti i pixel su una sola linea
+                        height = 1;
+                        width = buffer.size();
+
+                        std::cout << "THE SAVED IMAGE IS NOT A SQUARE NEITHER A RECTANGLE\n";
+                    }
+                }
+            }
+
+
+        	 //si normalizza l'immagine ai valori originali
 			auto buffer_for_image = buffer;
 			for(uint i = 0; i != buffer.size(); i++)
 				buffer_for_image[i] *= INPUT_MAX_VALUE;
@@ -218,32 +214,6 @@ namespace parallel_autoencoder
     }
 
     void samples_manager::show_sample(my_vector<float>& buffer){
-
-        /*//si determina la grandezza dell'immagine
-        float lato  = sqrt(buffer.size());
-        int height_s, width_s;
-
-        if(lato == floor(lato)) //se è un quadrato perfetto
-        {
-            height_s = width_s = lato;
-        }
-        else{
-            //solitamente si avranno hidden layer formati da rettangoli dove un lato è il doppio dell'altro
-            lato  = sqrt(buffer.size() / 2);
-            if(lato == floor(lato)) //se la metà del rettangolo è un quadrato perfetto
-            {
-                height_s = lato;
-                width_s = lato * 2;
-            }
-            else
-            {
-                //in caso estremo si inseriscono tutti i pixel su una sola linea
-                height_s = 1;
-                width_s = buffer.size();
-
-                std::cout << "PROBLEMA IMMAGINE, NON E' UN QUADRATO E NEANCHE UN RETTANGOLO\n";
-            }
-        }*/
 
         save_sample(buffer, true, "./temp", "image_temp" + default_extension);
 

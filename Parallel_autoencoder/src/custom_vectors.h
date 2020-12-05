@@ -22,6 +22,7 @@ namespace parallel_autoencoder
 	enum class GridOrientation { row_first, col_first };
 
 
+	//This class is used in order to have the basic properties for a vector
 	template<typename Arg>
 	class my_vector
 	{
@@ -118,14 +119,12 @@ namespace parallel_autoencoder
 
 			my_vector(const uint s, const Arg&& init_v) : my_vector(s)
 			{
-				//valore iniziale
 				for(uint i = 0; i != mem_size; i++)
 					mem[i] = init_v;
 			}
 
 			my_vector(const uint s, const Arg& init_v) : my_vector(s)
 			{
-				//valore iniziale
 				for(uint i = 0; i != mem_size; i++)
 					mem[i] = init_v;
 			}
@@ -140,30 +139,30 @@ namespace parallel_autoencoder
 
 			void push_back(Arg value)
 			{
-				//versione inefficiente, meglio evitarla
+				//Non efficient version, it's better to not use it extensively
 				Arg *old_mem = mem;
 				std::swap(old_mem, mem);
 
-				//copia valori nel nuovo puntatore
+				//copy values to new pointer
 				mem = new Arg[mem_size + 1];
-				if(old_mem != nullptr)
-					for(uint i = 0; i < mem_size; i++)
+				if(old_mem)
+					for(uint i = 0; i != mem_size; i++)
 						mem[i] = old_mem[i];
 
 				mem[mem_size] = value;
 
-				//nuova size
+				//new size
 				mem_size++;
 
-				//si elimina il vecchio puntatore e si aggiorna il corrente
-				if(old_mem != nullptr)
+				//delete old pointer
+				if(old_mem)
 					delete[] old_mem;
 			}
 
 
 			Arg& operator[](const uint s) const
 			{
-				assert(s < mem_size);
+				assert(s < mem_size && s >= 0);
 
 				return mem[s];
 			}
@@ -179,11 +178,11 @@ namespace parallel_autoencoder
 				return mem_size;
 			}
 
-
-
 		};
 
 
+	//This class is used in order to access to pointer elements
+	//in a matrix-wise mode
 	template<typename Arg>
 	class matrix
 	{
@@ -233,13 +232,13 @@ namespace parallel_autoencoder
 
 			matrix& operator=(const matrix& rhs)
 			{
-				if( this != &rhs )
+				if(this != &rhs)
 				{
 					if(mem)
 					  delete [] mem;
 
 					mem = new Arg[rhs.size()];
-					for(uint i = 0; i < rhs.size(); ++i )
+					for(uint i = 0; i != rhs.size(); ++i )
 					  mem[i] = rhs.mem[ i ];
 
 					cols = rhs.get_cols();
@@ -253,8 +252,8 @@ namespace parallel_autoencoder
 			matrix(const matrix& rhs)
 			{
 				mem = new Arg[rhs.size()];
-				for(uint i = 0; i < rhs.size(); ++i )
-				  mem[i] = rhs.mem[ i ];
+				for(uint i = 0; i != rhs.size(); ++i)
+				  mem[i] = rhs.mem[i];
 
 				cols = rhs.get_cols();
 				rows = rhs.get_rows();
@@ -272,7 +271,6 @@ namespace parallel_autoencoder
 
 			matrix(const uint r, const uint c, const Arg&& init_v) : matrix(r, c)
 			{
-				//valore iniziale
 				for(uint r = 0; r != rows; r++)
 					for(uint c=0; c != cols; c++)
 						mem[r * c + c] = init_v;
@@ -280,15 +278,15 @@ namespace parallel_autoencoder
 
 			Arg& at(const uint r, const uint c) const
 			{
-				assert(r < rows);
-				assert(c < cols);
+				assert(r < rows && r >= 0);
+				assert(c < cols && c >= 0);
 
 				return mem[r * cols + c];
 			}
 
 			Arg& operator[](const uint s) const
 			{
-				assert(s < size());
+				assert(s < size() && s >= 0);
 
 				return mem[s];
 			}
@@ -334,14 +332,14 @@ namespace parallel_autoencoder
 			auto m = mn_matrix.get_rows();
 			auto n = mn_matrix.get_cols();
 
-			 //si controlla se le grandezze corrispondono
+			 //check sizes
 			assert(n == n_vec.size());
 			assert(m == m_vec_dest.size());
 
-			//moltiplicazione matrice per vettore
+			// Implement matrix-vector multiplication
 			for(uint i = 0; i != m; i++)
 			{
-				m_vec_dest[i] = 0; //inizializzazione
+				m_vec_dest[i] = 0; //init
 				for(uint j = 0; j != n; j++)
 					m_vec_dest[i] += mn_matrix.at(i, j) * n_vec[j];
 			}
@@ -357,15 +355,14 @@ namespace parallel_autoencoder
 			auto m = mn_matrix.get_rows();
 			auto n = mn_matrix.get_cols();
 
-			 //si controlla se le grandezze corrispondono
+			//check sizes
 			assert(n == n_vec_dest.size());
 			assert(m == m_vec.size());
 
-			//moltiplicazione matrice per vettore
+			//Implement matrix-vector multiplication
 			for(uint j = 0; j != n; j++)
 			{
-				n_vec_dest[j] = 0; //inizializzazione
-
+				n_vec_dest[j] = 0; //init
 				for(uint i = 0; i != m; i++)
 					n_vec_dest[j] += mn_matrix.at(i, j) * m_vec[i];
 			}
@@ -376,22 +373,23 @@ namespace parallel_autoencoder
 	   template<typename Arg>
 	   inline void transpose_matrix(const matrix<Arg>& source_matrix, matrix<Arg>& dest_matrix)
 	   {
+		   //check sizes
 		   assert(source_matrix.get_rows() == dest_matrix.get_cols());
 		   assert(source_matrix.get_cols() == dest_matrix.get_rows());
 
+		   //each element is copied to the destination matrix
 		   for(uint r = 0; r != source_matrix.get_rows(); r++)
 			   for(uint c = 0; c != source_matrix.get_cols(); c++)
 				   dest_matrix.at(c, r) = { source_matrix.at(r, c) };
 	   }
 
 
-		inline void print_vector_norm(my_vector<float>& vec, std::string&& myid)
+		inline void print_vector_norm(const my_vector<float>& vec, const std::string&& myid)
 		{
 			float result = 0;
 
 			for(uint i = 0; i != vec.size(); i++)
 				result +=vec[i];
-
 
 			std::cout << "[" << myid << ": " << result << "]\n";
 		}
@@ -400,8 +398,8 @@ namespace parallel_autoencoder
 
 
 
-		 //Implementa il campionamento basato sulla funzione sigmoide
-		 //utilizza un metodo più efficente per il sampling
+		//Implement sampling for the sigmoid function
+		//It's used an efficient version for sampling
 		inline  float sample_sigmoid_function(const float sigmoid_argument, std::default_random_engine& generator){
 
 			//distribuzione uniforme tra 0 e 1
@@ -412,23 +410,26 @@ namespace parallel_autoencoder
 		}
 
 
-		 inline float sample_gaussian_distribution(const float mean, const float variance,  std::default_random_engine& generator){
+
+		//Implements gaussian noise with given mean and variance
+		inline float sample_gaussian_noise(const float mean, const float variance,  std::default_random_engine& generator){
 
 			static std::normal_distribution<float> dist(0, 1.0);
 
-			//imposto parametri
+			//set parameters
 			std::normal_distribution<float>::param_type param(mean, variance);
 			dist.param(param);
 
 			return dist(generator);
 		}
 
-		 inline float sample_gaussian_distribution(const float mean, std::default_random_engine& generator){
+		 inline float sample_gaussian_noise(const float mean, std::default_random_engine& generator){
 
-			return sample_gaussian_distribution(mean, 1.0, generator);
+			return sample_gaussian_noise(mean, 1.0, generator);
 		}
 
-		 inline float root_squared_error(my_vector<float>& vec_1, my_vector<float>& vec_2)
+		//Computer root squared difference for two vectors
+		inline float root_squared_error(const my_vector<float>& vec_1, const my_vector<float>& vec_2)
 		{
 			assert(vec_1.size() == vec_2.size());
 
@@ -441,7 +442,7 @@ namespace parallel_autoencoder
 		}
 
 
-		 inline void print_vector(my_vector<float>& v) {
+		 inline void print_vector(const my_vector<float>& v) {
 
 			for(uint i = 0; i != v.size(); i++)
 				std::cout << "[" << std::to_string(v[i]) << "] ";
@@ -449,7 +450,8 @@ namespace parallel_autoencoder
 			std::cout << "\n";
 		}
 
-		 inline 	void print_matrix(matrix<float>& v) {
+
+		inline 	void print_matrix(const matrix<float>& v) {
 			 for(uint i = 0; i != v.get_rows(); i++)
 			 {
 				 for(uint j = 0; j != v.get_cols(); j++)
@@ -468,33 +470,35 @@ namespace parallel_autoencoder
 				std::default_random_engine& generator)
 		{
 			for(uint i = 0; i != weights.size(); i++)
-					weights[i] = sample_gaussian_distribution(rbm_initial_weights_mean, rbm_initial_weights_variance, generator);
+					weights[i] = sample_gaussian_noise(rbm_initial_weights_mean, rbm_initial_weights_variance, generator);
 		}
 
 
 
-		inline void SampleHiddenUnits(my_vector<float>& hidden_units, my_vector<float>& hidden_biases, std::default_random_engine& generator)
+		inline void sample_hidden_units(my_vector<float>& hidden_units, const my_vector<float>& hidden_biases, std::default_random_engine& generator)
 		{
 			for(uint i = 0; i != hidden_units.size(); i++)
 				hidden_units[i] = sample_sigmoid_function(hidden_units[i] + hidden_biases[i], generator);
 		}
 
-		inline void ReconstructVisibileUnits(my_vector<float>& rec_visible_units, my_vector<float>& visible_biases, const bool first_layer, std::default_random_engine& generator)
+		inline void reconstruct_visible_units(my_vector<float>& rec_visible_units, const my_vector<float>& visible_biases,
+				const bool first_layer, std::default_random_engine& generator)
 		{
-			//todo assicurarsi che siano probabilita e non binari
-			if(first_layer) //per il primo layer bisogna aggiungere del rumore gaussiano
+			//for the first layer we apply gaussian noise
+			if(first_layer)
 				for(uint i = 0; i != rec_visible_units.size(); i++)
-					rec_visible_units[i] =	sample_gaussian_distribution(sigmoid(rec_visible_units[i] + visible_biases[i]), generator);
+					rec_visible_units[i] =	sample_gaussian_noise(sigmoid(rec_visible_units[i] + visible_biases[i]), generator);
 			else
 				for(uint i = 0; i != rec_visible_units.size(); i++)
 					rec_visible_units[i] =	sigmoid(rec_visible_units[i] + visible_biases[i]);
 		}
 
-		inline void ReconstructHiddenUnits(my_vector<float>& rec_hidden_units, my_vector<float> &hidden_biases, const bool first_layer, std::default_random_engine& generator)
+		inline void reconstruct_hidden_units(my_vector<float>& rec_hidden_units, const my_vector<float> &hidden_biases,
+				const bool first_layer, std::default_random_engine& generator)
 		{
+			//for the first layer we sample the hidden units
 			if(first_layer)
-				for(uint i = 0; i != rec_hidden_units.size(); i++)
-					rec_hidden_units[i] = sample_sigmoid_function(rec_hidden_units[i] + hidden_biases[i], generator);
+				sample_hidden_units(rec_hidden_units, hidden_biases, generator);
 			else
 				for(uint i = 0; i != rec_hidden_units.size(); i++)
 					rec_hidden_units[i] =  sigmoid(rec_hidden_units[i] + hidden_biases[i]);
@@ -502,18 +506,20 @@ namespace parallel_autoencoder
 
 
 
-		inline void apply_sigmoid_to_layer(my_vector<float>& output, my_vector<float> biases, const bool round_output)
+		inline void apply_sigmoid_to_layer(my_vector<float>& output, const my_vector<float> biases, const bool round_output)
 		{
 			if(round_output)
 				for(uint i = 0; i != output.size(); i++)
-					output[i] = round(sigmoid(output[i] + biases[i]));
+					output[i] = round(sigmoid(output[i] + biases[i])); //round to 1 or 0
 			else
 				for(uint i = 0; i != output.size(); i++)
 					output[i] = sigmoid(output[i] + biases[i]);
 		}
 
 
-		inline void deltas_for_output_layer(my_vector<float>& output_layer,my_vector<float>& first_activation_layer,my_vector<float>& current_deltas)
+		//Compute deltas for output layer
+		inline void deltas_for_output_layer(const my_vector<float>& output_layer, const my_vector<float>& first_activation_layer,
+				my_vector<float>& current_deltas)
 		{
 			for(uint j = 0; j != output_layer.size(); j++)
 				   current_deltas[j] = output_layer[j]  * (1 - output_layer[j]) //derivative
@@ -523,96 +529,88 @@ namespace parallel_autoencoder
 
 
 
-		//dopo aver utilizzato i differenziali, li si inizializzano considerando il momentum
-		//la formula per l'update di un generico parametro è: Δw(t) = momentum * Δw(t-1) + learning_parameter * media_gradienti_minibatch
-		 inline void update_parameters_biases(
-						const float momentum,
-						const float current_learning_rate,
+		//Update bias parameters considering the learning rate and number of samples.
+		//Use momentum in order to set new differentials for biases
+		 inline void update_biases_rbm(const float momentum, const float current_learning_rate,
 						my_vector<float> &hidden_biases, my_vector<float> &visible_biases,
-						my_vector<float> &diff_visible_biases,	my_vector<float> &diff_hidden_biases,
-						const int number_of_samples)
+						my_vector<float> &diff_visible_biases,	my_vector<float> &diff_hidden_biases, const int number_of_samples)
 			 {
-					//si precalcola il fattore moltiplicativo
-					//dovendo fare una media bisogna dividere per il numero di esempi
+			 	 	//compute multiplier factor as average of samples
 					const float mult_factor = current_learning_rate / number_of_samples;
 
-					//diff per pesi e bias visibili
+					//visible biases
 					for(uint i = 0; i != visible_biases.size(); i++)
 					{
 						visible_biases[i] += diff_visible_biases[i] * mult_factor;
 
-						//inizializzazione per il momentum
+						//init new differentials
 						diff_visible_biases[i] = diff_visible_biases[i] * momentum;
 					}
 
-					for(uint j = 0; j != hidden_biases.size(); j++){
+					//hidden biases
+					for(uint j = 0; j != hidden_biases.size(); j++)
+					{
 						hidden_biases[j] += diff_hidden_biases[j]* mult_factor;
 
-						//inizializzazione per il momentum
+						//init new differentials
 						diff_hidden_biases[j] = diff_hidden_biases[j] * momentum;
 					}
 			}
 
 
-		 inline void update_parameters_weights(
-					const float momentum,
-					const float current_learning_rate,
-					matrix<float>& weights, matrix<float>& diff_weights,
-					const int number_of_samples)
+		 //Update bias parameters considering the learning rate and number of samples.
+		 //Use momentum in order to set new differentials for biases
+		 inline void update_weights_rbm(const float momentum, const float current_learning_rate,
+					matrix<float>& weights, matrix<float>& diff_weights, const int number_of_samples)
 			{
-					//si precalcola il fattore moltiplicativo
-					//dovendo fare una media bisogna dividere per il numero di esempi
+					//compute multiplier factor as average of samples
 					const float mult_factor = current_learning_rate / number_of_samples;
 
-					//diff per pesi visibili
-					for(uint i = 0; i < weights.size(); i++)
+					//differential for weights
+					for(uint i = 0; i != weights.size(); i++)
 					{
 					   weights[i] += diff_weights[i] * mult_factor;
 
-					   //inizializzazione per il momentum
+					   //init new differentials
 					   diff_weights[i] = diff_weights[i] * momentum;
 					}
 			}
 
 
+		 //Update weights during fine tuning
 		 inline void update_weights_fine_tuning(matrix<float>& weights_to_update,
-							my_vector<float>& deltas,my_vector<float>& input_layer,
-							const float fine_tuning_learning_rate)
+							const my_vector<float>& deltas,my_vector<float>& input_layer, const float fine_tuning_learning_rate)
 		{
-			assert( weights_to_update.get_rows() == input_layer.size());
-			assert( weights_to_update.get_cols() == deltas.size());
+			//check sizes
+			assert(weights_to_update.get_rows() == input_layer.size());
+			assert(weights_to_update.get_cols() == deltas.size());
 
-			for(uint i = 0; i != weights_to_update.get_rows(); i++){
-				for(uint j = 0; j != weights_to_update.get_cols(); j++){
-					//delta rule
-					weights_to_update.at(i, j) +=
-							fine_tuning_learning_rate
-							* deltas[j]
-							* input_layer[i];
-				}
-			}
+			for(uint i = 0; i != weights_to_update.get_rows(); i++)
+				for(uint j = 0; j != weights_to_update.get_cols(); j++)
+					weights_to_update.at(i, j) += fine_tuning_learning_rate	* deltas[j]	* input_layer[i];
+		}
+
+
+		//Update biases during fine tuning
+		inline void update_biases_fine_tuning(my_vector<float>& biases_to_update,
+				const my_vector<float>& current_deltas,	const float fine_tuning_learning_rate)
+		{
+			//check sizes
+			assert(biases_to_update.size() == current_deltas.size());
+
+			for(uint j = 0; j != biases_to_update.size(); j++)
+				 biases_to_update[j] += fine_tuning_learning_rate * current_deltas[j];
 		}
 
 
 
-			inline void update_biases_fine_tuning(my_vector<float>& biases_to_update,my_vector<float>& current_deltas,
-					const float fine_tuning_learning_rate)
-			{
-				assert(biases_to_update.size() == current_deltas.size());
 
-				for(uint j = 0; j != biases_to_update.size(); j++)
-					 biases_to_update[j] += fine_tuning_learning_rate * current_deltas[j];
-			}
-
-
-
-
-	inline void print_sec_mpi(std::ostream& buf, double t0, double t1, int myid)
+	inline void print_sec_mpi(std::ostream& buf, const double t0, const double t1, const int myid)
 	{
 		buf << "\nTotal time (MPI) " + std::to_string(myid) + " is " + std::to_string(t1 - t0) + "\n";
 	}
 
-	inline void print_sec_gtd(std::ostream& buf, timeval& wt0, timeval& wt1, int myid)
+	inline void print_sec_gtd(std::ostream& buf, const timeval& wt0, const timeval& wt1, const int myid)
 	{
 		long sec  = (wt1.tv_sec  - wt0.tv_sec);
 		long usec = (wt1.tv_usec - wt0.tv_usec);

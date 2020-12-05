@@ -14,11 +14,12 @@
 
 namespace parallel_autoencoder
 {
+	//Data type to send for Autoencoder training
 	const MPI_Datatype mpi_datatype_tosend = MPI_FLOAT;
 
 	//utilizzata per identificare il processo root nell'insieme
-	struct MP_Comm_MasterSlave{
-
+	struct MPI_Comm_MasterSlave
+	{
 		MPI_Comm comm;
 		uint acc_root_id;
 		uint row_col_id;
@@ -26,17 +27,16 @@ namespace parallel_autoencoder
 	};
 
 
-	struct MPReqManager
+	struct MPI_Req_Manager
 	{
-		MPReqManager(MPI_Request *reqs,my_vector<MP_Comm_MasterSlave> *comms)
+		MPI_Request *reqs;
+		my_vector<MPI_Comm_MasterSlave> *comms;
+
+		MPI_Req_Manager(MPI_Request *reqs, my_vector<MPI_Comm_MasterSlave> *comms)
 		{
 			this->comms = comms;
 			this->reqs = reqs;
 		}
-
-		MPI_Request *reqs;
-		my_vector<MP_Comm_MasterSlave> *comms;
-
 
 		void wait()
 		{
@@ -44,22 +44,22 @@ namespace parallel_autoencoder
 		}
 
 
-		virtual ~MPReqManager(){}
+		virtual ~MPI_Req_Manager(){}
 	};
 
 
-	struct MPReqManagerCell : MPReqManager
+	struct MPI_Req_Manager_Cell : MPI_Req_Manager
 	{
-		MPReqManagerCell(MPI_Request *reqs, my_vector<MP_Comm_MasterSlave> *comms)
-		: MPReqManager{reqs, comms }
-		{}
+		MPI_Req_Manager_Cell(MPI_Request *reqs, my_vector<MPI_Comm_MasterSlave> *comms)
+		: MPI_Req_Manager{reqs, comms }
+		{	}
 
 
-		void SendVectorToReduce(my_vector<float>& vec)
+		void send_vector_to_reduce(my_vector<float>& vec)
 		{
-			//Invio vettore agli accumululatori di riferimento
+			//Send vector to accumulators
 			int displacement = 0;
-			for(uint i = 0; i < comms->size(); i++)
+			for(uint i = 0; i != comms->size(); i++)
 			{
 				auto& comm = (*comms)[i];
 
@@ -73,11 +73,11 @@ namespace parallel_autoencoder
 		}
 
 
-		void ReceiveVector(my_vector<float>& vec)
+		void receive_vector(my_vector<float>& vec)
 		{
-			//Invio vettore agli accumululatori di riferimento
+			//Get vector from accumulators
 			int displacement = 0;
-			for(uint i = 0; i < comms->size(); i++)
+			for(uint i = 0; i != comms->size(); i++)
 			{
 				auto& comm = (*comms)[i];
 
@@ -88,28 +88,28 @@ namespace parallel_autoencoder
 			}
 		}
 
-		void ReceiveVectorSync(my_vector<float>& vec)
+		void receive_vector_sync(my_vector<float>& vec)
 		{
-			ReceiveVector(vec);
+			receive_vector(vec);
 			wait();
 		}
 
-		~MPReqManagerCell(){}
+		~MPI_Req_Manager_Cell(){}
 	};
 
 
-	struct MPReqManagerAccumulator : MPReqManager
+	struct MPI_Req_Manager_Accumulator : MPI_Req_Manager
 	{
-		MPReqManagerAccumulator(MPI_Request *reqs, my_vector<MP_Comm_MasterSlave> *comms)
-		: MPReqManager{reqs, comms }
+		MPI_Req_Manager_Accumulator(MPI_Request *reqs, my_vector<MPI_Comm_MasterSlave> *comms)
+		: MPI_Req_Manager{reqs, comms }
 		{}
 
 
-		void BroadcastVector(my_vector<float>& vec)
+		void broadcast_vector(my_vector<float>& vec)
 		{
-			//Si invia il vettore alle righe/colonne di riferimento, per ognuna si usa il broadcast
+			//Broadcast vector to cells
 			int displacement = 0;
-			for(uint i = 0; i < comms->size(); i++)
+			for(uint i = 0; i != comms->size(); i++)
 			{
 				auto& comm = (*comms)[i];
 
@@ -121,10 +121,11 @@ namespace parallel_autoencoder
 			}
 		}
 
-		void AccumulateVector(my_vector<float>& vec)
+		void accumulate_vector(my_vector<float>& vec)
 		{
 			int displacement = 0;
 
+			//Accumulate vector summing all incoming vectors
 			for(uint i = 0; i != comms->size(); i++)
 			{
 				auto& comm = (*comms)[i];
@@ -138,46 +139,47 @@ namespace parallel_autoencoder
 		}
 
 
-		void BroadcastVectorSync(my_vector<float>& vec)
+		void broadcast_vector_sync(my_vector<float>& vec)
 		{
-			BroadcastVector(vec);
+			broadcast_vector(vec);
 			wait();
 		}
 
-		void AccumulateVectorSync(my_vector<float>& vec)
+		void accumulate_vector_sync(my_vector<float>& vec)
 		{
-			AccumulateVector(vec);
+			accumulate_vector(vec);
 			wait();
 		}
 
 
 
-		~MPReqManagerAccumulator(){}
+		~MPI_Req_Manager_Accumulator(){}
 	};
 
 
 
 
-
-	inline void GetCommsForMasterAcc(MPI_Group& world_group, const uint k_accumulators, MPI_Comm& master_acc_comm)
+	//Get comunicator for the master-accumulators group
+	inline void get_comm_for_master_accs(const MPI_Group& world_group, const uint k_accumulators, MPI_Comm& master_acc_comm)
 	{
-		//insieme di rank di master e accumulatori
-		//va da 0 a K
+		//Master and accumulators ranks
 		int ranks_master_accs[1 + k_accumulators];
 		for(uint i = 0; i != (1 + k_accumulators); i++)
 			ranks_master_accs[i] = i;
 
-		//gruppo e comunicatore master accumulatori
+		//create group
 		MPI_Group master_acc_group;
 		MPI_Group_incl(world_group, 1 + k_accumulators, ranks_master_accs, &master_acc_group);
 
+		//create comm
 		MPI_Comm_create_group(MPI_COMM_WORLD, master_acc_group, 0, &master_acc_comm);
-
 	}
 
 
-	inline void GetCommsForGrid(MPI_Group& world_group, GridOrientation orientation, const uint k_accumulators,
-			const uint grid_total_rows, const uint grid_total_cols, my_vector<MP_Comm_MasterSlave>& acc_comms)
+
+	//Get comunicators for accumulators-cells groups based on a specific orientation
+	inline void get_comms_for_grid(const MPI_Group& world_group, const GridOrientation orientation, const uint k_accumulators,
+			const uint grid_total_rows, const uint grid_total_cols, my_vector<MPI_Comm_MasterSlave>& acc_comms)
 	{
 		auto total_group_elements = orientation == GridOrientation::row_first ? grid_total_cols : grid_total_rows;
 		auto total_groups_to_create = orientation == GridOrientation::row_first ? grid_total_rows : grid_total_cols;
@@ -186,32 +188,36 @@ namespace parallel_autoencoder
 		uint index_acc = 0, index_rowcol = 0;
 		while(index_acc < k_accumulators || index_rowcol < total_groups_to_create)
 		{
-			//creazione gruppo (un accumulatore più le celle della riga che corrispondono al numero di colonne)
+			//Getting ranks
 			int acc_col_ranks[1 + total_group_elements];
 			acc_col_ranks[0] = index_acc + 1; //rango accumulatore
 
-			//ranghi colonne (k_accumulators + 1 va sommato perché rappresentano i ranghi assegnati al nodo master e a quelli accumulatori)
 			for(uint i = 0; i != total_group_elements; i++)
+				//get ranks for row cells
 				if(orientation == GridOrientation::row_first)
 					acc_col_ranks[i + 1] = (k_accumulators + 1) + (index_rowcol * grid_total_cols) + i;
+				//get ranks for colums cells
 				else
 					acc_col_ranks[i + 1] = (k_accumulators + 1) + i * grid_total_cols + index_rowcol;
 
-
+			//create group from ranks
 			MPI_Group acc_col_group;
 			MPI_Group_incl(world_group, 1 + total_group_elements, acc_col_ranks, &acc_col_group);
 
-			MP_Comm_MasterSlave acc_col_comm;
-			acc_col_comm.acc_root_id = index_acc;
-			acc_col_comm.row_col_id = index_rowcol;
+			//Create struct for communicator
+			MPI_Comm_MasterSlave acc_col_comm;
 			MPI_Comm_create_group(MPI_COMM_WORLD, acc_col_group, 0, &acc_col_comm.comm);
 
-			//se il processo corrente non fa parte del gruppo, non si aggiunge nulla
+			//add the communicator if it's not null
 			if (MPI_COMM_NULL != acc_col_comm.comm) {
+
+				acc_col_comm.acc_root_id = index_acc;
+				acc_col_comm.row_col_id = index_rowcol;
+
 				acc_comms.push_back(acc_col_comm);
 			}
 
-			//questa differenza serve per generare le associazioni tra righe e accumulatori
+			//Compute difference in order to create the next group
 			int diff = (index_acc + 1) * total_groups_to_create - (index_rowcol + 1) * k_accumulators;
 
 			if(diff == 0)
@@ -235,26 +241,20 @@ namespace parallel_autoencoder
 
 
 
-	inline void init_MPI(int& argc, char** argv,
-			double& t0,	int& myid, int& numprocs)
+	inline void init_MPI(int& argc, char** argv, int& myid, int& numprocs)
 	{
-		//init MPI e suoi tempi
+		//init MPI and get time
 		MPI_Init(&argc, &argv);
-		t0 = MPI_Wtime();
 
 		MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
 		MPI_Comm_rank(MPI_COMM_WORLD, &myid);
 	}
 
 
-	inline void close_MPI(double& t1)
+	inline void close_MPI()
 	{
-		t1 = MPI_Wtime();
 		MPI_Finalize();
 	}
-
-
-
 }
 
 

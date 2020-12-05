@@ -17,30 +17,6 @@ namespace parallel_autoencoder{
 	class node_master_autoencoder : public node_autoencoder
 	{
 
-	private:
-
-		//comunicatore da master a nodi accumulatori
-		MPI_Comm master_accs_comm;
-
-		//gestore degli esempi input/output su disco
-		samples_manager smp_manager;
-
-		//percorso della cartella che contiene le immagini iniziali
-		string image_path_folder;
-
-
-
-		void ScatterInputVector(const my_vector<float>& vec, const int send_counts[], const int displs[], MPI_Request *reqSend);
-
-		void ReceiveOutputVector(const my_vector<float>& vec, const int receive_counts[], const int displs[], MPI_Request *reqRecv);
-
-		void GetScatterParts(int counts[], int displacements[], const int n_total_units);
-
-		void ScatterInputVectorSync(const my_vector<float>& vec, const int send_counts[], const int displs[]);
-
-		void ReceiveOutputVectorSync(const my_vector<float>& vec, const int receive_counts[], const int displs[]);
-
-
 	public:
 		node_master_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
 					uint _total_accumulators, uint _grid_row, uint _grid_col,
@@ -62,20 +38,35 @@ namespace parallel_autoencoder{
 				my_vector<float>& visible_units, my_vector<float>& visible_units_send_buffer);
 
 
-
-
 		void fine_tuning();
-
-
 		void reconstruct();
-
 
 		string get_path_file();
 
-
 		void save_parameters();
-
 		void load_parameters();
+
+
+	private:
+
+		//comunicatore da master a nodi accumulatori
+		MPI_Comm master_accs_comm;
+
+		//gestore degli esempi input/output su disco
+		samples_manager smp_manager;
+
+		//percorso della cartella che contiene le immagini iniziali
+		string image_path_folder;
+
+
+
+		void scatter_vector(const my_vector<float>& vec, const int send_counts[], const int displs[], MPI_Request *reqSend);
+		void scatter_vector_sync(const my_vector<float>& vec, const int send_counts[], const int displs[]);
+
+		void gather_vector(const my_vector<float>& vec, const int receive_counts[], const int displs[], MPI_Request *reqRecv);
+		void gather_vector_sync(const my_vector<float>& vec, const int receive_counts[], const int displs[]);
+
+		void get_scatter_parts(int counts[], int displacements[], const int n_total_units);
 	};
 }
 
