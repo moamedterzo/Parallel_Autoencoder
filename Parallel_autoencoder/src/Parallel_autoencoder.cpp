@@ -206,6 +206,17 @@ void parallel_computation(std::ostream& oslog)
 	get_comms_for_grid(world_group, GridOrientation::row_first, k_accumulators, grid_total_rows, grid_total_cols, acc_row_comms);
 	get_comms_for_grid(world_group, GridOrientation::col_first, k_accumulators, grid_total_rows, grid_total_cols, acc_col_comms);
 
+	//todo rimuovere
+
+
+	MPI_Errhandler_set(master_acc_comm, MPI_ERRORS_RETURN);
+	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
+
+	for(int i = 0; i < acc_row_comms.size(); i++)
+			MPI_Errhandler_set(acc_row_comms[i].comm, MPI_ERRORS_RETURN);
+	for(int i = 0; i < acc_col_comms.size(); i++)
+			MPI_Errhandler_set(acc_col_comms[i].comm, MPI_ERRORS_RETURN);
+
 
 	//determino ruolo di ogni nodo
 	master_cout("Initializing objects...");
@@ -325,6 +336,13 @@ int main(int argc, char** argv) {
 			parallel_computation(oslog);
 		else
 			single_computation(oslog);
+	}
+	catch(MPI::Exception& ex)
+	{
+		std::cout << "Error MPI from rank " + to_string(mpi_my_rank) + "\n";
+		std::cout  << ex.Get_error_class() << "\n";
+		std::cout  << ex.Get_error_string() << "\n";
+		std::cout  << ex.Get_error_code() << "\n";
 	}
 	catch(...)
 	{

@@ -34,13 +34,16 @@ namespace parallel_autoencoder
 		{
 			auto ss = ssa[i];
 
-			char error_string[BUFSIZ];
-			int length_of_error_string;
-			MPI_Error_string(ss.MPI_ERROR, error_string, &length_of_error_string);
+			if(ss.MPI_ERROR != 0)
+			{
+				char error_string[BUFSIZ];
+				int length_of_error_string;
+				MPI_Error_string(ss.MPI_ERROR, error_string, &length_of_error_string);
 
-			std::string a = "Error: " + std::to_string(ss.MPI_ERROR) + ", " + error_string  +  ", "
-					+ std::to_string(ss.MPI_SOURCE) + ", " + std::to_string(ss.MPI_TAG) + ", size:" + std::to_string(size) + "\n";
-			std::cout << a;
+				std::string a = "Error: " + std::to_string(ss.MPI_ERROR) + ", " + error_string  +  ", "
+						+ std::to_string(ss.MPI_SOURCE) + ", " + std::to_string(ss.MPI_TAG) + ", size:" + std::to_string(size) + "\n";
+				std::cout << a;
+			}
 		}
 	}
 
