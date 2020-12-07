@@ -192,6 +192,8 @@ namespace parallel_autoencoder
 				//si riavvia l'ottenimento dei samples
 				smp_manager.restart();
 
+				MPI_Status ss;
+
 				//leggo da file system il prossimo esempio mentre invio l'esempio precedente
 				for(uint current_sample = 0; current_sample != number_of_samples; current_sample++)
 				{
@@ -200,14 +202,18 @@ namespace parallel_autoencoder
 
 					//attendo completamento dell'invio precedente per poter inviare il prossimo vettore
 					if(current_sample != 0)
-						MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
+					{
+						MPI_Wait(&reqSend, &ss);
+						print_ssa(&ss);
+					}
 
 					visible_units_send_buffer = visible_units;
 					scatter_vector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
 				}
 
 				//si conclude l'ultimo invio effettuato
-				MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
+				MPI_Wait(&reqSend, &ss);
+				print_ssa(&ss);
 			}
 
 

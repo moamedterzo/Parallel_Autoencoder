@@ -181,7 +181,7 @@ namespace parallel_autoencoder
 			ulong current_index_sample = 0;
 			float current_learning_rate;
 
-			// A0) Sync ricevi input V1 da nodo master
+			// A0) Ricevi input V1 da nodo master
 			receive_from_master(visible_units1, &reqMaster);
 
 			for(uint epoch = 0; epoch < rbm_n_training_epocs; epoch++)
@@ -200,7 +200,9 @@ namespace parallel_autoencoder
 					//Vengono interfogliati invii e ricezioni
 
 					// A0) Wait ricezione input V 1 da nodo master
-					MPI_Wait(&reqMaster, MPI_STATUS_IGNORE);
+					MPI_Status ss;
+					MPI_Wait(&reqMaster, &ss);
+					print_ssa(&ss);
 
 					// A1) Async Invio V1
 					reqVisible1.broadcast_vector(visible_units1);
@@ -214,7 +216,8 @@ namespace parallel_autoencoder
 					reqVisible1.wait();
 
 					 // B0) Wait ricezione input V 2 da master
-					MPI_Wait(&reqMaster, MPI_STATUS_IGNORE);
+					MPI_Wait(&reqMaster, &ss);
+					print_ssa(&ss);
 
 					// B1) Invio V 2
 					reqVisible1.broadcast_vector_sync(visible_units2);

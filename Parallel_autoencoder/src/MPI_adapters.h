@@ -27,6 +27,19 @@ namespace parallel_autoencoder
 	};
 
 
+
+	inline void print_ssa(MPI_Status ssa[], int size = 1)
+	{
+		for(int i = 0;i< size; i++)
+
+		{
+			auto ss = ssa[i];
+			std::string a = "Error: " + std::to_string(ss.MPI_ERROR) + ", " + std::to_string(ss.MPI_SOURCE) + ", " + std::to_string(ss.MPI_TAG) + "\n";
+			std::cout << a;
+		}
+	}
+
+
 	struct MPI_Req_Manager
 	{
 		MPI_Request *reqs;
@@ -43,17 +56,13 @@ namespace parallel_autoencoder
 			MPI_Status ssa[comms->size()];
 			//MPI_Waitall(comms->size(), reqs, MPI_STATUSES_IGNORE);
 			MPI_Waitall(comms->size(), reqs, ssa);
-
-			for(auto ss : ssa)
-			{
-				std::string a = "Error: " + std::to_string(ss.MPI_ERROR) + ", " + std::to_string(ss.MPI_SOURCE) + ", " + std::to_string(ss.MPI_TAG) + "\n";
-				std::cout << a;
-			}
+			print_ssa(ssa, comms->size());
 		}
 
 
 		virtual ~MPI_Req_Manager(){}
 	};
+
 
 
 	struct MPI_Req_Manager_Cell : MPI_Req_Manager
