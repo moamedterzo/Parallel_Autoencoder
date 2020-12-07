@@ -319,10 +319,18 @@ int main(int argc, char** argv) {
 	oslog << "---   Hello, I have ID " << mpi_my_rank << "\n";
 
 	//computazione
-	if(parallel)
-		parallel_computation(oslog);
-	else
-		single_computation(oslog);
+	try
+	{
+		if(parallel)
+				parallel_computation(oslog);
+			else
+				single_computation(oslog);
+	}
+	catch(...)
+	{
+		std::cout << "Error from rank " + to_string(mpi_my_rank) + "\n";
+	}
+
 
 
 	//closing MPI
