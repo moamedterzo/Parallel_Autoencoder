@@ -202,7 +202,7 @@ namespace parallel_autoencoder
 					// A0) Wait ricezione input V 1 da nodo master
 					MPI_Status ss;
 					MPI_Wait(&reqMaster, &ss);
-					print_ssa(&ss);
+					//print_ssa(&ss);
 
 					// A1) Async Invio V1
 					reqVisible1.broadcast_vector(visible_units1);
@@ -217,7 +217,7 @@ namespace parallel_autoencoder
 
 					 // B0) Wait ricezione input V 2 da master
 					MPI_Wait(&reqMaster, &ss);
-					print_ssa(&ss);
+					//print_ssa(&ss);
 
 					// B1) Invio V 2
 					reqVisible1.broadcast_vector_sync(visible_units2);
