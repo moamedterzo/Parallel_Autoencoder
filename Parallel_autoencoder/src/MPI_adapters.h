@@ -40,7 +40,12 @@ namespace parallel_autoencoder
 
 		void wait()
 		{
-			MPI_Waitall(comms->size(), reqs, MPI_STATUSES_IGNORE);
+			MPI_Status ss;
+			//MPI_Waitall(comms->size(), reqs, MPI_STATUSES_IGNORE);
+			MPI_Waitall(comms->size(), reqs, &ss);
+
+			std::string a = "Error: " + std::to_string(ss.MPI_ERROR) + ", " + std::to_string(ss.MPI_SOURCE) + ", " + std::to_string(ss.MPI_TAG) + "\n";
+			std::cout << a;
 		}
 
 

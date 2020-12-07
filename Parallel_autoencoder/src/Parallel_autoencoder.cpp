@@ -322,9 +322,9 @@ int main(int argc, char** argv) {
 	try
 	{
 		if(parallel)
-				parallel_computation(oslog);
-			else
-				single_computation(oslog);
+			parallel_computation(oslog);
+		else
+			single_computation(oslog);
 	}
 	catch(...)
 	{
