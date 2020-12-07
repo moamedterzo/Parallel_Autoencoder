@@ -61,7 +61,7 @@ namespace parallel_autoencoder
 			MPI_Status ssa[comms->size()];
 			//MPI_Waitall(comms->size(), reqs, MPI_STATUSES_IGNORE);
 			MPI_Waitall(comms->size(), reqs, ssa);
-			//print_ssa(ssa, comms->size());
+			print_ssa(ssa, comms->size());
 		}
 
 
