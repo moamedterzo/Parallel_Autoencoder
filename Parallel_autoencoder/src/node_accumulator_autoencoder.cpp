@@ -182,7 +182,8 @@ namespace parallel_autoencoder
 			float current_learning_rate = 0;
 
 			// A0) Ricevi input V1 da nodo master
-			receive_from_master(visible_units1, &reqMaster);
+			//receive_from_master(visible_units1, &reqMaster);
+			receive_from_master_sync(visible_units1);
 
 			for(uint epoch = 0; epoch < rbm_n_training_epocs; epoch++)
 			{
@@ -202,8 +203,8 @@ namespace parallel_autoencoder
 					// A0) Wait ricezione input V 1 da nodo master
 					MPI_Status ss;
 					std::cout << "My vec size is: " + to_string(visible_units1.size()) + "\n";
-					MPI_Wait(&reqMaster, &ss);
-					print_ssa(&ss);
+					//MPI_Wait(&reqMaster, &ss);
+					//print_ssa(&ss);
 
 					// A1) Async Invio V1
 					reqVisible1.broadcast_vector(visible_units1);
@@ -211,14 +212,15 @@ namespace parallel_autoencoder
 
 
 					// B0) Async Ricevo V2
-					receive_from_master(visible_units2, &reqMaster);
+					//receive_from_master(visible_units2, &reqMaster);
+					receive_from_master_sync(visible_units2);
 
 					// A1) Wait invio V1
 					reqVisible1.wait();
 
 					// B0) Wait ricezione input V 2 da master
-					MPI_Wait(&reqMaster, &ss);
-					print_ssa(&ss);
+					//MPI_Wait(&reqMaster, &ss);
+					//print_ssa(&ss);
 
 					// B1) Invio V 2
 					reqVisible1.broadcast_vector_sync(visible_units2);
@@ -266,7 +268,8 @@ namespace parallel_autoencoder
 					// A0) Async ricezione nuovo input V1 da master (sempre se ci sono ancora esempi)
 					const bool other_samples = current_index_sample < rbm_n_training_epocs * number_of_samples;
 					if(other_samples)
-						receive_from_master(visible_units1, &reqMaster);
+						//receive_from_master(visible_units1, &reqMaster);
+						receive_from_master_sync(visible_units1);
 
 
 					//Calcolo gradienti 2
