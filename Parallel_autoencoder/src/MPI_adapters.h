@@ -31,10 +31,15 @@ namespace parallel_autoencoder
 	inline void print_ssa(MPI_Status ssa[], int size = 1)
 	{
 		for(int i = 0;i< size; i++)
-
 		{
 			auto ss = ssa[i];
-			std::string a = "Error: " + std::to_string(ss.MPI_ERROR) + ", " + std::to_string(ss.MPI_SOURCE) + ", " + std::to_string(ss.MPI_TAG) + "\n";
+
+			char error_string[BUFSIZ];
+			int length_of_error_string;
+			MPI_Error_string(ss.MPI_ERROR, error_string, &length_of_error_string);
+
+			std::string a = "Error: " + std::to_string(ss.MPI_ERROR) + ", " + error_string  +  ", "
+					+ std::to_string(ss.MPI_SOURCE) + ", " + std::to_string(ss.MPI_TAG) + ", size:" + std::to_string(size) + "\n";
 			std::cout << a;
 		}
 	}
