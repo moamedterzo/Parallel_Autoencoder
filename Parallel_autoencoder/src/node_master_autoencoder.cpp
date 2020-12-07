@@ -176,6 +176,10 @@ namespace parallel_autoencoder
 			int send_counts[1 + total_accumulators], send_displacements[1 + total_accumulators];
 			get_scatter_parts(send_counts, send_displacements, n_visible_units);
 
+			for(auto a : send_displacements)
+				std::cout << "Displacement: " + to_string(a) + "\n";
+			for(auto a : send_counts)
+				std::cout << "send_counts: " + to_string(a) + "\n";
 
 			std::cout << "-- Learning layer number: " << layer_number
 					<< ", visible units: " << n_visible_units
@@ -204,7 +208,7 @@ namespace parallel_autoencoder
 					if(current_sample != 0)
 					{
 						MPI_Wait(&reqSend, &ss);
-						print_ssa(&ss);
+						//print_ssa(&ss);
 					}
 
 					visible_units_send_buffer = visible_units;
@@ -213,7 +217,7 @@ namespace parallel_autoencoder
 
 				//si conclude l'ultimo invio effettuato
 				MPI_Wait(&reqSend, &ss);
-				print_ssa(&ss);
+				//print_ssa(&ss);
 			}
 
 
