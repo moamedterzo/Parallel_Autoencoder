@@ -209,7 +209,8 @@ void parallel_computation(std::ostream& oslog)
 	//todo rimuovere
 
 
-	MPI_Errhandler_set(master_acc_comm, MPI_ERRORS_RETURN);
+	if(master_acc_comm != MPI_COMM_NULL)
+		MPI_Errhandler_set(master_acc_comm, MPI_ERRORS_RETURN);
 	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
 
 	for(int i = 0; i < acc_row_comms.size(); i++)
