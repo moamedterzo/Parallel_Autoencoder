@@ -59,14 +59,14 @@ namespace parallel_autoencoder
 
 	void node_accumulator_autoencoder::receive_from_master(my_vector<float>& vis_vec, MPI_Request *reqVis)
 	{
-		MPI_Iscatterv(NULL, nullptr, nullptr, mpi_datatype_tosend,
+		MPI_Iscatterv(MPI_IN_PLACE, nullptr, nullptr, mpi_datatype_tosend,
 				vis_vec.data(), vis_vec.size(), mpi_datatype_tosend,
 				0, master_accs_comm, reqVis);
 	}
 
 	void node_accumulator_autoencoder::receive_from_master_sync(my_vector<float>& vis_vec)
 	{
-		MPI_Scatterv(NULL, nullptr, nullptr, mpi_datatype_tosend,
+		MPI_Scatterv(MPI_IN_PLACE, nullptr, nullptr, mpi_datatype_tosend,
 				vis_vec.data(), vis_vec.size(), mpi_datatype_tosend,
 				0, master_accs_comm);
 	}
@@ -179,7 +179,7 @@ namespace parallel_autoencoder
 
 			//si avvia il processo di apprendimento per diverse epoche
 			ulong current_index_sample = 0;
-			float current_learning_rate;
+			float current_learning_rate = 0;
 
 			// A0) Ricevi input V1 da nodo master
 			receive_from_master(visible_units1, &reqMaster);

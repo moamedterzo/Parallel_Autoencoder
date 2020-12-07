@@ -172,7 +172,7 @@ namespace parallel_autoencoder
 
 			//si avvia il processo di apprendimento per diverse epoche
 			ulong current_index_sample = 0;
-			float current_learning_rate;
+			float current_learning_rate = 0;
 
 			// A1) Async Ricezione V 1
 			reqVisibleInvio.receive_vector(visible_units1);

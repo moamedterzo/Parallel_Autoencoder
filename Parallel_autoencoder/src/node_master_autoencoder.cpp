@@ -21,7 +21,7 @@ namespace parallel_autoencoder
 	void node_master_autoencoder::scatter_vector(const my_vector<float>& vec, const int send_counts[], const int displs[], MPI_Request *reqSend)
 	{
 		MPI_Iscatterv(vec.data(), send_counts, displs, mpi_datatype_tosend,
-					nullptr, 0,  mpi_datatype_tosend,
+				    MPI_IN_PLACE, 0,  mpi_datatype_tosend,
 					0, master_accs_comm, reqSend);
 	}
 
