@@ -213,11 +213,13 @@ void parallel_computation(std::ostream& oslog)
 		MPI_Errhandler_set(master_acc_comm, MPI_ERRORS_RETURN);
 	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
 
-	for(int i = 0; i < acc_row_comms.size(); i++)
-			MPI_Errhandler_set(acc_row_comms[i].comm, MPI_ERRORS_RETURN);
-	for(int i = 0; i < acc_col_comms.size(); i++)
-			MPI_Errhandler_set(acc_col_comms[i].comm, MPI_ERRORS_RETURN);
-
+	if((uint)mpi_my_rank <= k_accumulators)
+	{
+		for(int i = 0; i < acc_row_comms.size(); i++)
+				MPI_Errhandler_set(acc_row_comms[i].comm, MPI_ERRORS_RETURN);
+		for(int i = 0; i < acc_col_comms.size(); i++)
+				MPI_Errhandler_set(acc_col_comms[i].comm, MPI_ERRORS_RETURN);
+	}
 
 	//determino ruolo di ogni nodo
 	master_cout("Initializing objects...");
