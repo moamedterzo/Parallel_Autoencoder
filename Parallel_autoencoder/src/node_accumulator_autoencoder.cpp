@@ -235,7 +235,7 @@ namespace parallel_autoencoder
 					std::cout << "Test acc 3 \n";
 
 					// B2, B3) Ricevo, accumulo, invio H2
-					reqHidden1.broadcast_vector_sync(hidden_units2);
+					reqHidden1.accumulate_vector_sync(hidden_units2);
 					std::cout << "Test acc 4 \n";
 					sample_hidden_units(hidden_units2, hidden_biases, generator);
 					reqHidden1.broadcast_vector_sync(hidden_units2);
