@@ -30,70 +30,21 @@ namespace parallel_autoencoder
 		uint n_items_to_send;
 	};
 
-
-
-	inline void print_ssa(MPI_Status ssa[], int size = 1)
-	{
-		for(int i = 0;i< size; i++)
-		{
-			auto ss = ssa[i];
-
-			if(ss.MPI_ERROR != 0)
-			{
-				char error_string[BUFSIZ];
-				int length_of_error_string;
-				MPI_Error_string(ss.MPI_ERROR, error_string, &length_of_error_string);
-
-				std::string a = "Error: " + std::to_string(ss.MPI_ERROR) + ", " + error_string  +  ", "
-						+ std::to_string(ss.MPI_SOURCE) + ", " + std::to_string(ss.MPI_TAG) + ", size:" + std::to_string(size) + "\n";
-				std::cout << a;
-			}
-		}
-	}
-
-
 	struct MPI_Req_Manager
 	{
 		MPI_Request *reqs;
 		my_vector<MPI_Comm_MasterSlave> *comms;
 
-
-
-		//todo
-		my_vector<float> *vectors_try;
-		my_vector<float> *vec_save = nullptr;
-
 		MPI_Req_Manager(MPI_Request *reqs, my_vector<MPI_Comm_MasterSlave> *comms)
 		{
 			this->comms = comms;
 			this->reqs = reqs;
-
-			vectors_try = new my_vector<float>[comms->size()];
-			for(uint i = 0; i != comms->size();i++)
-				vectors_try[i] = my_vector<float>(((*comms)[i]).n_items_to_send);
-
 		}
 
 		void wait()
 		{
-			MPI_Status ssa[comms->size()];
-			//MPI_Waitall(comms->size(), reqs, MPI_STATUSES_IGNORE);
-			MPI_Waitall(comms->size(), reqs, ssa);
-			print_ssa(ssa, comms->size());
-
-
-
-			/*uint displacement = 0;
-			for(uint i = 0; i != comms->size(); i++)
-			{
-				auto& comm = (*comms)[i];
-
-				memcpy(vec_save->data() + displacement, vectors_try[i].data(), comm.n_items_to_send * sizeof(float));
-				displacement += comm.n_items_to_send;
-			}*/
-
+			MPI_Waitall(comms->size(), reqs, MPI_STATUSES_IGNORE);
 		}
-
 
 		virtual ~MPI_Req_Manager(){}
 	};
@@ -108,48 +59,30 @@ namespace parallel_autoencoder
 		}
 
 
-
 		void send_vector_to_reduce(my_vector<float>& vec)
 		{
-			vec_save = &vec;
-
 			//Send vector to accumulators
 			int displacement = 0;
 			for(uint i = 0; i != comms->size(); i++)
 			{
 				auto& comm = (*comms)[i];
 
-				/*memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
-
-				MPI_Ireduce(vectors_try[i].data(), MPI_IN_PLACE,
-										comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,
-										0, comm.comm , reqs + i);*/
-
-
 				MPI_Ireduce(vec.data() + displacement, MPI_IN_PLACE,
 						comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,
 						0, comm.comm , reqs + i);
 
-
 				displacement += comm.n_items_to_send;
-
 			}
 		}
 
 
 		void receive_vector(my_vector<float>& vec)
 		{
-			vec_save = &vec;
-
 			//Get vector from accumulators
 			int displacement = 0;
 			for(uint i = 0; i != comms->size(); i++)
 			{
 				auto& comm = (*comms)[i];
-
-				/*memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
-				MPI_Ibcast(vectors_try[i].data(), comm.n_items_to_send, mpi_datatype_tosend,
-										0, comm.comm,  reqs + i);*/
 
 				MPI_Ibcast(vec.data() + displacement, comm.n_items_to_send, mpi_datatype_tosend,
 						0, comm.comm,  reqs + i);
@@ -184,19 +117,11 @@ namespace parallel_autoencoder
 
 		void broadcast_vector(my_vector<float>& vec)
 		{
-			vec_save = &vec;
-
 			//Broadcast vector to cells
 			int displacement = 0;
 			for(uint i = 0; i != comms->size(); i++)
 			{
 				auto& comm = (*comms)[i];
-
-				/*memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
-
-				MPI_Ibcast(vectors_try[i].data(),
-										comm.n_items_to_send, mpi_datatype_tosend,
-										0, comm.comm, reqs + i);*/
 
 				MPI_Ibcast(vec.data() + displacement,
 						comm.n_items_to_send, mpi_datatype_tosend,
@@ -208,22 +133,11 @@ namespace parallel_autoencoder
 
 		void accumulate_vector(my_vector<float>& vec)
 		{
-			vec_save = &vec;
-
-
 			//Accumulate vector summing all incoming vectors
 			int displacement = 0;
 			for(uint i = 0; i != comms->size(); i++)
 			{
 				auto& comm = (*comms)[i];
-
-
-				/*memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
-
-				MPI_Ireduce(MPI_IN_PLACE,vectors_try[i].data(),
-									comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,
-									0, comm.comm, reqs + i);*/
-
 
 				MPI_Ireduce(MPI_IN_PLACE, vec.data() + displacement,
 						comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,

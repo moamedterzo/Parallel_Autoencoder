@@ -151,9 +151,6 @@ namespace parallel_autoencoder
 			my_vector<float> rec_visible_units2(n_my_visible_units);
 			my_vector<float> rec_hidden_units2(n_my_hidden_units);
 
-			my_vector<float> temp_hidden(n_my_hidden_units);
-			my_vector<float> temp_visible(n_my_visible_units);
-
 			//Puntatori delle request asincrone
 			//comunicatori per nodi visibili e nascosti
 			auto& comms_for_vis = acc_vis_comm_for_layer[layer_number];
@@ -204,9 +201,7 @@ namespace parallel_autoencoder
 
 
 					// A2, A3) Async invio e ricezione H 1, calcolo H 2
-					std::cout << "Test cell 1 \n";
-					temp_hidden = hidden_units1;
-					reqHiddenInvio.send_vector_to_reduce(temp_hidden);
+					reqHiddenInvio.send_vector_to_reduce(hidden_units1);
 					reqHiddenRicezione.receive_vector(hidden_units1);
 					matrix_transpose_vector_multiplication(weights, visible_units2, hidden_units2);
 					reqHiddenInvio.wait();
@@ -214,31 +209,23 @@ namespace parallel_autoencoder
 
 
 					// B2, B3) Async invio e ricezione H 2, calcolo Vrec 1
-					std::cout << "Test cell 2 \n";
-					temp_hidden = hidden_units2;
-					reqHiddenInvio.send_vector_to_reduce(temp_hidden);
+					reqHiddenInvio.send_vector_to_reduce(hidden_units2);
 					reqHiddenRicezione.receive_vector(hidden_units2);
 					matrix_vector_multiplication(weights, hidden_units1, rec_visible_units1);
 					reqHiddenInvio.wait();
-					std::cout << "Test cell 2b \n";
 					reqHiddenRicezione.wait();
 
 
 					// A4, A5) Async invio e ricezione Vrec1, calcolo Vrec2
-					std::cout << "Test cell 3 \n";
-					temp_visible = rec_visible_units1;
-					reqVisibleInvio.send_vector_to_reduce(temp_visible);
+					reqVisibleInvio.send_vector_to_reduce(rec_visible_units1);
 					reqVisibleRicezione.receive_vector(rec_visible_units1);
 					matrix_vector_multiplication(weights, hidden_units2, rec_visible_units2);
 					reqVisibleInvio.wait();
-					std::cout << "Test cell 3b \n";
 					reqVisibleRicezione.wait();
 
 
 					// B4, B5) Async invio e ricezione V rec 2, calcolo Hrec 1
-					std::cout << "Test cell 4 \n";
-					temp_visible = rec_visible_units2;
-					reqVisibleInvio.send_vector_to_reduce(temp_visible);
+					reqVisibleInvio.send_vector_to_reduce(rec_visible_units2);
 					reqVisibleRicezione.receive_vector(rec_visible_units2);
 					matrix_transpose_vector_multiplication(weights, rec_visible_units1, rec_hidden_units1);
 					reqVisibleInvio.wait();
@@ -246,9 +233,7 @@ namespace parallel_autoencoder
 
 
 					// A6, A7) Async invio e ricezione H rec 1, calcolo H rec 2
-					std::cout << "Test cell 5 \n";
-					temp_hidden = rec_hidden_units1;
-					reqHiddenInvio.send_vector_to_reduce(temp_hidden);
+					reqHiddenInvio.send_vector_to_reduce(rec_hidden_units1);
 					reqHiddenRicezione.receive_vector(rec_hidden_units1);
 					matrix_transpose_vector_multiplication(weights, rec_visible_units2, rec_hidden_units2);
 					reqHiddenInvio.wait();
@@ -256,9 +241,7 @@ namespace parallel_autoencoder
 
 
 					// B6, B7) Async invio e ricezione H rec 2, calcolo gradiente 1
-					std::cout << "Test cell 6 \n";
-					temp_hidden = rec_hidden_units2;
-					reqHiddenInvio.send_vector_to_reduce(temp_hidden);
+					reqHiddenInvio.send_vector_to_reduce(rec_hidden_units2);
 					reqHiddenRicezione.receive_vector(rec_hidden_units2);
 					set_gradient(diff_weights, visible_units1, hidden_units1, rec_visible_units1, rec_hidden_units1);
 					reqHiddenInvio.wait();

@@ -182,8 +182,7 @@ namespace parallel_autoencoder
 			float current_learning_rate = 0;
 
 			// A0) Ricevi input V1 da nodo master
-			//receive_from_master(visible_units1, &reqMaster);
-			receive_from_master_sync(visible_units1);
+			receive_from_master(visible_units1, &reqMaster);
 
 			for(uint epoch = 0; epoch < rbm_n_training_epocs; epoch++)
 			{
@@ -201,10 +200,7 @@ namespace parallel_autoencoder
 					//Vengono interfogliati invii e ricezioni
 
 					// A0) Wait ricezione input V 1 da nodo master
-					MPI_Status ss;
-					std::cout << "My vec size is: " + to_string(visible_units1.size()) + "\n";
-					//MPI_Wait(&reqMaster, &ss);
-					//print_ssa(&ss);
+					MPI_Wait(&reqMaster, MPI_STATUS_IGNORE);
 
 					// A1) Async Invio V1
 					reqVisible1.broadcast_vector(visible_units1);
@@ -212,41 +208,32 @@ namespace parallel_autoencoder
 
 
 					// B0) Async Ricevo V2
-					//receive_from_master(visible_units2, &reqMaster);
-					receive_from_master_sync(visible_units2);
+					receive_from_master(visible_units2, &reqMaster);
 
 					// A1) Wait invio V1
 					reqVisible1.wait();
 
 					// B0) Wait ricezione input V 2 da master
-					//MPI_Wait(&reqMaster, &ss);
-					//print_ssa(&ss);
+					MPI_Wait(&reqMaster, MPI_STATUS_IGNORE);
 
 					// B1) Invio V 2
 					reqVisible1.broadcast_vector_sync(visible_units2);
-					std::cout << "Test acc 1 \n";
 
 
 					// A2, A3) Ricevo, accumulo e invio H 1
 					reqHidden1.accumulate_vector_sync(hidden_units1);
-					std::cout << "Test acc 2 \n";
 					sample_hidden_units(hidden_units1, hidden_biases, generator);
 					reqHidden1.broadcast_vector_sync(hidden_units1);
-					std::cout << "Test acc 3 \n";
 
 					// B2, B3) Ricevo, accumulo, invio H2
 					reqHidden1.accumulate_vector_sync(hidden_units2);
-					std::cout << "Test acc 4 \n";
 					sample_hidden_units(hidden_units2, hidden_biases, generator);
 					reqHidden1.broadcast_vector_sync(hidden_units2);
-					std::cout << "Test acc 5 \n";
 
 					// A4, A5) ricezione, ricostruzione e invio Vrec 1
 					reqVisible1.accumulate_vector_sync(rec_visible_units1);
-					std::cout << "Test acc 6 \n";
 					reconstruct_visible_units(rec_visible_units1, visible_biases, first_layer, generator);
 					reqVisible1.broadcast_vector_sync(rec_visible_units1);
-					std::cout << "Test acc 7 \n";
 
 					// B4, B5) ricezione, ricostruzione e invio Vrec 2
 					reqVisible1.accumulate_vector_sync(rec_visible_units2);
@@ -275,8 +262,7 @@ namespace parallel_autoencoder
 					// A0) Async ricezione nuovo input V1 da master (sempre se ci sono ancora esempi)
 					const bool other_samples = current_index_sample < rbm_n_training_epocs * number_of_samples;
 					if(other_samples)
-						//receive_from_master(visible_units1, &reqMaster);
-						receive_from_master_sync(visible_units1);
+						receive_from_master(visible_units1, &reqMaster);
 
 
 					//Calcolo gradienti 2
