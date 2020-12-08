@@ -227,7 +227,7 @@ namespace parallel_autoencoder
 					// A4, A5) Async invio e ricezione Vrec1, calcolo Vrec2
 					std::cout << "Test cell 3 \n";
 					temp_visible = rec_visible_units1;
-					reqVisibleInvio.send_vector_to_reduce(temp_hidden);
+					reqVisibleInvio.send_vector_to_reduce(temp_visible);
 					reqVisibleRicezione.receive_vector(rec_visible_units1);
 					matrix_vector_multiplication(weights, hidden_units2, rec_visible_units2);
 					reqVisibleInvio.wait();
@@ -238,7 +238,7 @@ namespace parallel_autoencoder
 					// B4, B5) Async invio e ricezione V rec 2, calcolo Hrec 1
 					std::cout << "Test cell 4 \n";
 					temp_visible = rec_visible_units2;
-					reqVisibleInvio.send_vector_to_reduce(temp_hidden);
+					reqVisibleInvio.send_vector_to_reduce(temp_visible);
 					reqVisibleRicezione.receive_vector(rec_visible_units2);
 					matrix_transpose_vector_multiplication(weights, rec_visible_units1, rec_hidden_units1);
 					reqVisibleInvio.wait();

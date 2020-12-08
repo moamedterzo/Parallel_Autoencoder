@@ -83,14 +83,14 @@ namespace parallel_autoencoder
 
 
 
-			uint displacement = 0;
+			/*uint displacement = 0;
 			for(uint i = 0; i != comms->size(); i++)
 			{
 				auto& comm = (*comms)[i];
 
 				memcpy(vec_save->data() + displacement, vectors_try[i].data(), comm.n_items_to_send * sizeof(float));
 				displacement += comm.n_items_to_send;
-			}
+			}*/
 
 		}
 
@@ -119,16 +119,16 @@ namespace parallel_autoencoder
 			{
 				auto& comm = (*comms)[i];
 
-				memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
+				/*memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
 
 				MPI_Ireduce(vectors_try[i].data(), MPI_IN_PLACE,
 										comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,
-										0, comm.comm , reqs + i);
+										0, comm.comm , reqs + i);*/
 
 
-				/*MPI_Ireduce(vec.data() + displacement, MPI_IN_PLACE,
+				MPI_Ireduce(vec.data() + displacement, MPI_IN_PLACE,
 						comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,
-						0, comm.comm , reqs + i);*/
+						0, comm.comm , reqs + i);
 
 
 				displacement += comm.n_items_to_send;
@@ -147,12 +147,12 @@ namespace parallel_autoencoder
 			{
 				auto& comm = (*comms)[i];
 
-				memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
+				/*memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
 				MPI_Ibcast(vectors_try[i].data(), comm.n_items_to_send, mpi_datatype_tosend,
-										0, comm.comm,  reqs + i);
+										0, comm.comm,  reqs + i);*/
 
-				/*MPI_Ibcast(vec.data() + displacement, comm.n_items_to_send, mpi_datatype_tosend,
-						0, comm.comm,  reqs + i);*/
+				MPI_Ibcast(vec.data() + displacement, comm.n_items_to_send, mpi_datatype_tosend,
+						0, comm.comm,  reqs + i);
 
 				displacement += comm.n_items_to_send;
 			}
@@ -192,15 +192,15 @@ namespace parallel_autoencoder
 			{
 				auto& comm = (*comms)[i];
 
-				memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
+				/*memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
 
 				MPI_Ibcast(vectors_try[i].data(),
 										comm.n_items_to_send, mpi_datatype_tosend,
-										0, comm.comm, reqs + i);
+										0, comm.comm, reqs + i);*/
 
-				/*MPI_Ibcast(vec.data() + displacement,
+				MPI_Ibcast(vec.data() + displacement,
 						comm.n_items_to_send, mpi_datatype_tosend,
-						0, comm.comm, reqs + i);*/
+						0, comm.comm, reqs + i);
 
 				displacement += comm.n_items_to_send;
 			}
@@ -218,16 +218,16 @@ namespace parallel_autoencoder
 				auto& comm = (*comms)[i];
 
 
-				memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
+				/*memcpy(vectors_try[i].data(), vec.data() + displacement, comm.n_items_to_send * sizeof(float));
 
 				MPI_Ireduce(MPI_IN_PLACE,vectors_try[i].data(),
 									comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,
-									0, comm.comm, reqs + i);
+									0, comm.comm, reqs + i);*/
 
 
-				/*MPI_Ireduce(MPI_IN_PLACE, vec.data() + displacement,
+				MPI_Ireduce(MPI_IN_PLACE, vec.data() + displacement,
 						comm.n_items_to_send, mpi_datatype_tosend, MPI_SUM,
-						0, comm.comm, reqs + i);*/
+						0, comm.comm, reqs + i);
 
 				displacement += comm.n_items_to_send;
 			}
