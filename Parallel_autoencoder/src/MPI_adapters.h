@@ -61,7 +61,7 @@ namespace parallel_autoencoder
 
 		//todo
 		my_vector<float> *vectors_try;
-		my_vector<float> *vec_save;
+		my_vector<float> *vec_save = nullptr;
 
 		MPI_Req_Manager(MPI_Request *reqs, my_vector<MPI_Comm_MasterSlave> *comms)
 		{
