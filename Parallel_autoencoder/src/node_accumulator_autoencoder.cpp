@@ -236,13 +236,17 @@ namespace parallel_autoencoder
 
 					// B2, B3) Ricevo, accumulo, invio H2
 					reqHidden1.broadcast_vector_sync(hidden_units2);
+					std::cout << "Test acc 4 \n";
 					sample_hidden_units(hidden_units2, hidden_biases, generator);
 					reqHidden1.broadcast_vector_sync(hidden_units2);
+					std::cout << "Test acc 5 \n";
 
 					// A4, A5) ricezione, ricostruzione e invio Vrec 1
 					reqVisible1.accumulate_vector_sync(rec_visible_units1);
+					std::cout << "Test acc 6 \n";
 					reconstruct_visible_units(rec_visible_units1, visible_biases, first_layer, generator);
 					reqVisible1.broadcast_vector_sync(rec_visible_units1);
+					std::cout << "Test acc 7 \n";
 
 					// B4, B5) ricezione, ricostruzione e invio Vrec 2
 					reqVisible1.accumulate_vector_sync(rec_visible_units2);
