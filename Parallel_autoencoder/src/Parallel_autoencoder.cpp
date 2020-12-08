@@ -211,7 +211,7 @@ void parallel_computation(std::ostream& oslog)
 
 	if(master_acc_comm != MPI_COMM_NULL)
 		MPI_Errhandler_set(master_acc_comm, MPI_ERRORS_RETURN);
-	//MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
+	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
 
 	//if((uint)mpi_my_rank > k_accumulators)
 	{

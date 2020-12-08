@@ -217,10 +217,10 @@ namespace parallel_autoencoder
 					std::cout << "Test cell 2 \n";
 					temp_hidden = hidden_units2;
 					reqHiddenInvio.send_vector_to_reduce_sync(temp_hidden);
-					reqHiddenRicezione.receive_vector(hidden_units2);
+					reqHiddenRicezione.receive_vector_sync(hidden_units2);
 					matrix_vector_multiplication(weights, hidden_units1, rec_visible_units1);
 					//reqHiddenInvio.wait();
-					reqHiddenRicezione.wait();
+					//reqHiddenRicezione.wait();
 
 
 					// A4, A5) Async invio e ricezione Vrec1, calcolo Vrec2
