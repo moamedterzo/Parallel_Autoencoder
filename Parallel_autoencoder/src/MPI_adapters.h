@@ -164,6 +164,13 @@ namespace parallel_autoencoder
 			wait();
 		}
 
+
+		void send_vector_to_reduce_sync(my_vector<float>& vec)
+		{
+			send_vector_to_reduce(vec);
+			wait();
+		}
+
 		~MPI_Req_Manager_Cell(){}
 	};
 
