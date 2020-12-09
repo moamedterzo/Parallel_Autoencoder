@@ -307,6 +307,7 @@ int main(int argc, char** argv) {
 	master_cout("Number of samples: " + to_string(number_of_samples), oslog);
 	master_cout("Number of RBM training epochs: " + to_string(rbm_n_epochs), oslog);
 	master_cout("Number of Fine-tuning training epoch: " + to_string(finetuning_n_epochs), oslog);
+	master_cout("Minibatch RBM size: " + to_string(rbm_batch_size), oslog);
 	master_cout("Batch mode: " + (batch_mode ? string("yes") : string("no")), oslog);
 	master_cout("Reduce IO: " + (reduce_io ? string("yes") : string("no")), oslog);
 	master_cout("Path dataset: " + path_dataset, oslog);
