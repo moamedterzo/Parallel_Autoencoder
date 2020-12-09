@@ -73,7 +73,7 @@ namespace parallel_autoencoder
 				std::ostream& _oslog, int _mpi_rank,
 				MPI_Comm& _master_accs_comm,
 				samples_manager& _smp_manager)
-		: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, rbm_batch_size, finetuning_n_epochs, batch_mode,_reduce_io, _oslog, _mpi_rank)
+		: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, rbm_batch_size, batch_mode,_reduce_io, _oslog, _mpi_rank)
 	{
 		smp_manager = _smp_manager;
 		master_accs_comm = _master_accs_comm;
