@@ -407,14 +407,7 @@ namespace parallel_autoencoder
 
 			auto logit_v = logit(uniform_dis(generator));
 
-			static int a = 0;
-
-			//if(a < 20) std::cout << "Sigmoid argument:\t" << sigmoid_argument << ", logit:\t" << logit_v<<"\n";
-			auto result = sigmoid_argument > logit_v ? 1.0 : 0.0;
-			//if(a < 20) std::cout << "Result: " << result<<"\n";
-
-			a++;
-			return result;
+			return sigmoid_argument > logit_v ? 1.0 : 0.0;
 		}
 
 
@@ -486,13 +479,7 @@ namespace parallel_autoencoder
 		inline void sample_hidden_units(my_vector<float>& hidden_units, const my_vector<float>& hidden_biases, std::default_random_engine& generator)
 		{
 			for(uint i = 0; i != hidden_units.size(); i++)
-			{
-				auto asd = hidden_units[i] + hidden_biases[i];
-				if(asd < 0)
-					std::cout << "";
-
-				hidden_units[i] = sample_sigmoid_function(asd, generator);
-			}
+				hidden_units[i] = sample_sigmoid_function(hidden_units[i] + hidden_biases[i], generator);
 		}
 
 		inline void reconstruct_visible_units(my_vector<float>& rec_visible_units, const my_vector<float>& visible_biases,
@@ -504,19 +491,7 @@ namespace parallel_autoencoder
 					rec_visible_units[i] =	sample_gaussian_noise(sigmoid(rec_visible_units[i] + visible_biases[i]), generator);
 			else
 				for(uint i = 0; i != rec_visible_units.size(); i++)
-				{
-					auto result =	sigmoid(rec_visible_units[i] + visible_biases[i]);
-
-					static int a = 0;
-					if(a < 20)
-					if(std::isnan(result))
-					{
-						std::cout << rec_visible_units[i] << ", visible biases:" << visible_biases[i]<<"\n";
-
-								a++;
-					}
-					rec_visible_units[i] = result;
-				}
+					rec_visible_units[i] = 	sigmoid(rec_visible_units[i] + visible_biases[i]);
 		}
 
 		inline void reconstruct_hidden_units(my_vector<float>& rec_hidden_units, const my_vector<float> &hidden_biases,
@@ -524,25 +499,10 @@ namespace parallel_autoencoder
 		{
 			//for the first layer we sample the hidden units
 			if(first_layer)
-				for(uint i = 0; i != rec_hidden_units.size(); i++)
-					rec_hidden_units[i] = sample_sigmoid_function(rec_hidden_units[i] + hidden_biases[i], generator);
-				//sample_hidden_units(rec_hidden_units, hidden_biases, generator);
+				sample_hidden_units(rec_hidden_units, hidden_biases, generator);
 			else
 				for(uint i = 0; i != rec_hidden_units.size(); i++)
-				{
-					auto result =   sigmoid(rec_hidden_units[i] + hidden_biases[i]);
-
-					static int a = 0;
-					if(a < 20)
-					if(std::isnan(result))
-					{
-						std::cout << rec_hidden_units[i] << ", biases:" << hidden_biases[i]<<"\n";
-
-								a++;
-					}
-
-					rec_hidden_units[i] = result;
-				}
+					rec_hidden_units[i] = sigmoid(rec_hidden_units[i] + hidden_biases[i]);
 		}
 
 
