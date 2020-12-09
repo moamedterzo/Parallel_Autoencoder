@@ -507,7 +507,7 @@ namespace parallel_autoencoder
 
 
 
-		inline void apply_sigmoid_to_layer(my_vector<float>& output, const my_vector<float> biases, const bool round_output)
+		inline void apply_sigmoid_to_layer(my_vector<float>& output, const my_vector<float>& biases, const bool round_output)
 		{
 			if(round_output)
 				for(uint i = 0; i != output.size(); i++)

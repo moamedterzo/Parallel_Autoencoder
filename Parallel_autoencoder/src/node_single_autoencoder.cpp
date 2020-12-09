@@ -260,8 +260,8 @@ namespace parallel_autoencoder
 
 		//vettori
 		string sample_filename;
-		my_vector<float> input_samples(n_visible_units);
-		my_vector<float> output_samples(n_hidden_units);
+		my_vector<float> input_samples(n_visible_units, 0.0);
+		my_vector<float> output_samples(n_hidden_units, 0.0);
 
 		smp_manager.restart();
 		while(smp_manager.get_next_sample(input_samples, sample_extension, &sample_filename)){
