@@ -41,11 +41,12 @@ namespace parallel_autoencoder
 
 
 	node_single_autoencoder::node_single_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
-				uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
+				uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size,
+				bool batch_mode, bool _reduce_io,
 				std::ostream& _oslog,
 				samples_manager& _smp_manager)
 		: node_autoencoder(_layers_size, _generator, 0, 0, 0,
-							rbm_n_epochs, finetuning_n_epochs, batch_mode, _reduce_io, _oslog, 0)
+							rbm_n_epochs, finetuning_n_epochs, rbm_batch_size, batch_mode, _reduce_io, _oslog, 0)
 	{
 		smp_manager = _smp_manager;
 

@@ -38,6 +38,7 @@ uint k_accumulators = 2, grid_total_rows = 2, grid_total_cols = 2;
 string path_dataset = "./mnist_chinese/data";
 uint number_of_samples = 2;
 uint rbm_n_epochs = 80;
+uint rbm_batch_size = 128;
 uint finetuning_n_epochs = 5;
 bool batch_mode = false;
 bool reduce_io = false;
@@ -123,9 +124,10 @@ void parse_args(const int argc, char** argv)
 {
 	static const string arg_k_accumulators = "--k_acc:";
 	static const string arg_g_rows = "--g_rows:";
-	static 	const string arg_g_cols = "--g_cols:";
+	static const string arg_g_cols = "--g_cols:";
 	static const string arg_rbm_n_epochs = "--rbm_epochs:";
 	static const string arg_finetuning_n_epochs = "--fn_epochs:";
+	static const string arg_rbm_batch_size = "--rbm_batchsize:";
 	static const string arg_batch_mode = "--batch:";
 	static const string arg_reduce_io = "--reduce_io:";
 	static const string arg_n_samples = "--n_samples:";
@@ -142,6 +144,7 @@ void parse_args(const int argc, char** argv)
 		get_single_arg(val_arg, arg_g_cols, grid_total_cols);
 		get_single_arg(val_arg, arg_rbm_n_epochs, rbm_n_epochs);
 		get_single_arg(val_arg, arg_finetuning_n_epochs, finetuning_n_epochs);
+		get_single_arg(val_arg, arg_rbm_batch_size, rbm_batch_size);
 		get_single_arg(val_arg, arg_n_samples, number_of_samples);
 		get_single_arg(val_arg, arg_path_dataset, path_dataset);
 		get_single_arg(val_arg, arg_batch_mode, batch_mode);
@@ -165,9 +168,11 @@ void parse_args(const int argc, char** argv)
 
 
 //Solamente il master mostra a video un messagge
-void master_cout(string&& message){
+void master_cout(string&& message, std::ostream& oslog){
 	if(mpi_my_rank == 0)
 		std::cout << message << "\n";
+
+	oslog << message << "\n";
 }
 
 void set_generator(std::default_random_engine& generator)
@@ -183,7 +188,8 @@ void set_generator(std::default_random_engine& generator)
 void parallel_computation(std::ostream& oslog)
 {
 	master_cout("There are " + to_string(k_accumulators)
-			+ " accumulators and the grid size is " + to_string(grid_total_rows) + "x" + to_string(grid_total_cols));
+			+ " accumulators and the grid size is " + to_string(grid_total_rows) + "x" + to_string(grid_total_cols),
+			oslog);
 
 
 	//ottenimento generatore numeri casuali
@@ -193,7 +199,7 @@ void parallel_computation(std::ostream& oslog)
 
 
 	//Determino comunicatori per ciascun nodo
-	master_cout("Computing communicators...");
+	master_cout("Computing communicators...", oslog);
 
 	MPI_Group world_group;
 	MPI_Comm_group(MPI_COMM_WORLD, &world_group);
@@ -206,24 +212,7 @@ void parallel_computation(std::ostream& oslog)
 	get_comms_for_grid(world_group, GridOrientation::row_first, k_accumulators, grid_total_rows, grid_total_cols, acc_row_comms);
 	get_comms_for_grid(world_group, GridOrientation::col_first, k_accumulators, grid_total_rows, grid_total_cols, acc_col_comms);
 
-	//todo rimuovere
-
-
-	if(master_acc_comm != MPI_COMM_NULL)
-		MPI_Errhandler_set(master_acc_comm, MPI_ERRORS_RETURN);
-	MPI_Errhandler_set(MPI_COMM_WORLD, MPI_ERRORS_RETURN);
-
-	//if((uint)mpi_my_rank > k_accumulators)
-	{
-		for(int i = 0; i < acc_row_comms.size(); i++)
-				MPI_Errhandler_set(acc_row_comms[i].comm, MPI_ERRORS_RETURN);
-		for(int i = 0; i < acc_col_comms.size(); i++)
-				MPI_Errhandler_set(acc_col_comms[i].comm, MPI_ERRORS_RETURN);
-	}
-
 	//determino ruolo di ogni nodo
-	master_cout("Initializing objects...");
-
 	node_autoencoder* my_autoencoder;
 	if(mpi_my_rank == 0)
 	{
@@ -233,7 +222,8 @@ void parallel_computation(std::ostream& oslog)
 
 		my_autoencoder = new node_master_autoencoder(layers_size, generator, k_accumulators,
 				grid_total_rows, grid_total_cols,
-				rbm_n_epochs, finetuning_n_epochs, batch_mode,reduce_io,
+				rbm_n_epochs, finetuning_n_epochs, rbm_batch_size,
+				batch_mode,reduce_io,
 				oslog, mpi_my_rank,
 				master_acc_comm,
 				smp_manager);
@@ -246,7 +236,8 @@ void parallel_computation(std::ostream& oslog)
 
 		my_autoencoder = new node_accumulator_autoencoder(layers_size, generator, k_accumulators,
 				grid_total_rows, grid_total_cols,
-				rbm_n_epochs, finetuning_n_epochs, batch_mode,reduce_io,
+				rbm_n_epochs, finetuning_n_epochs, rbm_batch_size,
+				batch_mode,reduce_io,
 				oslog, mpi_my_rank,
 				k_number,
 				master_acc_comm, acc_row_comms, acc_col_comms);
@@ -262,7 +253,8 @@ void parallel_computation(std::ostream& oslog)
 
 		my_autoencoder = new node_cell_autoencoder(layers_size, generator, k_accumulators,
 				grid_total_rows, grid_total_cols,
-				rbm_n_epochs, finetuning_n_epochs, batch_mode,reduce_io,
+				rbm_n_epochs, finetuning_n_epochs,rbm_batch_size,
+				batch_mode,reduce_io,
 				oslog, mpi_my_rank,
 				grid_row, grid_col,
 				acc_row_comms, acc_col_comms);
@@ -287,7 +279,8 @@ void single_computation(std::ostream& oslog)
 	std::cout << "\n\nRunning autoencoder on single node!\n";
 
 	auto my_autoencoder = new node_single_autoencoder(layers_size, generator,
-			rbm_n_epochs, finetuning_n_epochs, batch_mode, reduce_io,
+			rbm_n_epochs, finetuning_n_epochs, rbm_batch_size,
+			batch_mode, reduce_io,
 			oslog,smp_manager);
 
 	if(execute_command)
@@ -311,16 +304,16 @@ int main(int argc, char** argv) {
 	init_MPI(argc, argv, mpi_my_rank, numproc);
 
 	//print variabiles
-	master_cout("Number of samples: " + to_string(number_of_samples));
-	master_cout("Number of RBM training epochs: " + to_string(rbm_n_epochs));
-	master_cout("Number of Fine-tuning training epoch: " + to_string(finetuning_n_epochs));
-	master_cout("Batch mode: " + (batch_mode ? string("yes") : string("no")));
-	master_cout("Reduce IO: " + (reduce_io ? string("yes") : string("no")));
-	master_cout("Path dataset: " + path_dataset);
+	master_cout("Number of samples: " + to_string(number_of_samples), oslog);
+	master_cout("Number of RBM training epochs: " + to_string(rbm_n_epochs), oslog);
+	master_cout("Number of Fine-tuning training epoch: " + to_string(finetuning_n_epochs), oslog);
+	master_cout("Batch mode: " + (batch_mode ? string("yes") : string("no")), oslog);
+	master_cout("Reduce IO: " + (reduce_io ? string("yes") : string("no")), oslog);
+	master_cout("Path dataset: " + path_dataset, oslog);
 
-	master_cout("Layer sizes: ");
+	master_cout("Layer sizes: ", oslog);
 	for(uint i = 0; i < layers_size.size();i++)
-		master_cout(" - " + to_string(layers_size[i]) + " -");
+		master_cout(" - " + to_string(layers_size[i]) + " -", oslog);
 
 
 	//se c'è un singolo nodo si esegue il codice in modalità non parallela
@@ -333,25 +326,10 @@ int main(int argc, char** argv) {
 	oslog << "---   Hello, I have ID " << mpi_my_rank << "\n";
 
 	//computazione
-	try
-	{
-		if(parallel)
-			parallel_computation(oslog);
-		else
-			single_computation(oslog);
-	}
-	catch(MPI::Exception& ex)
-	{
-		std::cout << "Error MPI from rank " + to_string(mpi_my_rank) + "\n";
-		std::cout  << ex.Get_error_class() << "\n";
-		std::cout  << ex.Get_error_string() << "\n";
-		std::cout  << ex.Get_error_code() << "\n";
-	}
-	catch(...)
-	{
-		std::cout << "Error from rank " + to_string(mpi_my_rank) + "\n";
-	}
-
+	if(parallel)
+		parallel_computation(oslog);
+	else
+		single_computation(oslog);
 
 
 	//closing MPI
@@ -360,7 +338,7 @@ int main(int argc, char** argv) {
     //chiusura file di log
     if(fb.is_open())
     {
-    	master_cout("Closing log file");
+    	master_cout("Closing log file", oslog);
 		oslog.flush();
     	fb.close();
     }

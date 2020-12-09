@@ -22,7 +22,7 @@ namespace parallel_autoencoder
 
 		node_cell_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
 				uint _total_accumulators, uint _grid_row, uint _grid_col,
-				uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
+				uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size, bool batch_mode, bool _reduce_io,
 				std::ostream& _oslog, int _mpi_rank,
 				uint _row_number, uint _col_number,
 				my_vector<MPI_Comm_MasterSlave>& _accs_row_comm, my_vector<MPI_Comm_MasterSlave>& _accs_col_comm);

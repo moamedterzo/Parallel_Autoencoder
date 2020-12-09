@@ -15,7 +15,7 @@ namespace parallel_autoencoder{
 		~node_single_autoencoder(){}
 
 		node_single_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
-					uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
+					uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size, bool batch_mode, bool _reduce_io,
 					std::ostream& _oslog,
 					samples_manager& _smp_manager);
 

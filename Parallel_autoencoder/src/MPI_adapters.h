@@ -11,8 +11,6 @@
 
 #include "mpi.h"
 #include "custom_vectors.h"
-#include <stdio.h>
-#include <cstring>
 
 
 

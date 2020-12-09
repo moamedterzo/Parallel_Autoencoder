@@ -78,3 +78,383 @@ Learning RBMs ...
 RBMs to train: 9
 RBMs already trained: 0
 Number of final layers: 19
+---   Hello, I have ID 13
+My first random number is 218491
+Current orientation:col
+I'm a cell node, I will send 682 (over a total of 4096) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 684 (over a total of 4096) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 2048 (over a total of 8192) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 2048 (over a total of 8192) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 682 (over a total of 4096) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 684 (over a total of 4096) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 337 (over a total of 2024) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 338 (over a total of 2024) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 506 (over a total of 2024) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 170 (over a total of 1024) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 172 (over a total of 1024) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 256 (over a total of 1024) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 85 (over a total of 512) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 86 (over a total of 512) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 128 (over a total of 512) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 42 (over a total of 256) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 44 (over a total of 256) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 64 (over a total of 256) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 64 (over a total of 256) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 42 (over a total of 256) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 44 (over a total of 256) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 128 (over a total of 512) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 85 (over a total of 512) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 86 (over a total of 512) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 256 (over a total of 1024) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 170 (over a total of 1024) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 172 (over a total of 1024) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 506 (over a total of 2024) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 337 (over a total of 2024) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 338 (over a total of 2024) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 682 (over a total of 4096) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 684 (over a total of 4096) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 2048 (over a total of 8192) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 2048 (over a total of 8192) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 682 (over a total of 4096) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 684 (over a total of 4096) elements to the k node with index: 1
+----  Executing command: 0 -------
+
+Learning RBMs ...
+RBMs to train: 9
+RBMs already trained: 0
+Number of final layers: 19
+---   Hello, I have ID 13
+My first random number is 218491
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+----  Executing command: 0 -------
+
+Learning RBMs ...
+RBMs to train: 3
+RBMs already trained: 0
+Number of final layers: 7
+---   Hello, I have ID 13
+My first random number is 218491
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+----  Executing command: 0 -------
+
+Learning RBMs ...
+RBMs to train: 3
+RBMs already trained: 0
+Number of final layers: 7
+---   Hello, I have ID 13
+My first random number is 218491
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+----  Executing command: 0 -------
+
+Learning RBMs ...
+RBMs to train: 3
+RBMs already trained: 0
+Number of final layers: 7
+---   Hello, I have ID 13
+My first random number is 218491
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+----  Executing command: 0 -------
+
+Learning RBMs ...
+RBMs to train: 3
+RBMs already trained: 0
+Number of final layers: 7
+---   Hello, I have ID 13
+My first random number is 218491
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+----  Executing command: 0 -------
+
+Learning RBMs ...
+RBMs to train: 3
+RBMs already trained: 0
+Number of final layers: 7
+---   Hello, I have ID 13
+My first random number is 218491
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 5 (over a total of 32) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 6 (over a total of 32) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 16 (over a total of 64) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 10 (over a total of 64) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 12 (over a total of 64) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 32 (over a total of 128) elements to the k node with index: 1
+Current orientation:col
+I'm a cell node, I will send 21 (over a total of 128) elements to the k node with index: 0
+Current orientation:col
+I'm a cell node, I will send 22 (over a total of 128) elements to the k node with index: 1
+Current orientation:row
+I'm a cell node, I will send 1024 (over a total of 4096) elements to the k node with index: 1
+----  Executing command: 0 -------
+
+Learning RBMs ...
+RBMs to train: 3
+RBMs already trained: 0
+Number of final layers: 7

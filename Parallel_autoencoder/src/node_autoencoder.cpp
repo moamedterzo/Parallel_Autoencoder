@@ -137,7 +137,7 @@ namespace parallel_autoencoder
 
 	node_autoencoder::node_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
 					uint _total_accumulators, uint _grid_row, uint _grid_col,
-					uint rbm_n_epochs, uint finetuning_n_epochs, bool _batch_mode, bool _reduce_io,
+					uint rbm_n_epochs, uint finetuning_n_epochs, uint _rbm_batch_size, bool _batch_mode, bool _reduce_io,
 					std::ostream& _oslog, int _mpi_rank)
 	:oslog(_oslog)
 	{
@@ -158,7 +158,7 @@ namespace parallel_autoencoder
 		trained_rbms = 0;
 		rbm_momentum = 0.9;
 		rbm_n_training_epocs = rbm_n_epochs;
-		rbm_size_minibatch = 128;
+		rbm_size_minibatch = _rbm_batch_size;
 
 		rbm_initial_weights_variance = 0.01;
 		rbm_initial_weights_mean = 0;

@@ -101,13 +101,13 @@ namespace parallel_autoencoder
 
 	node_accumulator_autoencoder::node_accumulator_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
 					uint _total_accumulators, uint _grid_row, uint _grid_col,
-					uint rbm_n_epochs, uint finetuning_n_epochs, bool batch_mode, bool _reduce_io,
+					uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size, bool batch_mode, bool _reduce_io,
 					std::ostream& _oslog, uint _mpi_rank,
 					uint _k_number,
 					MPI_Comm& _master_accs_comm,
 					my_vector<MPI_Comm_MasterSlave>& _acc_rows_comm, my_vector<MPI_Comm_MasterSlave>& _acc_cols_comm)
 
-			: node_autoencoder(_layers_size, _generator, _total_accumulators,  _grid_row, _grid_col, rbm_n_epochs, finetuning_n_epochs, batch_mode, _reduce_io, _oslog, _mpi_rank)
+			: node_autoencoder(_layers_size, _generator, _total_accumulators,  _grid_row, _grid_col, rbm_n_epochs, finetuning_n_epochs, rbm_batch_size, batch_mode, _reduce_io, _oslog, _mpi_rank)
 	{
 		k_number = _k_number;
 
