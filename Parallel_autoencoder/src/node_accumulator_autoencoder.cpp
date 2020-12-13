@@ -54,6 +54,28 @@ namespace parallel_autoencoder
 		}
 	}
 
+	void node_accumulator_autoencoder::get_bias_subvector_index(const uint layer_number, uint& visible_index, uint& hidden_index)
+	{
+		//Dato il vettore globale dei bias B, si calcola l'indice iniziale del sottovettore gestito da questo accumulatore rispetto a B
+		//sia per visible che per hidden
+
+		const int n_visible_units = layers_size[layer_number];
+		const int n_hidden_units = layers_size[layer_number + 1];
+
+		visible_index = hidden_index = 0;
+
+		for(uint r = 0; r != k_number; r++)
+		{
+			visible_index += get_units_for_node(n_visible_units, total_accumulators, r);
+		}
+
+		for(uint c = 0; c != k_number; c++)
+		{
+			hidden_index += get_units_for_node(n_hidden_units, total_accumulators, c);
+		}
+	}
+
+
 
 
 
@@ -99,7 +121,7 @@ namespace parallel_autoencoder
 
 
 
-	node_accumulator_autoencoder::node_accumulator_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+	node_accumulator_autoencoder::node_accumulator_autoencoder(const my_vector<int>& _layers_size,
 					uint _total_accumulators, uint _grid_row, uint _grid_col,
 					uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size, bool batch_mode, bool _reduce_io,
 					std::ostream& _oslog, uint _mpi_rank,
@@ -107,7 +129,7 @@ namespace parallel_autoencoder
 					MPI_Comm& _master_accs_comm,
 					my_vector<MPI_Comm_MasterSlave>& _acc_rows_comm, my_vector<MPI_Comm_MasterSlave>& _acc_cols_comm)
 
-			: node_autoencoder(_layers_size, _generator, _total_accumulators,  _grid_row, _grid_col, rbm_n_epochs, finetuning_n_epochs, rbm_batch_size, batch_mode, _reduce_io, _oslog, _mpi_rank)
+			: node_autoencoder(_layers_size, _total_accumulators,  _grid_row, _grid_col, rbm_n_epochs, finetuning_n_epochs, rbm_batch_size, batch_mode, _reduce_io, _oslog, _mpi_rank)
 	{
 		k_number = _k_number;
 
@@ -138,9 +160,15 @@ namespace parallel_autoencoder
 			const bool first_layer = layer_number == 0;
 			const uint index_reverse_layer = number_of_final_layers - layer_number - 2;
 
-			//get number of units managed for the layer
+			//si ottengono unità gestite dall'accumulatore
+			const int n_visible_units = layers_size[layer_number];
+			const int n_hidden_units = layers_size[layer_number + 1];
+
 			uint n_my_visible_units, n_my_hidden_units;
 			get_my_visible_hidden_units(layer_number, n_my_visible_units, n_my_hidden_units);
+
+			uint vis_index, hid_index;
+			get_bias_subvector_index(layer_number, vis_index, hid_index);
 
 			//inizializzazione bias
 			auto& hidden_biases = layer_biases[layer_number];
@@ -222,32 +250,35 @@ namespace parallel_autoencoder
 
 					// A2, A3) Ricevo, accumulo e invio H 1
 					reqHidden1.accumulate_vector_sync(hidden_units1);
-					sample_hidden_units(hidden_units1, hidden_biases, generator);
+					sample_hidden_units(hidden_units1, hidden_biases, n_hidden_units, hid_index);
 					reqHidden1.broadcast_vector_sync(hidden_units1);
+
 
 					// B2, B3) Ricevo, accumulo, invio H2
 					reqHidden1.accumulate_vector_sync(hidden_units2);
-					sample_hidden_units(hidden_units2, hidden_biases, generator);
+					sample_hidden_units(hidden_units2, hidden_biases, n_hidden_units, hid_index);
 					reqHidden1.broadcast_vector_sync(hidden_units2);
+
+
 
 					// A4, A5) ricezione, ricostruzione e invio Vrec 1
 					reqVisible1.accumulate_vector_sync(rec_visible_units1);
-					reconstruct_visible_units(rec_visible_units1, visible_biases, first_layer, generator);
+					reconstruct_visible_units(rec_visible_units1, visible_biases, first_layer, n_visible_units, vis_index);
 					reqVisible1.broadcast_vector_sync(rec_visible_units1);
 
 					// B4, B5) ricezione, ricostruzione e invio Vrec 2
 					reqVisible1.accumulate_vector_sync(rec_visible_units2);
-					reconstruct_visible_units(rec_visible_units2, visible_biases, first_layer, generator);
+					reconstruct_visible_units(rec_visible_units2, visible_biases, first_layer, n_visible_units, vis_index);
 					reqVisible1.broadcast_vector_sync(rec_visible_units2);
 
 					// A6, A7) ricezione, ricostruzione e invio Hrec 1
 					reqHidden1.accumulate_vector_sync(rec_hidden_units1);
-					reconstruct_hidden_units(rec_hidden_units1, hidden_biases, first_layer, generator);
+					reconstruct_hidden_units(rec_hidden_units1, hidden_biases, first_layer, n_hidden_units, hid_index);
 					reqHidden1.broadcast_vector_sync(rec_hidden_units1);
 
 					// B6, B7) ricezione, ricostruzione e invio Hrec 2
 					reqHidden1.accumulate_vector_sync(rec_hidden_units2);
-					reconstruct_hidden_units(rec_hidden_units2, hidden_biases, first_layer, generator);
+					reconstruct_hidden_units(rec_hidden_units2, hidden_biases, first_layer, n_hidden_units, hid_index);
 					reqHidden1.broadcast_vector(rec_hidden_units2);
 
 
@@ -272,9 +303,10 @@ namespace parallel_autoencoder
 
 					//Si applicano i gradienti dopo il minibatch
 					if(current_index_sample % rbm_size_minibatch == 0)
+					{
 						update_biases_rbm(rbm_momentum, current_learning_rate, hidden_biases, visible_biases,
 								diff_visible_biases, diff_hidden_biases, rbm_size_minibatch);
-
+					}
 				} //fine esempio
 			} //fine epoca
 
@@ -284,7 +316,6 @@ namespace parallel_autoencoder
 			if(n_last_samples != 0)
 				update_biases_rbm(rbm_momentum, current_learning_rate, hidden_biases, visible_biases,
 						diff_visible_biases, diff_hidden_biases, n_last_samples);
-
 
 			//SALVATAGGIO NUOVI INPUT
 			save_new_samples(reqVisible1, reqHidden1, &reqMaster,
@@ -340,20 +371,20 @@ namespace parallel_autoencoder
 
 				// A3) Invio H 1 a master
 				send_to_master(hidden_units2, reqMaster);
-				MPI_Wait(reqMaster, MPI_STATUSES_IGNORE);
+				MPI_Wait(reqMaster, MPI_STATUS_IGNORE);
 			}
 		}
 
 		// A2) Wait ricevo H e invio V
-		reqHid.wait();
 		reqVis.wait();
+		reqHid.wait();
 
 		//Accumulazione e sigmoide per H1
-		apply_sigmoid_to_layer(hidden_units2, hidden_biases, false);
+		apply_sigmoid_to_layer(hidden_units1, hidden_biases, false);
 
 		// A3) Invio H 1 a master
 		send_to_master(hidden_units1, reqMaster);
-		MPI_Wait(reqMaster, MPI_STATUSES_IGNORE);
+		MPI_Wait(reqMaster, MPI_STATUS_IGNORE);
 	 }
 
 
@@ -406,7 +437,7 @@ namespace parallel_autoencoder
 			//si applica la funzione sigmoide
 			//se il layer è quello centrale (coding), bisogna effettuare un rounding dei valori
 			//per ottenere un valore binario
-			apply_sigmoid_to_layer(output, biases, l == central_layer);
+			apply_sigmoid_to_layer(output, biases, (l + 1) == central_layer);
 
 		} //fine forward
 	 }
@@ -427,7 +458,7 @@ namespace parallel_autoencoder
 			auto& output_layer = activation_layers[l];
 
 			//vettore contenente i delta
-			auto current_deltas = my_vector<float>(output_layer.size(), 0.0);
+			my_vector<float> current_deltas(output_layer.size(), 0.0);
 
 			//check misure
 			assert(output_layer.size() == biases_to_update.size());
@@ -436,7 +467,6 @@ namespace parallel_autoencoder
 			if(l == number_of_final_layers - 1)
 			{
 				//LAYER DI OUTPUT
-				//calcolo dei delta
 				deltas_for_output_layer(output_layer, activation_layers[0], current_deltas);
 			}
 			else
@@ -463,6 +493,9 @@ namespace parallel_autoencoder
 
 			//seguendo la delta rule, si applica il gradiente per i bias
 			update_biases_fine_tuning(biases_to_update, current_deltas, fine_tuning_learning_rate);
+
+			//Wait invio
+			reqHid.wait();
 		}
 	 }
 
@@ -472,8 +505,6 @@ namespace parallel_autoencoder
 		//Rollup per i bias già effettuato in fase di apprendimento delle rbm
 
 		//INIZIO FINE TUNING
-
-
 		auto activation_layers = get_activation_layers();
 
 		//unità visibili
@@ -566,7 +597,7 @@ namespace parallel_autoencoder
 		// Make sure the file is open
 		if(!myFile.is_open()) cout << "Could not open file: " + path_file << "\n";
 
-
+		myFile << fixed << setprecision(F_PREC);
 
 		//salvataggio di pesi, bias
 		uint layer_number;
@@ -574,21 +605,17 @@ namespace parallel_autoencoder
 		{
 			uint index_reverse_layer = number_of_final_layers - layer_number - 2;
 
-
 			auto& hidden_biases = layer_biases[layer_number];
+			auto& visible_biases =  layer_biases[index_reverse_layer];
+
 			myFile << "_hidden_" << hidden_biases.size() << "__,";
 			for(uint i = 0; i < hidden_biases.size(); i++)
-				myFile << fixed << setprecision(F_PREC) << hidden_biases[i] << ",";
-
+				myFile << hidden_biases[i] << ",";
 			myFile << endl;
 
-
-			auto& visible_biases =  layer_biases[index_reverse_layer];
 			myFile << "_visible_" << visible_biases.size() << "__,";
-
 			for(uint i = 0; i < visible_biases.size(); i++)
-				myFile << fixed << setprecision(F_PREC) << visible_biases[i] << ",";
-
+				myFile << visible_biases[i] << ",";
 			myFile << endl;
 		}
 
@@ -601,8 +628,7 @@ namespace parallel_autoencoder
 				myFile << "_rec_" << hidden_biases.size() << "__,";
 
 				for(uint i = 0; i < hidden_biases.size(); i++)
-					myFile << fixed << setprecision(F_PREC) << hidden_biases[i] << ",";
-
+					myFile << hidden_biases[i] << ",";
 				myFile << endl;
 
 				layer_number++;
@@ -639,7 +665,7 @@ namespace parallel_autoencoder
 		bool other_lines = false;
 		while(std::getline(myFile, line))
 		{
-			uint n_my_visible_units, n_my_hidden_units;
+			uint n_my_visible_units {0}, n_my_hidden_units{0};
 
 			if(current_row_file % 2 == 0)
 			{

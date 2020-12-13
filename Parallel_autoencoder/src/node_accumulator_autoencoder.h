@@ -23,7 +23,7 @@ namespace parallel_autoencoder
 
 	public:
 
-			node_accumulator_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+			node_accumulator_autoencoder(const my_vector<int>& _layers_size,
 					uint _total_accumulators, uint _grid_row, uint _grid_col,
 					uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size, bool batch_mode, bool _reduce_io,
 					std::ostream& _oslog, uint _mpi_rank,
@@ -68,6 +68,7 @@ namespace parallel_autoencoder
 
 
 		void calc_all_comm_sizes();
+		void get_bias_subvector_index(const uint layer_number, uint& visible_index, uint& hidden_index);
 		void get_my_visible_hidden_units(const uint layer_number, uint& n_my_visible_units, uint& n_my_hidden_units);
 
 		my_vector<my_vector<float>> get_activation_layers();

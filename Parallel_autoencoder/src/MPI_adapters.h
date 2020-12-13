@@ -131,6 +131,10 @@ namespace parallel_autoencoder
 
 		void accumulate_vector(my_vector<float>& vec)
 		{
+			//clear vec
+			for(uint i = 0; i != vec.size(); i++)
+				vec[i] = 0.0;
+
 			//Accumulate vector summing all incoming vectors
 			int displacement = 0;
 			for(uint i = 0; i != comms->size(); i++)

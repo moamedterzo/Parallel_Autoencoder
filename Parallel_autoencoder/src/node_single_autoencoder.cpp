@@ -40,12 +40,12 @@ namespace parallel_autoencoder
 	}
 
 
-	node_single_autoencoder::node_single_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+	node_single_autoencoder::node_single_autoencoder(const my_vector<int>& _layers_size,
 				uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size,
 				bool batch_mode, bool _reduce_io,
 				std::ostream& _oslog,
 				samples_manager& _smp_manager)
-		: node_autoencoder(_layers_size, _generator, 0, 0, 0,
+		: node_autoencoder(_layers_size, 0, 0, 0,
 							rbm_n_epochs, finetuning_n_epochs, rbm_batch_size, batch_mode, _reduce_io, _oslog, 0)
 	{
 		smp_manager = _smp_manager;
@@ -159,7 +159,8 @@ namespace parallel_autoencoder
 				weights = matrix<float>(n_visible_units, n_hidden_units, 0.0);
 
 				//inizializzazione pesi
-				initialize_weight_matrix(weights, rbm_initial_weights_mean, rbm_initial_weights_variance, generator);
+				initialize_weight_matrix(weights, rbm_initial_weights_mean, rbm_initial_weights_variance);
+
 
 				//inizializzazione bias
 				visible_biases = my_vector<float>(n_visible_units, rbm_initial_biases_value);
@@ -180,8 +181,8 @@ namespace parallel_autoencoder
 				ulong current_index_sample = 0;
 				float learning_rate;
 
-				for(uint epoch = 0; epoch != rbm_n_training_epocs; epoch++){
-
+				for(uint epoch = 0; epoch != rbm_n_training_epocs; epoch++)
+				{
 					learning_rate = get_learning_rate_rbm(epoch, layer_number);
 
 					if(epoch % 1 == 0)
@@ -198,15 +199,15 @@ namespace parallel_autoencoder
 
 						//1. Effettuare sampling dell'hidden layer
 						matrix_transpose_vector_multiplication(weights, visible_units, hidden_units);
-						sample_hidden_units(hidden_units, hidden_biases, generator);
+						sample_hidden_units(hidden_units, hidden_biases);
 
 						//2. Ricostruire layer visibile
 						matrix_vector_multiplication(weights, hidden_units, rec_visible_units);
-						reconstruct_visible_units(rec_visible_units, visible_biases, first_layer, generator);
+						reconstruct_visible_units(rec_visible_units, visible_biases, first_layer);
 
 						//3. si ottiene il vettore hidden partendo dalle unità visibili ricostruite
 						matrix_transpose_vector_multiplication(weights, rec_visible_units, rec_hidden_units);
-						reconstruct_hidden_units(rec_hidden_units, hidden_biases, first_layer, generator);
+						reconstruct_hidden_units(rec_hidden_units, hidden_biases, first_layer);
 
 						//4. si calcolano i differenziali dei pesi e bias visibili
 						set_gradient(visible_units, hidden_units, rec_visible_units, rec_hidden_units,
@@ -264,8 +265,8 @@ namespace parallel_autoencoder
 		my_vector<float> output_samples(n_hidden_units, 0.0);
 
 		smp_manager.restart();
-		while(smp_manager.get_next_sample(input_samples, sample_extension, &sample_filename)){
-
+		while(smp_manager.get_next_sample(input_samples, sample_extension, &sample_filename))
+		{
 			//si ottengono i valori di attivazione dalla RBM
 			matrix_transpose_vector_multiplication(weights, input_samples, output_samples);
 			apply_sigmoid_to_layer(output_samples, hidden_biases, false);
@@ -354,16 +355,20 @@ namespace parallel_autoencoder
 			else
 			{
 				//layer nascosto
+				current_deltas = former_deltas;
 
-				//si memorizzano i delta del passo precedente
-				former_deltas = my_vector<float>(current_deltas);
-				current_deltas = my_vector<float>(output_layer.size(), 0.0);
+				//Calcolo dei delta
+				for(uint j = 0; j != output_layer.size(); j++)
+					current_deltas[j] = current_deltas[j] * output_layer[j]  * (1 - output_layer[j]);
+			}
 
-				//si vanno a prendere i pesi tra il layer di output e quello a lui successivo
-				auto& weights_for_deltas = layers_weights[l];
+			if(l > 1)
+			{
+				//calcolo i delta pesati per il prossimo passo
+				former_deltas = my_vector<float>(input_layer.size(), 0.0);
 
 				//il delta per il nodo j-esimo è dato dalla somma pesata dei delta dei nodi del layer successivo
-				matrix_vector_multiplication(weights_for_deltas, former_deltas, current_deltas);
+				matrix_vector_multiplication(weights_to_update, current_deltas, former_deltas);
 			}
 
 			//applico gradiente per la matrice dei pesi
@@ -501,6 +506,8 @@ namespace parallel_autoencoder
 		// Make sure the file is open
 		if(!myFile.is_open()) cout << "Could not open file: " + path_file << "\n";
 
+		myFile << fixed << setprecision(F_PREC);
+
 		//salvataggio di pesi, bias
 		uint layer_number;
 		for(layer_number = 0; layer_number != trained_rbms; layer_number++)
@@ -514,17 +521,17 @@ namespace parallel_autoencoder
 
 			myFile << "_rbm_" << weights.get_rows() << "x" << weights.get_cols() << "__,";
 			for(uint i = 0; i < weights.size(); i++)
-				  myFile << fixed << setprecision(F_PREC) << weights[i] << ",";
+				  myFile  << weights[i] << ",";
 			myFile << endl;
 
 			myFile << "_hidden_" << hidden_biases.size() << "__,";
 			for(uint i = 0; i < hidden_biases.size(); i++)
-				myFile << fixed << setprecision(F_PREC) <<hidden_biases[i] << ",";
+				myFile  << hidden_biases[i] << ",";
 			myFile << endl;
 
 			myFile << "_visible_" << visible_biases.size() << "__,";
 			for(uint i = 0; i < visible_biases.size(); i++)
-				myFile << fixed << setprecision(F_PREC) <<visible_biases[i] << ",";
+				myFile  <<visible_biases[i] << ",";
 			myFile << endl;
 		}
 
@@ -537,12 +544,12 @@ namespace parallel_autoencoder
 
 				myFile << "_rec_" <<  weights.get_rows() << "x" << weights.get_cols()  << "__,";
 				for(uint i = 0; i < weights.size(); i++)
-					 myFile << fixed << setprecision(F_PREC) << weights[i] << ",";
+					 myFile << weights[i] << ",";
 				myFile << endl;
 
 				myFile << "_rec_" << hidden_biases.size() << "__,";
 				for(uint i = 0; i < hidden_biases.size(); i++)
-					  myFile << fixed << setprecision(F_PREC) <<hidden_biases[i] << ",";
+					  myFile << hidden_biases[i] << ",";
 				myFile << endl;
 
 				layer_number++;

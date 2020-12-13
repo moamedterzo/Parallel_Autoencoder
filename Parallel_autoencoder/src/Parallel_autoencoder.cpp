@@ -175,14 +175,6 @@ void master_cout(string&& message, std::ostream& oslog){
 	oslog << message << "\n";
 }
 
-void set_generator(std::default_random_engine& generator)
-{
-	//Come seed viene utilizzato il rango di MPI
-	srand(mpi_my_rank);
-	generator.seed(mpi_my_rank);
-}
-
-
 
 //Avvia i processi per la computazione parallela
 void parallel_computation(std::ostream& oslog)
@@ -190,12 +182,6 @@ void parallel_computation(std::ostream& oslog)
 	master_cout("There are " + to_string(k_accumulators)
 			+ " accumulators and the grid size is " + to_string(grid_total_rows) + "x" + to_string(grid_total_cols),
 			oslog);
-
-
-	//ottenimento generatore numeri casuali
-	std::default_random_engine generator;
-	set_generator(generator);
-	oslog << "My first random number is " << generator() << "\n";
 
 
 	//Determino comunicatori per ciascun nodo
@@ -220,7 +206,7 @@ void parallel_computation(std::ostream& oslog)
 		samples_manager smp_manager = samples_manager(path_dataset, number_of_samples);
 
 
-		my_autoencoder = new node_master_autoencoder(layers_size, generator, k_accumulators,
+		my_autoencoder = new node_master_autoencoder(layers_size, k_accumulators,
 				grid_total_rows, grid_total_cols,
 				rbm_n_epochs, finetuning_n_epochs, rbm_batch_size,
 				batch_mode,reduce_io,
@@ -234,7 +220,7 @@ void parallel_computation(std::ostream& oslog)
 		//indice del k-esimo accumulatore
 		int k_number = mpi_my_rank - 1;
 
-		my_autoencoder = new node_accumulator_autoencoder(layers_size, generator, k_accumulators,
+		my_autoencoder = new node_accumulator_autoencoder(layers_size, k_accumulators,
 				grid_total_rows, grid_total_cols,
 				rbm_n_epochs, finetuning_n_epochs, rbm_batch_size,
 				batch_mode,reduce_io,
@@ -251,7 +237,7 @@ void parallel_computation(std::ostream& oslog)
 		uint grid_row = grid_offset / grid_total_cols;
 		uint grid_col = grid_offset % grid_total_cols;
 
-		my_autoencoder = new node_cell_autoencoder(layers_size, generator, k_accumulators,
+		my_autoencoder = new node_cell_autoencoder(layers_size, k_accumulators,
 				grid_total_rows, grid_total_cols,
 				rbm_n_epochs, finetuning_n_epochs,rbm_batch_size,
 				batch_mode,reduce_io,
@@ -273,12 +259,10 @@ void single_computation(std::ostream& oslog)
 {
 	//SINGLE MASTER
 	samples_manager smp_manager = samples_manager(path_dataset, number_of_samples);
-	std::default_random_engine generator;
-	set_generator(generator);
 
 	std::cout << "\n\nRunning autoencoder on single node!\n";
 
-	auto my_autoencoder = new node_single_autoencoder(layers_size, generator,
+	auto my_autoencoder = new node_single_autoencoder(layers_size,
 			rbm_n_epochs, finetuning_n_epochs, rbm_batch_size,
 			batch_mode, reduce_io,
 			oslog,smp_manager);
@@ -303,6 +287,20 @@ int main(int argc, char** argv) {
 	int numproc;
 	init_MPI(argc, argv, mpi_my_rank, numproc);
 
+	//se c'è un singolo nodo si esegue il codice in modalità non parallela
+	bool parallel = numproc > 1;
+
+	//creazione file per ciascun nodo
+	string path_file = "logs/log_" + (parallel ? string("paral_") : string("single_")) + to_string(mpi_my_rank) + ".txt";
+	fb.open(path_file, std::ios::out | std::ios::app);
+
+
+#ifdef	NDEBUG
+	master_cout("NDEBUG Defined", oslog);
+#endif
+
+	oslog << "---   Hello, I have ID " << mpi_my_rank << "\n";
+
 	//print variabiles
 	master_cout("Number of samples: " + to_string(number_of_samples), oslog);
 	master_cout("Number of RBM training epochs: " + to_string(rbm_n_epochs), oslog);
@@ -315,16 +313,6 @@ int main(int argc, char** argv) {
 	master_cout("Layer sizes: ", oslog);
 	for(uint i = 0; i < layers_size.size();i++)
 		master_cout(" - " + to_string(layers_size[i]) + " -", oslog);
-
-
-	//se c'è un singolo nodo si esegue il codice in modalità non parallela
-	bool parallel = numproc > 1;
-
-	//creazione file per ciascun nodo
-	string path_file = "logs/log_" + (parallel ? string("paral_") : string("single_")) + to_string(mpi_my_rank) + ".txt";
-	fb.open(path_file, std::ios::out | std::ios::app);
-
-	oslog << "---   Hello, I have ID " << mpi_my_rank << "\n";
 
 	//computazione
 	if(parallel)

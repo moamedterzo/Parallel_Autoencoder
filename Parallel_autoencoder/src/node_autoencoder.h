@@ -3,6 +3,7 @@
 
 
 #include "custom_vectors.h"
+#include "generators.h"
 #include "MPI_adapters.h"
 
 
@@ -37,8 +38,6 @@ namespace parallel_autoencoder
 
     	//each element indicates the grid orientation
     	my_vector<GridOrientation> orientation_grid;
-
-        std::default_random_engine generator;
 
     	//size of each layer
         my_vector<int> layers_size;
@@ -84,7 +83,7 @@ namespace parallel_autoencoder
 
     public:
 
-        node_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+        node_autoencoder(const my_vector<int>& _layers_size,
         		uint _total_accumulators, uint _grid_row, uint _grid_col,
 				uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size, bool batch_mode, bool _reduce_io,
 				std::ostream& _oslog, int _mpi_rank);

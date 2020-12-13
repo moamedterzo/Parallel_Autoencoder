@@ -20,7 +20,7 @@ namespace parallel_autoencoder
 
 	public:
 
-		node_cell_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+		node_cell_autoencoder(const my_vector<int>& _layers_size,
 				uint _total_accumulators, uint _grid_row, uint _grid_col,
 				uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size, bool batch_mode, bool _reduce_io,
 				std::ostream& _oslog, int _mpi_rank,
@@ -63,6 +63,7 @@ namespace parallel_autoencoder
 
 
 			void calc_all_comm_sizes();
+		    void get_weights_submatrix_index(uint layer_number, uint& row_index, uint& col_index);
 			void get_my_visible_hidden_units(const uint layer_number, uint& n_my_visible_units, uint& n_my_hidden_units);
 
 			void rollup_for_weights();
@@ -72,6 +73,7 @@ namespace parallel_autoencoder
 
 		    void forward_pass(my_vector<my_vector<float>>& activation_layers, my_vector<my_vector<float>>& output_layers);
 		    void backward_pass(my_vector<my_vector<float>>& activation_layers, my_vector<my_vector<float>>& output_layers);
+
 
 	};
 

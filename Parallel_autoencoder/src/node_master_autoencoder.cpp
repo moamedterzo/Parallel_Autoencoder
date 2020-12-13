@@ -67,13 +67,13 @@ namespace parallel_autoencoder
 	}
 
 
-	node_master_autoencoder::node_master_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+	node_master_autoencoder::node_master_autoencoder(const my_vector<int>& _layers_size,
 				uint _total_accumulators, uint _grid_row, uint _grid_col,
 				uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size, bool batch_mode, bool _reduce_io,
 				std::ostream& _oslog, int _mpi_rank,
 				MPI_Comm& _master_accs_comm,
 				samples_manager& _smp_manager)
-		: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, rbm_batch_size, batch_mode,_reduce_io, _oslog, _mpi_rank)
+		: node_autoencoder(_layers_size, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, rbm_batch_size, batch_mode,_reduce_io, _oslog, _mpi_rank)
 	{
 		smp_manager = _smp_manager;
 		master_accs_comm = _master_accs_comm;
@@ -191,8 +191,6 @@ namespace parallel_autoencoder
 				//si riavvia l'ottenimento dei samples
 				smp_manager.restart();
 
-				MPI_Status ss;
-
 				//leggo da file system il prossimo esempio mentre invio l'esempio precedente
 				for(uint current_sample = 0; current_sample != number_of_samples; current_sample++)
 				{
@@ -201,7 +199,7 @@ namespace parallel_autoencoder
 
 					//attendo completamento dell'invio precedente per poter inviare il prossimo vettore
 					if(current_sample != 0)
-						MPI_Wait(&reqSend, &ss);
+						MPI_Wait(&reqSend, MPI_STATUS_IGNORE);
 
 					visible_units_send_buffer = visible_units;
 					scatter_vector(visible_units_send_buffer, send_counts, send_displacements, &reqSend);
@@ -293,6 +291,7 @@ namespace parallel_autoencoder
 		//attesa gather
 		gather_vector(output_samples, receive_counts, receive_displacements,&reqRecv);
 		MPI_Wait(&reqRecv, MPI_STATUS_IGNORE);
+
 
 		//si salva su file il vettore Hidden ottenuto
 		smp_manager.save_sample(output_samples, false, new_image_path_folder, sample_filename_prec + ".txt");

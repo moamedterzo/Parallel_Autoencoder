@@ -25,7 +25,8 @@ namespace parallel_autoencoder
 	{
 		for(uint i = 0; i != visible_units.size(); i++)
 		{
-			for(uint j = 0; j != hidden_units.size(); j++){
+			for(uint j = 0; j != hidden_units.size(); j++)
+			{
 				diff_weights.at(i, j) +=
 						  visible_units[i] * hidden_units[j]  //fattore positivo
 						 - rec_visible_units[i] * rec_hidden_units[j]; //fattore negativo
@@ -89,16 +90,49 @@ namespace parallel_autoencoder
 		n_my_hidden_units = get_units_for_node(n_hidden_units, total_for_hid, my_hid_number);
 	}
 
+	void node_cell_autoencoder::get_weights_submatrix_index(uint layer_number, uint& row_index, uint& col_index)
+    {
+    	//Dato il vettore globale dei pesi W, si calcola l'indice iniziale (r,c) della sottomatrice gestita da questa cella rispetto a W
+
+    	//orientamento grid
+		const GridOrientation orientation_for_vis = orientation_grid[layer_number];
+
+		//calcolo del numero di nodi visibili o nascosti rappresentati per la cella corrente
+		const int n_visible_units = layers_size[layer_number];
+		const int n_hidden_units = layers_size[layer_number + 1];
+
+		//a) in quante parti deve essere diviso il vettore dei visibili/nascosti?
+		const auto total_for_vis = orientation_for_vis == GridOrientation::row_first ? grid_rows : grid_cols;
+		const auto total_for_hid = orientation_for_vis == GridOrientation::row_first ? grid_cols : grid_rows;
+
+		//b) che posizione rappresenta la cella per il vettore visibile/nascosto?
+		const auto my_vis_number = orientation_for_vis == GridOrientation::row_first ? row_number : col_number;
+		const auto my_hid_number = orientation_for_vis == GridOrientation::row_first ? col_number : row_number;
 
 
-	node_cell_autoencoder::node_cell_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+		row_index = col_index = 0;
+
+		for(uint r = 0; r != my_vis_number; r++)
+		{
+			row_index += get_units_for_node(n_visible_units, total_for_vis, r);
+		}
+		for(uint c = 0; c != my_hid_number; c++)
+		{
+			col_index += get_units_for_node(n_hidden_units, total_for_hid, c);
+		}
+    }
+
+
+
+
+	node_cell_autoencoder::node_cell_autoencoder(const my_vector<int>& _layers_size,
 			uint _total_accumulators, uint _grid_row, uint _grid_col,
 			uint rbm_n_epochs, uint finetuning_n_epochs, uint rbm_batch_size, bool batch_mode, bool _reduce_io,
 			std::ostream& _oslog, int _mpi_rank,
 			uint _row_number, uint _col_number,
 			my_vector<MPI_Comm_MasterSlave>& _accs_row_comm, my_vector<MPI_Comm_MasterSlave>& _accs_col_comm)
 
-	: node_autoencoder(_layers_size, _generator, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, rbm_batch_size, batch_mode, _reduce_io, _oslog, _mpi_rank)
+	: node_autoencoder(_layers_size, _total_accumulators, _grid_row, _grid_col,rbm_n_epochs, finetuning_n_epochs, rbm_batch_size, batch_mode, _reduce_io, _oslog, _mpi_rank)
 	{
 		row_number = _row_number;
 		col_number = _col_number;
@@ -134,7 +168,15 @@ namespace parallel_autoencoder
 			auto& weights = layers_weights[layer_number];
 
 			//inizializzazione pesi
-			initialize_weight_matrix(weights, rbm_initial_weights_mean, rbm_initial_weights_variance, generator);
+			{
+				//si ottiene posizione della sottomatrice di questa cella, rispetto alla matrice globale W
+				uint r_index, c_index;
+				get_weights_submatrix_index(layer_number, r_index, c_index);
+
+				initialize_weight_matrix(weights, rbm_initial_weights_mean, rbm_initial_weights_variance,
+						layers_size[layer_number], layers_size[layer_number + 1], r_index, c_index);
+			}
+
 
 			//gradienti calcolati per pesi
 			matrix<float> diff_weights(n_my_visible_units, n_my_hidden_units, 0.0);
@@ -177,8 +219,8 @@ namespace parallel_autoencoder
 			// A1) Async Ricezione V 1
 			reqVisibleInvio.receive_vector(visible_units1);
 
-			for(uint epoch = 0; epoch < rbm_n_training_epocs; epoch++){
-
+			for(uint epoch = 0; epoch < rbm_n_training_epocs; epoch++)
+			{
 				current_learning_rate = get_learning_rate_rbm(epoch, layer_number);
 
 				while(current_index_sample < (epoch + 1) * number_of_samples)
@@ -256,9 +298,14 @@ namespace parallel_autoencoder
 					//calcolo gradiente 2
 					set_gradient(diff_weights, visible_units2, hidden_units2, rec_visible_units2, rec_hidden_units2);
 
+
+
+
 					//modifica pesi mini batch
 					if(current_index_sample % rbm_size_minibatch == 0)
+					{
 						update_weights_rbm(rbm_momentum, current_learning_rate, weights, diff_weights, rbm_size_minibatch);
+					}
 
 				} //fine esempio
 			} //fine epoca
@@ -269,9 +316,11 @@ namespace parallel_autoencoder
 			if(n_last_samples != 0)
 				update_weights_rbm(rbm_momentum, current_learning_rate, weights, diff_weights, n_last_samples);
 
+
 			//SALVATAGGIO NUOVI INPUT
 			save_new_samples(reqVisibleInvio,reqHiddenInvio, weights,
 					visible_units1, visible_units2, hidden_units1, hidden_units2);
+
 
 			//contatore che memorizza il numero di rbm apprese
 			trained_rbms++;
@@ -319,6 +368,7 @@ namespace parallel_autoencoder
 			 //utilizzo un altro buffer
 			hidden_units2 = hidden_units1;
 			reqHid.send_vector_to_reduce(hidden_units2);
+
 		}
 
 		// 3) Wait Invio H
@@ -377,8 +427,8 @@ namespace parallel_autoencoder
 			my_vector<my_vector<float>>& output_layers)
 	{
 		//si va dall'ultimo layer al penultimo (quello di input non viene considerato)
-		for(uint l = number_of_final_layers - 1; l != 0; l--){
-
+		for(uint l = number_of_final_layers - 1; l != 0; l--)
+		{
 			//comunicatori
 			auto& comms_for_vis = acc_vis_comm_for_layer[l - 1];
 			auto& comms_for_hid = acc_hid_comm_for_layer[l - 1];
@@ -390,8 +440,8 @@ namespace parallel_autoencoder
 			auto& input_layer = activation_layers[l - 1];
 
 			//vettori delta in input e calcolati
-			auto deltas_to_accs = my_vector<float>(input_layer.size());
-			auto deltas_from_accs = my_vector<float>(output_layer.size());
+			my_vector<float> deltas_to_accs(input_layer.size());
+			my_vector<float> deltas_from_accs(output_layer.size());
 
 			//check misure
 			assert(output_layer.size() == weights_to_update.get_cols());
@@ -408,17 +458,26 @@ namespace parallel_autoencoder
 			matrix_vector_multiplication(weights_to_update, deltas_from_accs, deltas_to_accs);
 
 			//Invia delta pesati agli accumulatori (per il primo layer non è necessario)
+			MPI_Req_Manager_Cell *reqToAcc;
+			MPI_Request reqs_to_acc[comms_for_vis.size()];
+
 			if(l > 1)
 			{
-				MPI_Request reqs_to_acc[comms_for_vis.size()];
-				MPI_Req_Manager_Cell reqToAcc{ reqs_to_acc, &comms_for_vis };
-
-				reqToAcc.send_vector_to_reduce(deltas_to_accs);
+				reqToAcc = new MPI_Req_Manager_Cell{ reqs_to_acc, &comms_for_vis };
+				reqToAcc->send_vector_to_reduce(deltas_to_accs);
 			}
 
 			//applico gradiente per la matrice dei pesi
 			update_weights_fine_tuning(weights_to_update, deltas_from_accs, input_layer, fine_tuning_learning_rate);
+
+			//Wait invio
+			if(l > 1)
+			{
+				reqToAcc->wait();
+				delete reqToAcc;
+			}
 		}
+
 	}
 
 
@@ -511,6 +570,8 @@ namespace parallel_autoencoder
 		// Make sure the file is open
 		if(!myFile.is_open()) cout << "Could not open file: " + path_file << "\n";
 
+		myFile <<fixed << setprecision(F_PREC);
+
 		//salvataggio di pesi, bias
 		uint layer_number;
 		for(layer_number = 0; layer_number != trained_rbms; layer_number++)
@@ -519,7 +580,7 @@ namespace parallel_autoencoder
 
 			myFile << "_rbm_" << weights.get_rows() << "x" << weights.get_cols() << "__,";
 			for(uint i = 0; i != weights.size(); i++)
-				myFile << fixed << setprecision(F_PREC) << weights[i] << ",";
+				myFile << weights[i] << ",";
 
 			myFile << endl;
 		}
@@ -533,7 +594,7 @@ namespace parallel_autoencoder
 
 				myFile << "_rec_" << weights.get_rows() << "x" << weights.get_cols() << "__,";
 				for(uint i = 0; i != weights.size(); i++)
-						myFile << fixed << setprecision(F_PREC) << weights[i] << ",";
+						myFile  << weights[i] << ",";
 
 				myFile << endl;
 

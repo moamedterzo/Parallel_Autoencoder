@@ -28,10 +28,11 @@ namespace parallel_autoencoder{
 	static const string default_extension = ".jpg";
 
 	//Precisione dei dati salvati su file
-	static const int F_PREC = 30;
+	static const int F_PREC = 10;
 
 	//valore utilizzato per normalizzare i valori in input
 	static const float INPUT_MAX_VALUE = 255;
+
 
     class samples_manager{
     private:

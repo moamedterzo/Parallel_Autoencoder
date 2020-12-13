@@ -9,12 +9,12 @@
 #define CUSTOM_VECTORS_H_
 
 
+#include <sstream>
+#include <iomanip>
 #include <iostream>
-#include <random>
 #include <cassert>
 #include <initializer_list>
-
-
+#include <cmath>
 
 namespace parallel_autoencoder
 {
@@ -315,12 +315,6 @@ namespace parallel_autoencoder
 	}
 
 
-	inline float logit(const float p){
-		return logf(p / (1-p));
-	}
-
-
-
 
 
 
@@ -384,52 +378,10 @@ namespace parallel_autoencoder
 	   }
 
 
-		inline void print_vector_norm(const my_vector<float>& vec, const std::string&& myid)
-		{
-			float result = 0;
-
-			for(uint i = 0; i != vec.size(); i++)
-				result +=vec[i];
-
-			std::cout << "[" << myid << ": " << result << "]\n";
-		}
 
 
 
-
-
-		//Implement sampling for the sigmoid function
-		//It's used an efficient version for sampling
-		inline  float sample_sigmoid_function(const float sigmoid_argument, std::default_random_engine& generator){
-
-			//distribuzione uniforme tra 0 e 1
-			static std::uniform_real_distribution<float> uniform_dis(0.0, 1.0);
-
-			auto logit_v = logit(uniform_dis(generator));
-
-			return sigmoid_argument > logit_v ? 1.0 : 0.0;
-		}
-
-
-
-		//Implements gaussian noise with given mean and variance
-		inline float sample_gaussian_noise(const float mean, const float variance,  std::default_random_engine& generator){
-
-			static std::normal_distribution<float> dist(0, 1.0);
-
-			//set parameters
-			std::normal_distribution<float>::param_type param(mean, variance);
-			dist.param(param);
-
-			return dist(generator);
-		}
-
-		 inline float sample_gaussian_noise(const float mean, std::default_random_engine& generator){
-
-			return sample_gaussian_noise(mean, 1.0, generator);
-		}
-
-		//Computer root squared difference for two vectors
+		//Compute root squared difference for two vectors
 		inline float root_squared_error(const my_vector<float>& vec_1, const my_vector<float>& vec_2)
 		{
 			assert(vec_1.size() == vec_2.size());
@@ -445,65 +397,67 @@ namespace parallel_autoencoder
 
 		 inline void print_vector(const my_vector<float>& v) {
 
+			std::string print = "";
 			for(uint i = 0; i != v.size(); i++)
-				std::cout << "[" << std::to_string(v[i]) << "] ";
+			{
+				std::stringstream stream;
+				stream << std::fixed << std::setprecision(15) << v[i];
+				print += "[" + stream.str() + "] ";
+			}
 
-			std::cout << "\n";
+			std::cout << print + "\n";
 		}
 
 
-		inline 	void print_matrix(const matrix<float>& v) {
+		inline 	void print_matrix(const matrix<float>& v)
+		{
+			std::string print = "";
+
 			 for(uint i = 0; i != v.get_rows(); i++)
 			 {
 				 for(uint j = 0; j != v.get_cols(); j++)
-					 std:: cout << "[" << v.at(i, j) << "] ";
+				 {
+					 std::stringstream stream;
+					stream << std::fixed << std::setprecision(15) << v.at(i, j);
+					print += "[" + stream.str() + "] ";
+				 }
 
-				 std::cout << "\n";
+				// print+=  "\n";
 			 }
 
-			 std::cout << "\n";
+			std::cout << print + "\n";
 		}
 
-
-
-		inline void initialize_weight_matrix(matrix<float>& weights,
-				const float rbm_initial_weights_mean, const float rbm_initial_weights_variance,
-				std::default_random_engine& generator)
+		inline void print_vector_norm(const my_vector<float>& vec, const std::string&& myid)
 		{
-			for(uint i = 0; i != weights.size(); i++)
-					weights[i] = sample_gaussian_noise(rbm_initial_weights_mean, rbm_initial_weights_variance, generator);
+			long double result = 0;
+
+			for(uint i = 0; i != vec.size(); i++)
+				result +=vec[i];
+
+			std::stringstream stream;
+			stream << std::fixed << std::setprecision(15) << result;
+
+			std::cout << "[" + myid + ": " + stream.str() + "]\n";
 		}
 
 
-
-		inline void sample_hidden_units(my_vector<float>& hidden_units, const my_vector<float>& hidden_biases, std::default_random_engine& generator)
+		inline void print_matrix_norm(const matrix<float>& mat, const std::string&& myid)
 		{
-			for(uint i = 0; i != hidden_units.size(); i++)
-				hidden_units[i] = sample_sigmoid_function(hidden_units[i] + hidden_biases[i], generator);
+			long double result = 0;
+
+			for(uint i = 0; i != mat.size(); i++)
+				result +=mat[i];
+
+			std::stringstream stream;
+			stream << std::fixed << std::setprecision(15) << result;
+
+			std::cout << "[" + myid + ": " + stream.str()  +"]\n";
 		}
 
-		inline void reconstruct_visible_units(my_vector<float>& rec_visible_units, const my_vector<float>& visible_biases,
-				const bool first_layer, std::default_random_engine& generator)
-		{
-			//for the first layer we apply gaussian noise
-			if(first_layer)
-				for(uint i = 0; i != rec_visible_units.size(); i++)
-					rec_visible_units[i] =	sample_gaussian_noise(sigmoid(rec_visible_units[i] + visible_biases[i]), generator);
-			else
-				for(uint i = 0; i != rec_visible_units.size(); i++)
-					rec_visible_units[i] = 	sigmoid(rec_visible_units[i] + visible_biases[i]);
-		}
 
-		inline void reconstruct_hidden_units(my_vector<float>& rec_hidden_units, const my_vector<float> &hidden_biases,
-				const bool first_layer, std::default_random_engine& generator)
-		{
-			//for the first layer we sample the hidden units
-			if(first_layer)
-				sample_hidden_units(rec_hidden_units, hidden_biases, generator);
-			else
-				for(uint i = 0; i != rec_hidden_units.size(); i++)
-					rec_hidden_units[i] = sigmoid(rec_hidden_units[i] + hidden_biases[i]);
-		}
+
+
 
 
 
@@ -528,35 +482,33 @@ namespace parallel_autoencoder
 		}
 
 
-
-
 		//Update bias parameters considering the learning rate and number of samples.
 		//Use momentum in order to set new differentials for biases
 		 inline void update_biases_rbm(const float momentum, const float current_learning_rate,
 						my_vector<float> &hidden_biases, my_vector<float> &visible_biases,
 						my_vector<float> &diff_visible_biases,	my_vector<float> &diff_hidden_biases, const int number_of_samples)
-			 {
-			 	 	//compute multiplier factor as average of samples
-					const float mult_factor = current_learning_rate / number_of_samples;
+		 {
+			//compute multiplier factor as average of samples
+			const float mult_factor = current_learning_rate / number_of_samples;
 
-					//visible biases
-					for(uint i = 0; i != visible_biases.size(); i++)
-					{
-						visible_biases[i] += diff_visible_biases[i] * mult_factor;
+			//visible biases
+			for(uint i = 0; i != visible_biases.size(); i++)
+			{
+				visible_biases[i] += diff_visible_biases[i] * mult_factor;
 
-						//init new differentials
-						diff_visible_biases[i] = diff_visible_biases[i] * momentum;
-					}
-
-					//hidden biases
-					for(uint j = 0; j != hidden_biases.size(); j++)
-					{
-						hidden_biases[j] += diff_hidden_biases[j]* mult_factor;
-
-						//init new differentials
-						diff_hidden_biases[j] = diff_hidden_biases[j] * momentum;
-					}
+				//init new differentials
+				diff_visible_biases[i] = diff_visible_biases[i] * momentum;
 			}
+
+			//hidden biases
+			for(uint j = 0; j != hidden_biases.size(); j++)
+			{
+				hidden_biases[j] += diff_hidden_biases[j]* mult_factor;
+
+				//init new differentials
+				diff_hidden_biases[j] = diff_hidden_biases[j] * momentum;
+			}
+		}
 
 
 		 //Update bias parameters considering the learning rate and number of samples.

@@ -135,7 +135,7 @@ namespace parallel_autoencoder
 	}
 
 
-	node_autoencoder::node_autoencoder(const my_vector<int>& _layers_size, std::default_random_engine& _generator,
+	node_autoencoder::node_autoencoder(const my_vector<int>& _layers_size,
 					uint _total_accumulators, uint _grid_row, uint _grid_col,
 					uint rbm_n_epochs, uint finetuning_n_epochs, uint _rbm_batch_size, bool _batch_mode, bool _reduce_io,
 					std::ostream& _oslog, int _mpi_rank)
@@ -150,7 +150,6 @@ namespace parallel_autoencoder
 
 		batch_mode = _batch_mode;
 		reduce_io = _reduce_io;
-		generator = _generator;
 
 		number_of_rbm_to_learn = _layers_size.size() - 1;
 		number_of_final_layers = _layers_size.size() * 2 - 1;
